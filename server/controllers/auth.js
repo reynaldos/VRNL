@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import { createError } from "../error.js";
 
+// CREATE A USER
 export const signup = async(req,res, next) =>{
     console.log(req.body);
     try{
@@ -21,6 +22,7 @@ export const signup = async(req,res, next) =>{
     }
 }
 
+// SIGN IN
 export const signin = async(req,res, next) =>{
     console.log(req.body);
     try{
@@ -35,11 +37,13 @@ export const signin = async(req,res, next) =>{
         // send custom error msg if password wrong
        if(!isCorrect) return next(createError(400, "Wrong Credentials!"));
         
-        const token = jwt.sign({id:user_id}, process.env.JWT);
+        // creates web token and return user info
+        const token = jwt.sign({id:user._id}, process.env.JWT);
+        const {password, ...userInfo} = user._doc;
 
         res.cookie("access_token", token,{
             httpOnly: true
-        }).status(200)
+        }).status(200).json(userInfo);
 
     }catch(err){
         // fire off error handling
