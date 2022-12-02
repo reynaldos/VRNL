@@ -1,5 +1,8 @@
 import User from "../models/User.js";
+// import {Collection } from "../models/Collection.js";
 import {createError} from "../error.js";
+import { query } from "express";
+
 
 
 // UPDATE USER
@@ -57,8 +60,8 @@ export const getUser = async (req, res, next) => {
 export const subscribe = async (req, res, next) => { 
     try {
         // add user to subscribe to
-        await User.findById(req.params.id,{
-            $push:{subscribedUser: req.params.id}
+        await User.findByIdAndUpdate(req.params.id,{
+            $push:{subscriberedUsers: req.params.id}
         });
 
         // increase subscriber number to user being subscribe to
@@ -78,7 +81,7 @@ export const subscribe = async (req, res, next) => {
 export const unSubscribe = async (req, res, next) => { 
     try {
         // add user to subscribe to
-        await User.findById(req.params.id,{
+        await User.findByIdAndUpdate(req.params.id,{
             $pull:{subscribedUser: req.params.id}
         });
 
@@ -115,3 +118,18 @@ export const dislike = async (req, res, next) => {
         }
 }
 
+
+// SEARCH FOR USERS
+export const searchUsers = async (req, res, next) => { 
+    const searchedName = req.query.username;
+     try {
+           const users = await User.find({name: { $regex: searchedName, $options: "i" }
+            }).limit(20);
+
+           res.status(200).json(users);
+
+        } catch (error) {
+            next(error);
+        }
+
+}
