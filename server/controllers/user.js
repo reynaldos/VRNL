@@ -1,4 +1,6 @@
 import User from "../models/User.js";
+import Video from "../models/Video.js";
+
 // import {Collection } from "../models/Collection.js";
 import {createError} from "../error.js";
 import { query } from "express";
@@ -100,22 +102,34 @@ export const unSubscribe = async (req, res, next) => {
 
 // LIKE A VIDEO
 export const like = async (req, res, next) => { 
-    try {
-           
+    const id = req.user.id;
+    const videoId = req.params.videoId;
 
-        } catch (error) {
-            next(error);
-        }
+    try {
+          await Video.findByIdAndUpdate(videoId, {
+            $addToSet: {likes: id},
+            $pull: {dislikes: id},
+          })
+          res.status(200).json('The video has been liked.')
+    } catch (error) {
+        next(error);
+    }
 }
 
 // DISLIKE A VIDEO
 export const dislike = async (req, res, next) => { 
-    try {
-           
+    const id = req.user.id;
+    const videoId = req.params.videoId;
 
-        } catch (error) {
-            next(error);
-        }
+    try {
+          await Video.findByIdAndUpdate(videoId, {
+            $addToSet: {dislikes: id},
+            $pull: {likes: id},
+          })
+          res.status(200).json('The video has been disliked.')
+    } catch (error) {
+        next(error);
+    }
 }
 
 
@@ -123,9 +137,9 @@ export const dislike = async (req, res, next) => {
 export const searchUsers = async (req, res, next) => { 
     const searchedName = req.query.username;
      try {
-           const users = await User.find({name: { $regex: searchedName, $options: "i" }
+           const users = await User.find({name: { $regex: searchedName, $option: "i" }
             }).limit(20);
-
+            
            res.status(200).json(users);
 
         } catch (error) {
