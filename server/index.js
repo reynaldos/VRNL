@@ -9,8 +9,6 @@ import videoRoutes from "./routes/videos.js";
 import commentRoutes from "./routes/comments.js";
 
 
-
-
 const app = express(); // create backend application
 dotenv.config(); // configs env variables
 
@@ -23,8 +21,8 @@ const connect = () =>{
     })
 }
 
-app.use(cookieParser());
-app.use(express.json());
+app.use(cookieParser()); // allows access to cookies
+app.use(express.json()); // allows to recieve data in JSON format
 
 // routes
 app.use("/api/auth", authRoutes);
