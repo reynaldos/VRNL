@@ -68,7 +68,7 @@ export const subscribe = async (req, res, next) => {
 
         // increase subscriber number to user being subscribe to
             await User.findByIdAndUpdate(req.params.id,{
-            $inc: {subscribers: 1}
+            // $inc: {subscribers: 1}
             });
 
         res.status(200).json('Subsciption successful!');

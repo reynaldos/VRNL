@@ -22,13 +22,13 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    subscriberedFolders:{
+        type: [String],
+    },
      subscriberedUsers:{
         type: [String],
     },
      subscriberedGroups:{
-        type: [String],
-    },
-    subscriberedFolders:{
         type: [String],
     },
 }, { timestamps: true }
