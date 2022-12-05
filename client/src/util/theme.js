@@ -1,6 +1,7 @@
-const GlobalTheme ={
+const GlobalTheme = {
+    blur: 'blur(5px)',
     borderRadius: '12px',
-    borderThickness: '1.5px',
+    borderThickness: '1px',
     maxWidth : '1400px',
     breakpoint: {
         xs: '400px',
@@ -13,16 +14,15 @@ const GlobalTheme ={
 
 export const darkTheme = {
     ...GlobalTheme,
-    bg: 'black',
     text: 'white',
     elementBG: 'rgba(217, 217, 217, 0.33)',
     icon: '#F6C9BA',
 
 }
 
+
 export const lightTheme = {
     ...GlobalTheme,
-    bg: 'white',
     text: 'black',
     elementBG: 'rgba(55, 30, 166, 0.33)',
     icon: '#50357C',
