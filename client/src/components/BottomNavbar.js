@@ -7,58 +7,75 @@ import {
   IoSettingsOutline } from "react-icons/io5";
 
   import { 
-    // HiOutlineUserGroup,
+    HiOutlineUserGroup,
     HiOutlineUser
   } from "react-icons/hi";
 
-
+import { Link,useLocation } from "react-router-dom";
 
 export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
-
-  const btnActions = [
-    {
-      title: 'Back',
-      icon: <IoChevronBack/>,
-      action: ()=>{}
-    },
-    {
-      title: 'Toggle Dashboard',
-      icon: <HiOutlineUser/>,
-      action: ()=>{}
-    },
-    {
-      title: 'Toggle Dark Mode',
-      icon: isDarkMode ? <IoSunnyOutline/> : <IoMoonOutline/>,
-      action: ()=>{
-        setDarkMode(old=>!old)
-      }
-    },
-    {
-      title: 'Settings',
-      icon: <IoSettingsOutline/>,
-      action: ()=>{}
-    }, 
-    {
-      title: 'Log Out',
-      icon: '',
-      action: ()=>{}
-    },
-  ]
-
-
-
+  const location = useLocation().pathname;
+  
   return (
-    <Container>
+    <>
+    {location !== `/signin` && 
+
+        <Container>
       <Wrapper>
-        {btnActions.map((btnInfo, i)=>{
-          return <Btn key={i} onClick={()=>{btnInfo.action()}} name={btnInfo.title}>
-                <BtnContent>{i === btnActions.length-1 ? btnInfo.title : ''}
-                    {btnInfo.icon}
-                </BtnContent>
+        
+        {location !== `/` && 
+        <>
+        {/* go back btn */}
+        <Link to=".." relative="path">
+          <Btn name={'back'}>
+            <BtnContent>
+              <IoChevronBack/>
+            </BtnContent>
           </Btn>
-        })}
+        </Link>
+
+        {/* toggle dashboard view */}
+        <Link to={location === '/myvournals' ? 'subscribers': 'myvournals'}>
+          <Btn name={'Toggle Dashboard'}>
+            <BtnContent>
+             {location === '/myvournals' ? <HiOutlineUserGroup/> : <HiOutlineUser/>}
+            </BtnContent>
+          </Btn>
+        </Link>
+
+          </>}
+     
+        {/* toggle dark mode */}
+        <Btn name={'Toggle Dark Mode'}
+            onClick={(e)=>{setDarkMode(old=>!old)}} >
+          <BtnContent>
+            {isDarkMode ? <IoSunnyOutline/> : <IoMoonOutline/>}
+          </BtnContent>
+        </Btn>
+
+        {/* settings */}
+        {/* <Link to='settings'>
+          <Btn name={'Settings'}>
+            <BtnContent>
+                <IoSettingsOutline/>
+            </BtnContent>
+          </Btn>
+        </Link> */}
+
+    
+
+        {/* log out */}
+        <Link to={'signin'}
+          style={{textDecoration: 'none'}}>
+          <Btn name={'Log Out'}>
+            <BtnContent>Log Out</BtnContent>
+          </Btn>
+        </Link>
       </Wrapper>
     </Container>
+  
+  }
+  </>
   )
 }
 
@@ -96,9 +113,11 @@ const Btn = styled.button`
 	cursor: pointer;
 	outline: inherit;
 
-  display: grid;
-  place-content: center;
-
+  display: flex;
+  align-items:center;
+  justify-content:center;
+ 
+  backdrop-filter: ${({theme})=>theme.blur};
   
 `
 
@@ -108,6 +127,4 @@ const BtnContent = styled.div`
   place-content: center;
   line-height: 1rem;
   font-size: 1rem;
-
-
 `
