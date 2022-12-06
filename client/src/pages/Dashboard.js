@@ -3,16 +3,19 @@ import styled from "styled-components";
 import { SideMenu } from '../components/SideMenu';
 
 
-const Dashboard = () => {
+
+const Dashboard = ({type}) => {
+
+
+
   return (
     <Container>
      
-       <SideMenu/>
+       <SideMenu type={type} />
 
         <Main>
-
            <Wrapper>
-             Main Contents
+             Main Content
            </Wrapper>
        </Main>
     </Container>
@@ -33,12 +36,17 @@ const Container = styled.div`
 
 const Main = styled.main`
   flex: 3;
-  background-color: rgba(0,255,0,.2);
+  /* outline: 1px red solid; */
   height: 100%;
+  width: 100%;
 `
 
 const Wrapper = styled.div`
-
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
 `
 

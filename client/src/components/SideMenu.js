@@ -9,13 +9,13 @@ import {
 import { IoAdd } from "react-icons/io5";
 
 
-export const SideMenu = () => {
+export const SideMenu = ({type}) => {
 
   return (
   <Container>
     <Wrapper>
       <TitleWrap>
-        <Title>My Vournals</Title>
+        <Title>{type === 'myvournals'? 'My Vournals':'Subscribers'}</Title>
       </TitleWrap>
      
         <TabsWrap>
@@ -31,7 +31,7 @@ export const SideMenu = () => {
 
            <Tab>
              <TabIcon><IoAdd size={24} style={{color:``}}/></TabIcon>
-            <TabText>Tab 3</TabText>
+            <TabText>Create Collection</TabText>
           </Tab>
          
         </TabsWrap>
@@ -49,11 +49,12 @@ const Container = styled.menu`
     max-height: 900;
     min-width: 320px;
     max-width: 360px;
+    color:white;
 
     display: grid;
     place-items: center;
 
-      @media screen and (max-width: ${({theme}) => theme.breakpoint.md}){
+    @media screen and (max-width: ${({theme}) => theme.breakpoint.md}){
        display: none;
     } 
 `
@@ -62,17 +63,19 @@ const Wrapper = styled.div`
     width: 100%;
 
     background: ${({theme})=>theme.elementBG};
-	 	border: ${({theme})=>`solid ${theme.icon} ${theme.borderThickness}`};
+	  border:  ${({theme})=>`solid ${theme.border} ${theme.borderThickness}`};
     border-left: none;
     border-top-right-radius: ${({theme})=>theme.borderRadius};
     border-bottom-right-radius: ${({theme})=>theme.borderRadius};
     margin: 1rem;
+
+    backdrop-filter: ${({theme})=>theme.blur};
 `
 
 const TitleWrap = styled.div`
 
   height: 100px;
-  border-bottom: ${({theme})=>`solid ${theme.icon} ${theme.borderThickness}`};
+  border-bottom:  ${({theme})=>`solid ${theme.border} ${theme.borderThickness}`};
   display:flex;
   align-items:flex-end;
 `
@@ -90,13 +93,14 @@ const TabsWrap = styled.ul`
 `
 
 const Tab = styled.li`
-  border-bottom: ${({theme})=>`solid ${theme.icon} ${theme.borderThickness}`};
+  border-bottom: ${({theme})=>`solid ${theme.border} ${theme.borderThickness}`};
   padding: .5rem 0;
   display:flex;
   align-items: center;
 
    &:hover{
     cursor: pointer;
+    background-color: rgba(255,255,255, .25)
   }
 
 `

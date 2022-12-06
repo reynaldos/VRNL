@@ -60,7 +60,7 @@ const Home = () => {
                 </BtnContent>
               </Btn>
             </Link>
-          <BtnTitle>Subscibers</BtnTitle>
+          <BtnTitle>Subscribers</BtnTitle>
           </div>
 
           {/* settings */}
@@ -89,6 +89,8 @@ const Title = styled.h1`
   top: 0;
   left: 0;
   margin: 1rem;
+  line-height: 1rem;
+  text-transform: uppercase;
 `
 
 const Container = styled.main`
@@ -116,13 +118,13 @@ const Btn = styled.button`
   width: 200px;
   aspect-ratio: 1;
   background: ${({theme})=>theme.elementBG};
-	border: ${({theme})=>`solid ${theme.icon} ${theme.borderThickness}`};
+	border: ${({theme})=>`solid transparent 4px`};
   border-radius: ${({theme})=>theme.borderRadius};
 	padding: .5rem;
   margin: 0 1rem;
 
 	font: inherit;
-	cursor: pointer;
+	
 	outline: inherit;
 
   display: flex;
@@ -137,6 +139,12 @@ const Btn = styled.button`
 
    @media screen and (max-width: ${({theme}) => theme.breakpoint.xs}){
    width: 108px;
+  }
+
+
+  &:hover{
+    cursor: pointer;
+     border: ${({theme})=>`solid ${theme.icon} 4px`};
   }
   
 `

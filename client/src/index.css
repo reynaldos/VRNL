@@ -6,7 +6,7 @@
     box-sizing: content-box;
     font-family: 'Kaisei Decol', serif;
     letter-spacing: 1px;
-
+    text-transform: lowercase;
     /* outline: 1px solid red; */
 }
 

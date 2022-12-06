@@ -4,6 +4,7 @@ import {BottomNavbar} from "./components/BottomNavbar";
 import { darkTheme, lightTheme } from "./util/theme";
 import darkBG from './imgs/darkmode.png';
 import lightBG from './imgs/lightmode.png';
+// import {IconContext} from 'react-icons';
 
 
 import {
@@ -21,11 +22,10 @@ import Settings from "./pages/Settings";
 function App() {
 
 
-   const [darkMode, setDarkMode] = useState(true);
+   const [darkMode, setDarkMode] = useState(false);
 
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-      
       <Container  style={{ backgroundImage: `url(${darkMode ? darkBG : lightBG})`}}>
         <BrowserRouter>
           <Routes>
@@ -35,6 +35,9 @@ function App() {
                 <Route path="subscribers" element={<Dashboard type={'subscribers'}/>}/>
                 <Route path="settings" element={<Settings/>}/>
                 <Route path="signin" element={<SignIn/>}/>
+                <Route path="signup" element={<SignIn/>}/>
+                <Route path="forgot" element={<SignIn/>}/>
+
             </Route>
           </Routes>
 
@@ -42,7 +45,6 @@ function App() {
 
         </BrowserRouter>
       </Container>
-
     </ThemeProvider>
 
   );
@@ -57,6 +59,6 @@ const Container = styled.div`
   color: ${({theme})=>theme.text};
 
  background-size: cover;
- background-repeat: no-repeat;
+ /* background-repeat: no-repeat; */
  background-position: center;
 `

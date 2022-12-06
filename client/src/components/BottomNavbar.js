@@ -4,7 +4,8 @@ import {
   IoChevronBack,
   IoMoonOutline, 
   IoSunnyOutline,
-  IoSettingsOutline } from "react-icons/io5";
+  // IoSettingsOutline 
+} from "react-icons/io5";
 
   import { 
     HiOutlineUserGroup,
@@ -18,7 +19,7 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
   
   return (
     <>
-    {location !== `/signin` && 
+    {!['/signin','/signup','/forgot'].includes(location) && 
 
         <Container>
       <Wrapper>
@@ -34,14 +35,18 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
           </Btn>
         </Link>
 
+
         {/* toggle dashboard view */}
-        <Link to={location === '/myvournals' ? 'subscribers': 'myvournals'}>
-          <Btn name={'Toggle Dashboard'}>
-            <BtnContent>
-             {location === '/myvournals' ? <HiOutlineUserGroup/> : <HiOutlineUser/>}
-            </BtnContent>
-          </Btn>
-        </Link>
+        {location !== `/settings` && 
+           <Link to={location === '/myvournals' ? 'subscribers': 'myvournals'}>
+            <Btn name={'Toggle Dashboard'}>
+              <BtnContent>
+              {location === '/myvournals' ? <HiOutlineUserGroup/> : <HiOutlineUser/>}
+              </BtnContent>
+            </Btn>
+          </Link>
+        }
+       
 
           </>}
      
@@ -88,7 +93,7 @@ const Container = styled.nav`
   scale: 1.2;
   transform-origin: bottom right;
 
-  @media screen and (min-width: ${({theme}) => theme.breakpoint.md}){
+  @media screen and (min-width: ${({theme}) => theme.breakpoint.sm}){
     scale: 1.5;
   }
 
@@ -104,13 +109,13 @@ const Wrapper = styled.div`
 
 const Btn = styled.button`
   background: ${({theme})=>theme.elementBG};
-	border: ${({theme})=>`solid ${theme.icon} ${theme.borderThickness}`};
+	border: ${({theme})=>`solid transparent 2px`};
   border-radius: ${({theme})=>theme.borderRadius};
 	padding: .5rem;
   margin-left: .2rem;
 
 	font: inherit;
-	cursor: pointer;
+
 	outline: inherit;
 
   display: flex;
@@ -118,6 +123,12 @@ const Btn = styled.button`
   justify-content:center;
  
   backdrop-filter: ${({theme})=>theme.blur};
+
+  &:hover{
+    	cursor: pointer;
+      border: ${({theme})=>`solid ${theme.icon} 2px`};
+       /* background-color: rgba(255,255,255, .5) */
+  }
   
 `
 
