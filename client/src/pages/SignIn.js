@@ -5,67 +5,20 @@ import { Link,useLocation } from "react-router-dom";
 
 
 const SignIn = () => {
-  const location = useLocation().pathname;
+  const location = useLocation().pathname.split('/').pop();
   
 
   return (
     <Container>
 
       {/* SIGN IN VIEW */}
-       {location === '/signin' && 
-        <Wrapper>
-          <Title>Welcome to<br/><span style={{textTransform:'uppercase'}}>VRNL!</span></Title>
-          <SubTitle>Sign In</SubTitle>
-          <Input placeholder='username'/>
-          <Input type="password" placeholder='password'/>
+      {location === 'signin' && <SignInView/>}
 
-          <Link to={'/'}>
-            <Button>Sign In</Button>
-          </Link>
+      {/* SIGN UP VIEW */}
+      {location === 'signup' && <SignUpView/> }
 
-          <div style={{flex:'2'}}></div>
-
-          <BtnHolder>
-            <TextBtn to={"/signup"}>Sign Up</TextBtn>
-            <TextBtn to={"/forgot"}>Forgot Password</TextBtn>      
-          </BtnHolder>
-        </Wrapper>}
-
-        {/* SIGN UP VIEW */}
-       {location === '/signup' && 
-        <Wrapper>
-          <Title>Welcome to<br/><span style={{textTransform:'uppercase'}}>VRNL!</span></Title>
-          <SubTitle>Sign Up</SubTitle>
-          <Input placeholder='username'/>
-          <Input placeholder='email'/>
-          <Input type="password" placeholder='password'/>
-          <Input type="password" placeholder='re-enter password'/>
-
-          <Button>Sign Up</Button>
-
-          <div style={{flex:'2'}}></div>
-
-          <BtnHolder>
-              <TextBtn to={"/signin"}>sign in instead</TextBtn>
-          </BtnHolder>
-        
-        </Wrapper>}
-
-         {/* FORGOT PASSWORD VIEW */}
-       {location === '/forgot' && 
-        <Wrapper>
-          <Title>Welcome to<br/><span style={{textTransform:'uppercase'}}>VRNL!</span></Title>
-          <SubTitle>Forgot Password</SubTitle>
-          <Input placeholder='email'/>
-          <Button>Send</Button>
-
-          <div style={{flex:'2'}}></div>
-          
-          <BtnHolder>   
-            <TextBtn to={"/signin"}>sign in instead</TextBtn>
-          </BtnHolder>
-        
-        </Wrapper>}
+      {/* FORGOT PASSWORD VIEW */}
+      {location === 'forgot' && <ForgotPasswordView/>}
      
      {/* BOTTOM LINKS */}
       <More>
@@ -78,6 +31,69 @@ const SignIn = () => {
 }
 
 export default SignIn
+
+
+const SignInView = () => {
+  return (
+    <Wrapper>
+      <Title>Welcome to<br/><span style={{textTransform:'uppercase'}}>VRNL!</span></Title>
+      <SubTitle>Sign In</SubTitle>
+      <Input placeholder='username'/>
+      <Input type="password" placeholder='password'/>
+
+      <Link to={'/'}>
+        <Button>Sign In</Button>
+      </Link>
+
+      <div style={{flex:'2'}}></div>
+
+      <BtnHolder>
+        <TextBtn to={"/signup"}>Sign Up</TextBtn>
+        <TextBtn to={"/forgot"}>Forgot Password</TextBtn>      
+      </BtnHolder>
+    </Wrapper>
+  )
+}
+
+const SignUpView = () => {
+  return (
+   <Wrapper>
+      <Title>Welcome to<br/><span style={{textTransform:'uppercase'}}>VRNL!</span></Title>
+      <SubTitle>Sign Up</SubTitle>
+      <Input placeholder='username'/>
+      <Input placeholder='email'/>
+      <Input type="password" placeholder='password'/>
+      <Input type="password" placeholder='re-enter password'/>
+
+      <Button>Sign Up</Button>
+
+      <div style={{flex:'2'}}></div>
+
+      <BtnHolder>
+          <TextBtn to={"/signin"}>sign in instead</TextBtn>
+      </BtnHolder>
+    
+    </Wrapper>
+  )
+}
+
+const ForgotPasswordView = () => {
+  return (
+     <Wrapper>
+        <Title>Welcome to<br/><span style={{textTransform:'uppercase'}}>VRNL!</span></Title>
+        <SubTitle>Forgot Password</SubTitle>
+        <Input placeholder='email'/>
+        <Button>Send</Button>
+
+        <div style={{flex:'2'}}></div>
+        
+        <BtnHolder>   
+          <TextBtn to={"/signin"}>sign in instead</TextBtn>
+        </BtnHolder>
+      
+      </Wrapper>
+  )
+}
 
 
 
