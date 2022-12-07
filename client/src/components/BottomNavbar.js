@@ -22,35 +22,31 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
   return (
     <>
     {!['signin','signup','forgot'].includes(location) && 
-
-        <Container>
+    <Container>
       <Wrapper>
         
-        {location !== `/` && 
+        {location !== `` && 
         <>
-        {/* go back btn */}
-        <Link to={isViewVideos ? "../.." : ".."} relative="path">
-          <Btn name={'back'}>
-            <BtnContent>
-              <IoChevronBack/>
-            </BtnContent>
-          </Btn>
-        </Link>
-
-
-        {/* toggle dashboard view */}
-        {location !== `/settings` && 
-           <Link to={location === '/myvournals' ? 'subscribers': 'myvournals'}>
-            <Btn name={'Toggle Dashboard'}>
+          {/* go back btn */}
+          <Link to={isViewVideos ? "../.." : ".."} relative="path">
+            <Btn name={'back'}>
               <BtnContent>
-              {location === '/myvournals' ? <HiOutlineUserGroup/> : <HiOutlineUser/>}
+                <IoChevronBack/>
               </BtnContent>
             </Btn>
           </Link>
-        }
-       
 
-          </>}
+
+          {/* toggle dashboard view */}
+          {location !== `settings` && 
+            <Link to={location === 'myvournals' ? 'subscribers': 'myvournals'}>
+              <Btn name={'Toggle Dashboard'}>
+                <BtnContent>
+                {location === 'myvournals' ? <HiOutlineUserGroup/> : <HiOutlineUser/>}
+                </BtnContent>
+              </Btn>
+            </Link>}
+        </>}
      
         {/* toggle dark mode */}
         <Btn name={'Toggle Dark Mode'}
@@ -59,17 +55,6 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
             {isDarkMode ? <IoSunnyOutline/> : <IoMoonOutline/>}
           </BtnContent>
         </Btn>
-
-        {/* settings */}
-        {/* <Link to='settings'>
-          <Btn name={'Settings'}>
-            <BtnContent>
-                <IoSettingsOutline/>
-            </BtnContent>
-          </Btn>
-        </Link> */}
-
-    
 
         {/* log out */}
         <Link to={'signin'}
