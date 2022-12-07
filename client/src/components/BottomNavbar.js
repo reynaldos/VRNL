@@ -15,11 +15,13 @@ import {
 import { Link,useLocation } from "react-router-dom";
 
 export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
-  const location = useLocation().pathname;
-  
+  const location = useLocation().pathname.split('/')[1];
+
+  const isViewVideos = useLocation().pathname.split('/').includes('view');
+
   return (
     <>
-    {!['/signin','/signup','/forgot'].includes(location) && 
+    {!['signin','signup','forgot'].includes(location) && 
 
         <Container>
       <Wrapper>
@@ -27,7 +29,7 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
         {location !== `/` && 
         <>
         {/* go back btn */}
-        <Link to=".." relative="path">
+        <Link to={isViewVideos ? "../.." : ".."} relative="path">
           <Btn name={'back'}>
             <BtnContent>
               <IoChevronBack/>
@@ -90,12 +92,17 @@ const Container = styled.nav`
   right: 0;
   bottom: 0;
   margin: 1rem;
-  scale: 1.2;
-  transform-origin: bottom right;
-
+  height: 3rem;
+  /* scale: 1.5; */
+  /* transform-origin: bottom right; */
+/* 
   @media screen and (min-width: ${({theme}) => theme.breakpoint.sm}){
     scale: 1.5;
   }
+
+   @media screen and (max-width: ${({theme}) => theme.breakpoint.xs}){
+    scale: 1.5;
+  } */
 
 `
 
@@ -111,7 +118,7 @@ const Btn = styled.button`
   background: ${({theme})=>theme.elementBG};
 	border: ${({theme})=>`solid transparent 2px`};
   border-radius: ${({theme})=>theme.borderRadius};
-	padding: .5rem;
+	padding: .75rem;
   margin-left: .2rem;
 
 	font: inherit;
@@ -136,6 +143,6 @@ const BtnContent = styled.div`
   color: ${({theme})=>theme.icon};
   display: grid;
   place-content: center;
-  line-height: 1rem;
-  font-size: 1rem;
+  line-height: 1.5rem;
+  font-size: 1.5rem;
 `

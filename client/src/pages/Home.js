@@ -1,5 +1,6 @@
-import React,{useState,useEffect} from 'react';
+import React from 'react';
 import styled from "styled-components";
+import {PageButton} from '../components/PageButton';
 
 import { IoSettingsOutline } from "react-icons/io5";
 import { 
@@ -7,73 +8,39 @@ import {
     HiOutlineUser
   } from "react-icons/hi";
 
-import { Link } from "react-router-dom";
-
-
+  
+const Btns = [
+  {
+    name: 'My Vournals',
+    path: 'myvournals',
+    Icon: HiOutlineUser
+  },
+   {
+    name: 'Subscribers',
+    path: 'subscribers',
+    Icon: HiOutlineUserGroup
+  },
+   {
+    name: 'Settings',
+    path: 'settings',
+    Icon: IoSettingsOutline
+  },
+]
 const Home = () => {
-
-  const [iconSize, setIconSize] = useState(64);
-
-  useEffect(()=>{
-
-    const resize = ()=>{
-      if((0 < window.innerWidth < 400) || window.innerWidth > 1000){
-        setIconSize(64);
-      }else{
-        setIconSize(48);
-      }
-    }
-
-    resize();
-    window.addEventListener("resize", resize);
-
-
-    return ()=>{window.removeEventListener("resize", resize);}
-  },[]);
-
 
   return (
     <>
       <Title>VRNL</Title>
       <Container>
+        <UserTag>hey reysanxez!</UserTag>
+
         <Wrapper>
-
-          {/* my vournals page */}
-          <div>
-            <Link to="myvournals">
-              <Btn name={'vournals'}>
-                <BtnContent>
-                  <HiOutlineUser size={iconSize}/>
-                </BtnContent>
-              </Btn>
-            </Link>
-            <BtnTitle>My Vournals</BtnTitle>
-          </div>
-
-
-          {/* subscriber page */}
-          <div>
-            <Link to="subscribers">
-              <Btn name={'Subscribers'}>
-                <BtnContent>
-                  <HiOutlineUserGroup size={iconSize} style={{paddingTop:'0px'}} />
-                </BtnContent>
-              </Btn>
-            </Link>
-          <BtnTitle>Subscribers</BtnTitle>
-          </div>
-
-          {/* settings */}
-          <div>
-            <Link to="settings">
-              <Btn name={'Settings'}>
-                <BtnContent>
-                  <IoSettingsOutline size={iconSize}/>
-                </BtnContent>
-              </Btn>
-            </Link>
-            <BtnTitle>Settings</BtnTitle>
-          </div>
+          {Btns.map((btn, i)=>{
+              return <div key={i}>
+                      <PageButton info={btn}/>            
+                      <BtnTitle>{btn.name}</BtnTitle>
+                    </div>
+            })}
 
         </Wrapper>
       </Container>
@@ -91,6 +58,11 @@ const Title = styled.h1`
   margin: 1rem;
   line-height: 1rem;
   text-transform: uppercase;
+
+  span{
+     line-height: 5rem;
+    font-size: 1.5rem;
+  }
 `
 
 const Container = styled.main`
@@ -100,6 +72,15 @@ const Container = styled.main`
   place-content: center;
 `
 
+const UserTag = styled.h2`
+  margin: 1rem;
+
+  @media screen and (max-width: ${({theme}) => theme.breakpoint.sm}){
+    text-align: center;
+
+  }
+`
+
 
 const Wrapper = styled.main`
   display: flex;
@@ -107,7 +88,7 @@ const Wrapper = styled.main`
   justify-content: space-between;
 
    @media screen and (max-width: ${({theme}) => theme.breakpoint.md}){
-     flex-wrap: wrap;
+    flex-wrap: wrap;
     justify-content: center;
 
   }

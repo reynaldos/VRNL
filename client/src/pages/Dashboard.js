@@ -1,23 +1,36 @@
 import React from 'react';
 import styled from "styled-components";
 import { SideMenu } from '../components/SideMenu';
+import {ViewVideos, MainDisplay} from '../components/DashMainComps';
 
+import Record from '../pages/Record';
 
+import {
+  Route,
+  Routes,useLocation
+} from "react-router-dom";
 
 const Dashboard = ({type}) => {
-
-
-
+  const location = useLocation().pathname.split('/').pop();
+  
   return (
     <Container>
      
-       <SideMenu type={type} />
+     {location !== 'record' &&
+      <SideMenu type={type} />
+     }
 
-        <Main>
-           <Wrapper>
-             Main Content
-           </Wrapper>
-       </Main>
+      <Main>
+        <Routes>
+          <Route path="/">
+            <Route index element={<MainDisplay/>}/>
+            <Route path="view">
+                <Route path=":collectionId" element={<ViewVideos/>}/>
+            </Route>
+             <Route path="record" element={<Record/>}/>
+          </Route>
+        </Routes>
+      </Main>
     </Container>
  
   )
@@ -31,25 +44,14 @@ const Container = styled.div`
   height: 100vh;
   display: flex;
   align-items: center;
- 
 ` 
 
 const Main = styled.main`
   flex: 3;
-  /* outline: 1px red solid; */
-  height: 100%;
-  width: 100%;
-`
-
-const Wrapper = styled.div`
-  height: 100%;
+  height: calc(90% - 4rem);
   width: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
-
 `
-
 
 
 
