@@ -99,7 +99,9 @@ const Wrapper = styled.div`
   margin-top: 1.5rem;
  
   background: ${({theme})=>theme.elementBG};
-	border: ${({theme})=>`solid ${theme.icon} ${theme.borderThickness}`};
+	/* border: ${({theme})=>`solid ${theme.icon} ${theme.borderThickness}`}; */
+	border: ${({theme})=>`solid ${theme.icon} 0px`};
+
   border-radius: ${({theme})=>theme.borderRadius};
   backdrop-filter: ${({theme})=>theme.blur};
 
@@ -148,7 +150,13 @@ const Input = styled.input`
   padding: 10px;
   color:${({theme})=>theme.btnText};
   background: ${({theme})=>theme.inputBG};
-	border: ${({theme})=>`solid ${theme.icon} ${theme.borderThickness}`};
+	/* border: ${({theme})=>{ return `solid ${theme.icon} ${theme.borderThickness}}`}}; */
+	border-color: ${({theme})=> theme.icon };
+	border-width: ${({theme})=> theme.borderThickness };
+	border-width: 0px;
+
+  border-style: solid;
+
   border-radius: ${({theme})=>theme.borderRadius};
   backdrop-filter: ${({theme})=>theme.blur};
   
@@ -168,7 +176,11 @@ const Button = styled.button`
   font-size:1rem;
   color:${({theme})=>theme.btnText};  
   background: ${({theme})=>theme.button};
-	border: ${({theme})=>`solid transparent  ${theme.borderThickness}`};
+	/* border: ${({theme})=>`solid transparent  ${theme.borderThickness}`}; */
+  border-color: transparent;
+	border-width: 2px;
+  border-style: solid;
+
 
   border-radius: ${({theme})=>theme.borderRadius};
   backdrop-filter: ${({theme})=>theme.blur};
@@ -176,7 +188,8 @@ const Button = styled.button`
 
   &:hover{
     cursor: pointer;
-	  border: ${({theme})=>`solid ${theme.btnText} ${theme.borderThickness}`};
+	   border-color: white;
+
 
 
   }

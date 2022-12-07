@@ -8,6 +8,11 @@ import {
 
 import { IoAdd } from "react-icons/io5";
 
+// import { 
+//     HiOutlineUserGroup,
+//     HiOutlineUser
+//  } from "react-icons/hi";
+
 
 export const SideMenu = ({type}) => {
 

@@ -36,7 +36,7 @@ export const lightTheme = {
     ...darkTheme,
     // text: '#50357C',
     // accentText: 'rgba(246, 201, 186, 1)',
-    // inputBG: 'rgba(255, 255, 255, 0.15)',
+    inputBG: 'rgba(246, 201, 186, 0.25)',
     elementBG: 'rgba(217, 217, 217, .35)',
     // icon: '#50357C',
     border: '#F6C9BA',

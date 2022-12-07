@@ -33,9 +33,6 @@ function App() {
                 <Route index element={<Home/>}/>
                 <Route path="myvournals/*" element={<Dashboard type={'myvournals'}/>}/>
                 <Route path="subscribers/*" element={<Dashboard type={'subscribers'}/>}/>
-                {/* <Route path="view">
-                    <Route path=":collectionId" element={<Video />} />
-                  </Route> */}
                 <Route path="settings" element={<Settings/>}/>
                 <Route path="signin" element={<SignIn/>}/>
                 <Route path="signup" element={<SignIn/>}/>
