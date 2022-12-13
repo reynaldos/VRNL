@@ -52,10 +52,11 @@ const Container = styled.menu`
     flex: 1;
     height: 90%;
     max-height: 900;
-    min-width: 320px;
+    min-width: 300px;
     max-width: 360px;
     color:white;
 
+    align-self: center;
     display: grid;
     place-items: center;
 
@@ -75,6 +76,8 @@ const Wrapper = styled.div`
     margin: 1rem;
 
     backdrop-filter: ${({theme})=>theme.blur};
+    -webkit-backdrop-filter: ${({theme})=>theme.blur};
+
 `
 
 const TitleWrap = styled.div`

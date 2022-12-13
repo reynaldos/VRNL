@@ -25,14 +25,16 @@ export const PageButton = ({info}) => {
     return ()=>{window.removeEventListener("resize", resize);}
   },[]);
 
-  return (
-    <Link to={path}>
-        <Btn name={name}>
-        <BtnContent>
-            <Icon size={iconSize}/>
-        </BtnContent>
-        </Btn>
-    </Link>
+  return (<div>
+      <Link to={path}>
+          <Btn name={name}>
+          <BtnContent>
+              <Icon size={iconSize}/>
+          </BtnContent>
+          </Btn>
+      </Link>
+      <BtnTitle>{name}</BtnTitle>
+     </div>
   )
 }
 
@@ -56,7 +58,7 @@ const Btn = styled.button`
   backdrop-filter: ${({theme})=>theme.blur};
  
 
-  @media screen and (max-width: ${({theme}) => theme.breakpoint.md}){
+  @media screen and (max-width: ${({theme}) => `calc(${theme.breakpoint.md} + 100px)`}){
    width: 136px;
   }
 
@@ -78,4 +80,15 @@ const BtnContent = styled.div`
   place-content: center;
   line-height: 1rem;
   font-size: 1rem;
+`
+
+const BtnTitle = styled.h4`
+  margin-top: .25rem;
+  text-align: center;
+  margin-bottom: 1.25em;
+
+
+  @media screen and (min-width: ${({theme}) => theme.breakpoint.md}){
+   font-size: 1.4rem;
+  }
 `

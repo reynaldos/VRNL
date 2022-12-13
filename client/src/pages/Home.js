@@ -36,10 +36,7 @@ const Home = () => {
 
         <Wrapper>
           {Btns.map((btn, i)=>{
-              return <div key={i}>
-                      <PageButton info={btn}/>            
-                      <BtnTitle>{btn.name}</BtnTitle>
-                    </div>
+              return <PageButton key={i} info={btn}/>   
             })}
 
         </Wrapper>
@@ -95,56 +92,4 @@ const Wrapper = styled.main`
 `
 
 
-const Btn = styled.button`
-  width: 200px;
-  aspect-ratio: 1;
-  background: ${({theme})=>theme.elementBG};
-	border: ${({theme})=>`solid transparent 4px`};
-  border-radius: ${({theme})=>theme.borderRadius};
-	padding: .5rem;
-  margin: 0 1rem;
 
-	font: inherit;
-	
-	outline: inherit;
-
-  display: flex;
-  align-items:center;
-  justify-content:center;
-  backdrop-filter: ${({theme})=>theme.blur};
- 
-
-  @media screen and (max-width: ${({theme}) => theme.breakpoint.md}){
-   width: 136px;
-  }
-
-   @media screen and (max-width: ${({theme}) => theme.breakpoint.xs}){
-   width: 108px;
-  }
-
-
-  &:hover{
-    cursor: pointer;
-     border: ${({theme})=>`solid ${theme.icon} 4px`};
-  }
-  
-`
-
-const BtnContent = styled.div`
-  color: ${({theme})=>theme.icon};
-  display: grid;
-  place-content: center;
-  line-height: 1rem;
-  font-size: 1rem;
-`
-
-const BtnTitle = styled.h4`
-  margin-top: .25rem;
-  text-align: center;
-  margin-bottom: 1.25em;
-
-
-  @media screen and (min-width: ${({theme}) => theme.breakpoint.md}){
-   font-size: 1.4rem;
-  }
-`

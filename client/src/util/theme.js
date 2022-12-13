@@ -27,6 +27,8 @@ export const darkTheme = {
     btnText: 'white',  
 
     hoverBG: 'rgba(217, 217, 217, 0.2)',
+    cardText: 'white',
+    textShadow: ''
 
 }
 
@@ -34,6 +36,7 @@ export const darkTheme = {
 export const lightTheme = {
     ...GlobalTheme,
     ...darkTheme,
+    // text: '#52173F',
     // text: '#50357C',
     // accentText: 'rgba(246, 201, 186, 1)',
     inputBG: 'rgba(246, 201, 186, 0.25)',
@@ -43,4 +46,7 @@ export const lightTheme = {
     // button: '#F6C9BA',
     btnText: 'white',  
     // hoverBG: 'rgba(55, 30, 166, 0.2)'
+    cardText: 'black',
+    textShadow: ''
+
 }

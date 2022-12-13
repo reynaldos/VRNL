@@ -17,7 +17,9 @@ import { Link,useLocation } from "react-router-dom";
 export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
   const location = useLocation().pathname.split('/')[1];
 
-  const isViewVideos = useLocation().pathname.split('/').includes('view');
+  const isViewCollection = useLocation().pathname.split('/').includes('collection');
+  const isViewVideo = useLocation().pathname.split('/').includes('video');
+
 
   return (
     <>
@@ -28,7 +30,7 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
         {location !== `` && 
         <>
           {/* go back btn */}
-          <Link to={isViewVideos ? "../.." : ".."} relative="path">
+          <Link to={isViewCollection || isViewVideo ? "../.." : ".."} relative="path">
             <Btn name={'back'}>
               <BtnContent>
                 <IoChevronBack/>
@@ -75,7 +77,7 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
 const Container = styled.nav`
   position: fixed;
   right: 0;
-  bottom: 0;
+  top: 0;
   margin: 1rem;
   height: 3rem;
   /* scale: 1.5; */

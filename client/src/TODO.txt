@@ -1,0 +1,26 @@
+TODO:
+
+- Overall
+    - Connect Backend
+    - Improve Color Scheme
+    - Get Better BG images
+
+- Sign In
+    - help, privacy, terms pages
+
+- Dashbaord
+    - Collection Options
+
+- Video Page
+    - Backdrop Blur
+    - Options Btn for comments
+
+- Rcord Page
+    - Build UI
+
+- Settings Page
+    - Build UI
+
+
+- 404 Page
+    - Build UI

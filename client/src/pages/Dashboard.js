@@ -1,9 +1,12 @@
 import React from 'react';
 import styled from "styled-components";
 import { SideMenu } from '../components/SideMenu';
-import {ViewVideos, MainDisplay} from '../components/DashMainComps';
+import { ViewVideos } from '../components/ViewCollection';
+import { MainDisplay } from '../components/MainDisplay';
 
-import Record from '../pages/Record';
+import Record from './Record';
+import VideoPage from './VideoPage';
+
 
 import {
   Route,
@@ -17,16 +20,29 @@ const Dashboard = ({type}) => {
     <Container>
      
      {location !== 'record' &&
-      <SideMenu type={type} />
-     }
+      <SideMenu type={type} /> }
 
       <Main>
+        {location !== 'record' &&
+        <TitleWrap>
+          <Title>tab 1</Title>
+          <Options/>
+        </TitleWrap>}
+
         <Routes>
           <Route path="/">
             <Route index element={<MainDisplay/>}/>
-            <Route path="view">
-                <Route path=":collectionId" element={<ViewVideos/>}/>
+                <Route path="collection">
+                  <Route path=":collectionId">
+                        <Route index element={<ViewVideos/>}/>
+                          <Route path="video">
+                            <Route path=":videoId" element={<VideoPage/>}/>
+                        </Route>
+                    </Route>             
             </Route>
+
+           
+
              <Route path="record" element={<Record/>}/>
           </Route>
         </Routes>
@@ -38,20 +54,77 @@ const Dashboard = ({type}) => {
 
 export default Dashboard
 
+const Options = () => {
+  return (
+    <OptionsContainer><span/><span/><span/></OptionsContainer>
+  )
+}
+
+
 
 const Container = styled.div`
   width: 100%;
   height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+
 ` 
 
 const Main = styled.main`
-  flex: 3;
-  height: calc(90% - 4rem);
+  flex: 3.5;
+  height: calc(100% - 5rem);
+  margin-top: 5rem;
   width: 100%;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 1rem;
+  position: relative;
+
+  /* outline: 1px solid black; */
 `
 
+const TitleWrap = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
 
+`
 
+const Title = styled.h1`
+  margin: auto .5rem;
+  font-size: 2.5rem;
+
+`
+
+const OptionsContainer = styled.button`
+  height: 50%;
+  aspect-ratio: 1;
+
+  background: ${({theme})=>theme.elementBG};
+	border: solid transparent 2px;
+  border-radius: ${({theme})=>theme.borderRadius};
+
+  border-radius: 100%; 
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  span{
+    width: 4px;
+    height: 4px;
+    background-color: ${({theme})=>theme.icon};
+    border-radius: 100%;
+    margin: auto .075rem;
+  }
+
+   &:hover{
+    	cursor: pointer;
+      border: ${({theme})=>`solid ${theme.icon} 2px`};
+  }
+
+  
+`

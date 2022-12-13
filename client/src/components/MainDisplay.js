@@ -1,15 +1,8 @@
 import React from 'react';
 import styled from "styled-components";
 
-import {PageButton} from '../components/PageButton';
+import {PageButton} from './PageButton';
 import {HiOutlineEye, HiOutlineVideoCamera} from "react-icons/hi2";
-
-
-export const ViewVideos = () => {
-  return (
-    <div>View Videos</div>
-  )
-}
 
 export const MainDisplay = () => {
 
@@ -19,24 +12,40 @@ export const MainDisplay = () => {
       Icon: HiOutlineVideoCamera 
     },
     { name: 'View Collection',
-      path: 'view/test',
+      path: 'collection/testCollectionId',
       Icon: HiOutlineEye
     }]
 
 
   return (
-     <MainWrapper>
-      {btns.map((btn,i)=>{
-      return<PageButton key={i} info={btn}/>
-      })}
+    <Container>
+     <Wrapper>
+        {btns.map((btn,i)=>{
+        return<PageButton key={i} info={btn}/>
+        })}
 
-    </MainWrapper>
+      </Wrapper>
+    </Container>
   )
 }
 
 
 
-const MainWrapper = styled.div`
+
+const Container = styled.section`
+  flex: 2;
+  height: 100%;
+  width: 100%; 
+  height: auto;
+  display: grid;
+  place-content: center;
+  margin: 1rem;
+
+
+`
+
+const Wrapper = styled.div`
+  flex: 2;
   height: 100%;
   width: 100%; 
   height: auto;
@@ -44,7 +53,5 @@ const MainWrapper = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  margin: 1rem;
-  outline: 1px blue solid;
 `
 

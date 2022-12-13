@@ -177,6 +177,7 @@ const Input = styled.input`
   backdrop-filter: ${({theme})=>theme.blur};
   
   font-size:1rem;
+   -webkit-appearance: none;
 
   &::placeholder{
     color:${({theme})=>theme.btnText};  
