@@ -125,9 +125,15 @@ const Record = () => {
     videoCaptureRef.current.srcObject = null;
   }
 
+  const handleFileUpload = ()=>{
+    
+  }
+
   const handleVideoPost = () =>{
     console.log('post video')
   }
+
+
   
   return (
     <Container>
