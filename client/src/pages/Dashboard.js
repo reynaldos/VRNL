@@ -7,6 +7,9 @@ import { MainDisplay } from '../components/MainDisplay';
 import Record from './Record';
 import VideoPage from './VideoPage';
 
+import { HiOutlineVideoCamera} from "react-icons/hi2";
+
+
 
 import {
   Route,
@@ -23,11 +26,19 @@ const Dashboard = ({type}) => {
       <SideMenu type={type} /> }
 
       <Main>
-        {location !== 'record' &&
+        {location !== 'record' ?
+        // defaut title
         <TitleWrap>
           <Title>tab 1</Title>
           <Options/>
-        </TitleWrap>}
+        </TitleWrap>:
+
+        // record title
+         <TitleWrap>
+          <HiOutlineVideoCamera size={48} style={{paddingTop:'.5rem'}}/>
+          <Title>tab 1</Title>
+        </TitleWrap>
+        }
 
         <Routes>
           <Route path="/">

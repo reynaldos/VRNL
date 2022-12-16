@@ -1,12 +1,13 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import styled from "styled-components";
 
 import { Link,useLocation } from "react-router-dom";
+import Modal from '../components/Modal';
 
 
-const SignIn = () => {
+const SignIn = ({openModal}) => {
   const location = useLocation().pathname.split('/').pop();
-  
+      const modalRef = useRef();
 
   return (
     <Container>
@@ -22,10 +23,12 @@ const SignIn = () => {
      
      {/* BOTTOM LINKS */}
       <More>
-        <Links>Help</Links>
+        <Links onClick={()=>{modalRef.current.open('hello word')}}>Help</Links>
         <Links>Privacy</Links>
         <Links>Terms</Links>
       </More>
+
+        <Modal ref={modalRef}/>
     </Container>
   )
 }
@@ -34,15 +37,29 @@ export default SignIn
 
 
 const SignInView = () => {
+
+  const [username, setUsername] = useState('');
+  const [password, setpassword] = useState('');
+
+  const handleSignIn = async (e) =>{
+      e.preventDefault();
+      try {
+        const res = await axios.post("/auth/signin", {username,password});
+      } catch (error) {
+        
+      }
+  }
+
+
   return (
     <Wrapper>
       <Title>Welcome to<br/><span style={{textTransform:'uppercase'}}>VRNL!</span></Title>
       <SubTitle>Sign In</SubTitle>
-      <Input placeholder='username'/>
-      <Input type="password" placeholder='password'/>
+      <Input placeholder='username' onChange={e=>setUsername(e.target.value)}/>
+      <Input type="password" placeholder='password' onChange={e=>setpassword(e.target.value)}/>
 
       <Link to={'/'}>
-        <Button>Sign In</Button>
+        <Button onClick={handleSignIn}>Sign In</Button>
       </Link>
 
       <div style={{flex:'2'}}></div>
@@ -56,14 +73,21 @@ const SignInView = () => {
 }
 
 const SignUpView = () => {
+
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [email, setEmail] = useState('');
+
+
   return (
    <Wrapper>
       <Title>Welcome to<br/><span style={{textTransform:'uppercase'}}>VRNL!</span></Title>
       <SubTitle>Sign Up</SubTitle>
-      <Input placeholder='username'/>
-      <Input placeholder='email'/>
-      <Input type="password" placeholder='password'/>
-      <Input type="password" placeholder='re-enter password'/>
+      <Input placeholder='username' onChange={e=>setUsername(e.target.value)}/>
+      <Input placeholder='email' onChange={e=>setEmail(e.target.value)}/>
+      <Input type="password" placeholder='password' onChange={e=>setPassword(e.target.value)}/>
+      <Input type="password" placeholder='re-enter password' onChange={e=>setConfirmPassword(e.target.value)}/>
 
       <Button>Sign Up</Button>
 

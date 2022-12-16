@@ -6,7 +6,7 @@ TODO:
     - Get Better BG images
 
 - Sign In
-    - help, privacy, terms pages
+    - help, privacy, terms modal
 
 - Dashbaord
     - Collection Options
@@ -16,7 +16,11 @@ TODO:
     - Options Btn for comments
 
 - Rcord Page
-    - Build UI
+   - give prompt funcitonality
+   - fix recording funcitonality
+   - video file upload funcitonality
+   - thumbnail funcitonality
+   - Backdrop Blur
 
 - Settings Page
     - Build UI
@@ -24,3 +28,6 @@ TODO:
 
 - 404 Page
     - Build UI
+
+
+ - Build UI✅
