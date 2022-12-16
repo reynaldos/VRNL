@@ -12,14 +12,25 @@ import {
     HiOutlineUser
   } from "react-icons/hi";
 
-import { Link,useLocation } from "react-router-dom";
+import { Link,useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../redux/userSlice";
 
 export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const location = useLocation().pathname.split('/')[1];
 
   const isViewCollection = useLocation().pathname.split('/').includes('collection');
   const isViewVideo = useLocation().pathname.split('/').includes('video');
 
+  const handleLogout = (e) =>{
+    e.preventDefault();
+    dispatch(logout());
+     navigate('/signin');
+  }
 
   return (
     <>
@@ -59,12 +70,9 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
         </Btn>
 
         {/* log out */}
-        <Link to={'signin'}
-          style={{textDecoration: 'none'}}>
-          <Btn name={'Log Out'}>
+          <Btn name={'Log Out'} onClick={handleLogout}>
             <BtnContent>Log Out</BtnContent>
           </Btn>
-        </Link>
       </Wrapper>
     </Container>
   

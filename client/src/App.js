@@ -13,6 +13,8 @@ import {
   BrowserRouter,
   Routes,
 } from "react-router-dom";
+import { useSelector } from 'react-redux';
+
 
 import SignIn from "./pages/SignIn";
 import Home from "./pages/Home";
@@ -21,7 +23,7 @@ import Settings from "./pages/Settings";
 
 function App() {
 
-
+  const { currentUser } = useSelector(state=>state.user);
    const [darkMode, setDarkMode] = useState(false);
 
 
@@ -32,18 +34,21 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/">
-                <Route index element={<Home/>}/>
-                <Route path="myvournals/*" element={<Dashboard type={'myvournals'}/>}/>
-                <Route path="subscribers/*" element={<Dashboard type={'subscribers'}/>}/>
-                <Route path="settings" element={<Settings/>}/>
                 <Route path="signin" element={<SignIn/>}/>
                 <Route path="signup" element={<SignIn/>}/>
                 <Route path="forgot" element={<SignIn/>}/>
 
+
+               {currentUser &&<> <Route index element={<Home/>}/>
+                <Route path="myvournals/*" element={<Dashboard type={'myvournals'}/>}/>
+                <Route path="subscribers/*" element={<Dashboard type={'subscribers'}/>}/>
+                <Route path="settings" element={<Settings/>}/></>}
+                <Route path="*" element={<>Error</>}/>
+
             </Route>
           </Routes>
 
-        <BottomNavbar isDarkMode={darkMode} setDarkMode={setDarkMode}/>
+        {currentUser && <BottomNavbar isDarkMode={darkMode} setDarkMode={setDarkMode}/>}
 
         </BrowserRouter>
       </Container>
@@ -61,6 +66,7 @@ const Container = styled.div`
   color: ${({theme})=>theme.text};
 
  background-size: cover;
- /* background-repeat: no-repeat; */
+ overflow: auto;
+ background-repeat: repeat-y;
  background-position: center;
 `

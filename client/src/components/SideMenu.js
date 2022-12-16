@@ -16,6 +16,8 @@ import { IoAdd } from "react-icons/io5";
 
 export const SideMenu = ({type}) => {
 
+  
+
   return (
   <Container>
     <Wrapper>

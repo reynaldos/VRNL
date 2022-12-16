@@ -6,7 +6,7 @@ import { createError } from "../error.js";
 
 // CREATE A USER
 export const signup = async(req,res, next) =>{
-    console.log(req.body);
+    // console.log(req.body);
     try{
         
         // encrypt password 
@@ -24,7 +24,7 @@ export const signup = async(req,res, next) =>{
 
 // SIGN IN
 export const signin = async(req,res, next) =>{
-    console.log(req.body);
+
     try{
         
        const user = await User.findOne({name: req.body.name});
@@ -48,5 +48,35 @@ export const signin = async(req,res, next) =>{
     }catch(err){
         // fire off error handling
         next(err);
+    }
+}
+
+
+export const googleAuth = async (req, res, next) =>{
+    try{
+        const user = await User.findOne({email: req.body.email});
+
+        // check if google user exists
+        if(user){
+            const token = jwt.sign({id:user._id}, process.env.JWT);
+             res.cookie("access_token", token,{
+                httpOnly: true
+            }).status(200).json(user._doc);
+        
+        }else{ // create new user with google info
+            const newUser = new User({
+                ...req.body,
+                fromGoogle: true
+            });
+
+            const savedUser = await newUser.save();
+            const token = jwt.sign({id:savedUser._id}, process.env.JWT);
+             res.cookie("access_token", token,{
+                httpOnly: true
+            }).status(200).json(savedUser._doc);
+        }
+    }
+    catch(err){
+        next(err); 
     }
 }

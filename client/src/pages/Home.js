@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from "styled-components";
 import {PageButton} from '../components/PageButton';
 
@@ -7,6 +7,10 @@ import {
     HiOutlineUserGroup,
     HiOutlineUser
   } from "react-icons/hi";
+
+
+import { useNavigate } from "react-router-dom";
+import { useSelector } from 'react-redux';
 
   
 const Btns = [
@@ -28,11 +32,27 @@ const Btns = [
 ]
 const Home = () => {
 
+  const { currentUser } = useSelector(state=>state.user);
+  const navigate = useNavigate();
+
+
+  useEffect(() => {
+    
+    if(!currentUser){
+        navigate('/signin');
+    }
+  
+    return () => {
+      
+    }
+  }, []);
+  
+
   return (
     <>
       <Title>VRNL</Title>
       <Container>
-        <UserTag>hey reysanxez!</UserTag>
+        <UserTag>hey {currentUser.name}!</UserTag>
 
         <Wrapper>
           {Btns.map((btn, i)=>{

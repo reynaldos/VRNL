@@ -4,12 +4,15 @@ TODO:
     - Connect Backend
     - Improve Color Scheme
     - Get Better BG images
+    - Screen height queries
 
 - Sign In
     - help, privacy, terms modal
 
 - Dashbaord
     - Collection Options
+    - Collection Creation UI
+    - side bar view for mobile
 
 - Video Page
     - Backdrop Blur

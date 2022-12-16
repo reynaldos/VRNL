@@ -1,13 +1,20 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import styled from "styled-components";
+import axios from "axios";
 
-import { Link,useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
+
+import { Link,useLocation, useNavigate } from "react-router-dom";
+import {auth , provider } from '../firebase';
+import { signInWithPopup } from "firebase/auth";
+
 import Modal from '../components/Modal';
 
 
 const SignIn = ({openModal}) => {
   const location = useLocation().pathname.split('/').pop();
-      const modalRef = useRef();
+  const modalRef = useRef();
 
   return (
     <Container>
@@ -37,17 +44,44 @@ export default SignIn
 
 
 const SignInView = () => {
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState('');
   const [password, setpassword] = useState('');
+  const dispatch = useDispatch();
 
   const handleSignIn = async (e) =>{
       e.preventDefault();
+      dispatch(loginStart());
+
       try {
-        const res = await axios.post("/auth/signin", {username,password});
+        const res = await axios.post("/auth/signin", {name: username, password});
+        dispatch(loginSuccess(res.data));
+        navigate('/');
+          
       } catch (error) {
-        
+        dispatch(loginFailure());
+
       }
+  }
+
+  const signInWithGoogle = async () => {
+
+      dispatch(loginStart());
+      signInWithPopup(auth, provider)
+        .then(async (result)=>{
+          const res = await axios.post("/auth/google",{
+              name: result.user.displayName,
+              email: result.user.email,
+              img: result.user.photoURL,
+          });
+        
+          dispatch(loginSuccess(res.data));
+          navigate('/');
+        
+      }).catch((err)=>{
+        dispatch(loginFailure());
+      });
   }
 
 
@@ -58,9 +92,10 @@ const SignInView = () => {
       <Input placeholder='username' onChange={e=>setUsername(e.target.value)}/>
       <Input type="password" placeholder='password' onChange={e=>setpassword(e.target.value)}/>
 
-      <Link to={'/'}>
-        <Button onClick={handleSignIn}>Sign In</Button>
-      </Link>
+      <Button onClick={handleSignIn}>Sign In</Button>
+      <SubTitle style={{lineHeight:'1.2rem'}}>or</SubTitle>
+      <Button onClick={signInWithGoogle}>Sign In with Google</Button>
+
 
       <div style={{flex:'2'}}></div>
 
