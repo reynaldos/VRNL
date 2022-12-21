@@ -4,15 +4,15 @@ import styled from "styled-components";
 import {PageButton} from './PageButton';
 import {HiOutlineEye, HiOutlineVideoCamera} from "react-icons/hi2";
 
-export const MainDisplay = () => {
+export const MainDisplay = ({selectedTab}) => {
 
   const btns = [
     { name: 'Record',
-      path: 'record',
+      path: `record/${selectedTab._id}`,
       Icon: HiOutlineVideoCamera 
     },
     { name: 'View Collection',
-      path: 'collection/testCollectionId',
+      path: `collection/${selectedTab._id}`,
       Icon: HiOutlineEye
     }]
 
