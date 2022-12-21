@@ -25,6 +25,8 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
 
   const isViewCollection = useLocation().pathname.split('/').includes('collection');
   const isViewVideo = useLocation().pathname.split('/').includes('video');
+  const record = useLocation().pathname.split('/').includes('record');
+
 
   const handleLogout = (e) =>{
     e.preventDefault();
@@ -41,7 +43,7 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
         {location !== `` && 
         <>
           {/* go back btn */}
-          <Link to={isViewCollection || isViewVideo ? "../.." : ".."} relative="path">
+          <Link to={isViewCollection || isViewVideo || record ? "../.." : ".."} relative="path">
             <Btn name={'back'}>
               <BtnContent>
                 <IoChevronBack/>

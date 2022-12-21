@@ -5,9 +5,14 @@ TODO:
     - Improve Color Scheme
     - Get Better BG images
     - Screen height queries
+    - Use redux for data loading states
+    - Safari loading not spinning
 
 - Sign In
+    - sign up form validation
     - help, privacy, terms modal
+    - forgot password funcitonality
+    - toggle hide password
 
 - Dashbaord
     - Collection Options
@@ -33,4 +38,6 @@ TODO:
     - Build UI
 
 
- - Build UI✅
+COMPLETE:
+Build UI✅
+sign up funcitonality✅

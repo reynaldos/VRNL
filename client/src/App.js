@@ -12,6 +12,7 @@ import {
   // Link,
   BrowserRouter,
   Routes,
+  Navigate
 } from "react-router-dom";
 import { useSelector } from 'react-redux';
 
@@ -34,15 +35,18 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/">
+                  <Route index element={currentUser ? <Home/> : <Navigate to="/signin" />}/>
                 <Route path="signin" element={<SignIn/>}/>
                 <Route path="signup" element={<SignIn/>}/>
                 <Route path="forgot" element={<SignIn/>}/>
 
+              
 
-               {currentUser &&<> <Route index element={<Home/>}/>
-                <Route path="myvournals/*" element={<Dashboard type={'myvournals'}/>}/>
-                <Route path="subscribers/*" element={<Dashboard type={'subscribers'}/>}/>
-                <Route path="settings" element={<Settings/>}/></>}
+               {currentUser &&<>
+                  <Route path="myvournals/*" element={<Dashboard type={'myvournals'}/>}/>
+                  <Route path="subscribers/*" element={<Dashboard type={'subscribers'}/>}/>
+                  <Route path="settings" element={<Settings/>}/>
+                </>}
                 <Route path="*" element={<>Error</>}/>
 
             </Route>
