@@ -10,7 +10,7 @@ router.post("/", verifyToken, addComment);
 // DELETE COMMENT
 router.delete("/:id", verifyToken, deleteComment);
 
-// GET COMMENT
+// GET COMMENTS
 router.get("/:videoId", verifyToken, getComment);
 
 export default router; 

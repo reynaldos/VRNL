@@ -1,6 +1,8 @@
 import User from "../models/User.js";
 import Video from "../models/Video.js";
+import Collection from "../models/Collection.js";
 import { createError } from "../error.js";
+
 
 // CREATE VIDEO
 export const addVideo = async (req, res, next)=>{
@@ -82,15 +84,14 @@ export const addView = async (req, res, next)=>{
 // GET VIDEOS OF SUBSCRIBED
 export const sub = async (req, res, next)=>{
     try {
-        const user = await User.findById(req.user.id);
-        const subscribedChannels = user.subscriberedUsers;
+        // const user = await User.findById(req.user.id);
+        // const subscribedChannels = user.subscriberedUsers;
+        const collection = await Collection.findById(req.params.collectionid);
+        if(!collection) return next(createError(404, 'Collection not found!'));
+        if(!collection.subscriberedUsers.includes(req.user.id))return next(createError(403, 'You most be part of collection to access videos!'));
 
-        // loop through subscribed to list and return model of Video
-        const list = await Promise.all(
-            subscribedChannels.map((channelId)=>{
-                return Video.find({userId: channelId});
-            })
-        );
+        // return array Video models associated withh collection id
+        const list = await Video.find({collectionId: req.params.collectionid});
 
         res.status(200).json(list.flat().sort((a,b)=> b.createdAt - a.createdAt));
     } catch (error) {

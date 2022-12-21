@@ -6,7 +6,7 @@ import { createError } from "../error.js";
 
 // CREATE A USER
 export const signup = async(req,res, next) =>{
-    // console.log(req.body);
+    console.log(req.body);
     try{
         
         // encrypt password 
@@ -24,7 +24,7 @@ export const signup = async(req,res, next) =>{
 
 // SIGN IN
 export const signin = async(req,res, next) =>{
-
+    console.log(req.body);
     try{
         
        const user = await User.findOne({name: req.body.name});

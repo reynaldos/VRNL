@@ -9,7 +9,6 @@ import { query } from "express";
 
 // UPDATE USER
 export const update = async (req, res, next) => { 
-
     // check if current user matches user to update
     if(req.params.id === req.user.id) {
         try {

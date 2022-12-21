@@ -28,7 +28,7 @@ export const darkTheme = {
 
     hoverBG: 'rgba(217, 217, 217, 0.2)',
     cardText: 'white',
-    textShadow: ''
+    textShadow: 'drop-shadow(0px 0px 3px #50357C)'
 
 }
 
@@ -47,6 +47,5 @@ export const lightTheme = {
     btnText: 'white',  
     // hoverBG: 'rgba(55, 30, 166, 0.2)'
     cardText: 'black',
-    textShadow: ''
 
 }

@@ -30,6 +30,9 @@ const UserSchema = new mongoose.Schema({
      subscriberedGroups:{
         type: [String],
     },
+     favorites:{
+        type: [String],
+    },
     fromGoogle:{
         type: Boolean,
         default: false

@@ -19,7 +19,7 @@ router.get("/find/:id", verifyToken, getVideo);
 // ADD VIEW COUNT OF VIDEO
 router.put("/view/:id", verifyToken, addView);
 
-// GET VIDEOS OF SUBSCRIBED
-router.get("/sub", verifyToken, sub)
+// GET VIDEOS OF SUBSCRIBED collection
+router.get("/sub/:collectionid", verifyToken, sub)
 
 export default router; 
