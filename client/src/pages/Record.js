@@ -165,7 +165,7 @@ const Record = () => {
 
           {/* thumbnail and save btns */}
           <VideoBtnWrap>
-          <Link to={'../'} style={{textDecoration:'none', color:'inherit'}}><Btn>Cancel</Btn></Link>
+          <Link to={'../..'} style={{textDecoration:'none', color:'inherit'}}><Btn>Cancel</Btn></Link>
           <Btn type='reset'>restart</Btn>
           <BtnLink
               href=''
