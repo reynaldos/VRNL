@@ -1,13 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    currentVideo: null,
+    currentCollection: [],
     loading: false,
     error: false
 }
 
-export const videoSlice = createSlice({
-    name: 'video',
+export const colllectionSlice = createSlice({
+    name: 'collection',
     initialState,
     reducers:{
        fetchStart: (state)=>{
@@ -15,7 +15,7 @@ export const videoSlice = createSlice({
        },
        fetchSuccess: (state, action)=>{
         state.loading = false;
-        state.currentVideo = action.payload;
+        state.currentCollection = action.payload;
 
        } ,
        fetchFailure: (state)=>{
@@ -28,6 +28,6 @@ export const videoSlice = createSlice({
     }
 });
 
-export const { fetchStart, fetchSuccess, fetchFailure } = videoSlice.actions;
+export const { fetchStart, fetchSuccess, fetchFailure } = colllectionSlice.actions;
 
-export default videoSlice.reducer;
+export default colllectionSlice.reducer;
