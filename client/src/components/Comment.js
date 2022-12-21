@@ -1,26 +1,30 @@
-import React from "react";
+import React, {useRef, useEffect, useState} from "react";
 import styled from "styled-components";
 
+import { useSelector } from 'react-redux';
+import {format} from 'timeago.js';
 
-export const CommentSection = () =>{
+
+
+export const CommentSection = ({comments}) =>{
   return(
       <CommentsContainer style={{maxHeight:'100%',height:'100%'}}>
-        <Comment/>
-        <Comment/>
-        <Comment/>
-        <Comment/>
-        <Comment/>
-        <Comment/>
-        <Comment/>
-        <Comment/>
+        {comments.map((value, index)=>{
+          return <Comment key={index} data={value}/>
+        })}
 
-
+        {comments.length === 0 && 
+         <Container>
+        <Text>No Comments </Text>
+     
+    </Container>}
       </CommentsContainer>
   )
 
 }
 
-const Comment = () => {
+const Comment = ({data}) => {
+  
   return (
     <Container>
       <Details>
@@ -31,7 +35,7 @@ const Comment = () => {
         </Name>
          </Details>
         <Text>
-            Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium 
+            {data}
         </Text>
      
     </Container>
@@ -40,9 +44,35 @@ const Comment = () => {
 
 
 export const NewComment = () =>{
+
+  const { currentUser } = useSelector(state=>state.user);
+  
+
+  const inputRef = useRef();
+  const [isActive, setIsActive] = useState(false);
+  const [comment, setComment] = useState('');
+
+
    return <NewCommentContainer>
-        <Avatar src="http://s3.amazonaws.com/37assets/svn/765-default-avatar.png" />
-        <Input placeholder="Add a comment..." type={'text'}/>
+      <Details>
+        <Avatar src={currentUser.image} />
+         <Name style={{padding:'12px 0px'}}>{currentUser.name}</Name>
+
+          <div style={{flex:'2',width:'100%'}}></div>
+
+         <BtnHolder active={isActive}>
+             <Button  inverse={true}>Cancel</Button>
+         <Button active={comment.trim().length > 0}>Comment</Button>
+         </BtnHolder>
+        
+        
+         </Details>
+        <Input ref={inputRef} 
+                placeholder="Add a comment..." 
+                type={'text'}
+                onChange={e=>setComment(e.target.value)}
+                 onFocus={() => setIsActive(true)}
+                onBlur={() => setIsActive(false)}/>
     </NewCommentContainer>
 }
 
@@ -112,13 +142,15 @@ const Avatar = styled.img`
   width: 30px;
   height: 30px;
   border-radius: 50%;
+  object-fit: cover;
 `;
 
 const Details = styled.div`
+  width: 100%;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 10px;
+  gap: 10px;  
   color: ${({ theme }) => theme.text};
 `
 const Name = styled.span`
@@ -142,7 +174,9 @@ const Text = styled.span`
 const NewCommentContainer = styled.div`
   flex: 2;
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
+  justify-content: flex-start;
   gap: 10px;
   background: ${({theme})=>theme.elementBG};
   border-radius: ${({theme})=>theme.borderRadius};
@@ -159,7 +193,7 @@ const NewCommentContainer = styled.div`
 const Input = styled.textarea`
   flex: 1;
   height: calc(100% - 1rem);
-  width: 100%;
+  width: calc(100% - 1rem);
   padding: 10px;
   color:${({theme})=>theme.btnText};
 
@@ -174,9 +208,41 @@ const Input = styled.textarea`
   
   font-size:1rem;
   resize: none;
+   -webkit-appearance: none;
 
   &::placeholder{
     color:${({theme})=>theme.btnText};  
     resize: none; 
   }
 `;
+
+const BtnHolder = styled.div`
+  display: ${({active})=>(active ? 'block' : 'none')};
+`
+
+const Button = styled.button`
+  /* font-size:1rem; */
+  color:${({theme})=>theme.btnText};  
+  background: ${({theme, inverse,active})=> !inverse && active ? theme.button : 'transparent'};
+	/* border: ${({theme})=>`solid transparent  ${theme.borderThickness}`}; */
+  border-color: transparent;
+	border-width: 2px;
+  border-style: solid;
+  margin-left: 10px;
+
+
+  border-radius: ${({theme})=>theme.borderRadius};
+  backdrop-filter: ${({theme})=>theme.blur};
+  padding: 5px 10px;
+
+
+  &:hover{
+    cursor: pointer;
+	   border-color: white;
+  }
+
+  &:first{
+     backdrop-filter: none;
+  }
+
+`

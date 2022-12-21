@@ -1,20 +1,56 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from "styled-components";
 import { NewComment, CommentSection } from '../components/Comment.js';
 import Thumbnail from '../imgs/thumbnail.png';
 
+import axios from 'axios';
+import { useSelector } from 'react-redux';
+import {format} from 'timeago.js';
+
+
+import {
+ useLocation
+} from "react-router-dom";
+
 
 const VideoPage = () => {
+  const { currentUser } = useSelector(state=>state.user);
+  const [ comments, setComments ] = useState([]);
+  const [ videoInfo, setVideoInfo ] = useState({});
+
+  
+  const videoId = useLocation().pathname.split('/').pop();
+
+ useEffect(()=>{
+
+     const videoData = async () =>{
+      try {
+
+        const videoResult = await axios.get(`/videos/find/${videoId}`);  
+        const userNameResult = await axios.get(`/users/find/${videoResult.data.userId}`);
+        setVideoInfo({...videoResult.data, username: userNameResult.data.name});
+
+        const foundComments = await axios.get(`/comments/${videoId}`);
+        setComments(foundComments.data); 
+      } catch (error) {
+        
+      }
+    }
+    videoData();
+  },[]);
+
   return (
     <Container>
-      <Title>Video 1</Title>
-      <SubTitle>reysanxez</SubTitle>
+      <Title>{videoInfo.title}</Title>
+      <SubTitle>{videoInfo.username}</SubTitle>
+      <SubTitle style={{color:'rgba(217, 217, 217,1)'}}>{format(videoInfo.createdAt)}</SubTitle>
+
       <Wrapper>
 
         {/* VIDEO CONTAINER */}
         <VideoContainer>
             <VideoWrapper>
-                <Video src={''} poster={Thumbnail} controls/>
+                <Video src={videoInfo.videoUrl} poster={videoInfo.imgUrl} controls/>
 
                  {/* NEW COMMENT SECTION */}
                 <NewCommentWrap>
@@ -31,7 +67,7 @@ const VideoPage = () => {
         <VideoContainer>
             <VideoWrapper>
                 <SubTitle style={{marginBottom:'0rem'}}>Comments</SubTitle>
-                <CommentSection/>
+                <CommentSection comments={comments}/>
             </VideoWrapper>
         </VideoContainer>
 
@@ -122,11 +158,18 @@ const Wrapper = styled.div`
 const Title = styled.h2`
   align-self: flex-start;
   line-height: 1rem;
+  margin-top: 1rem;
+  margin-bottom: .5rem;
+
 `
 
-const SubTitle = styled.h3`
+const SubTitle = styled.h4`
   align-self: flex-start;
   margin-bottom: 0rem;
+  font-weight: 100;
+  color:white;
+  line-height: 1.2rem;
+
 `
 
 const VideoContainer = styled.div`
@@ -159,6 +202,8 @@ const Video = styled.video`
   object-position: center;
   opacity: .55;
   max-height: 600px;
+
+
 `
 
 const NewCommentWrap = styled.div`

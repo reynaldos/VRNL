@@ -1,5 +1,7 @@
-import React from 'react';
+import React,{ useEffect, useState} from 'react';
 import styled from "styled-components";
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 import { 
   HiStar,
@@ -7,14 +9,14 @@ import {
 } from "react-icons/hi2";
 
 import { IoAdd } from "react-icons/io5";
-
 // import { 
 //     HiOutlineUserGroup,
 //     HiOutlineUser
 //  } from "react-icons/hi";
 
 
-export const SideMenu = ({type}) => {
+export const SideMenu = ({type, collections,tabState }) => {
+
 
   
 
@@ -26,15 +28,9 @@ export const SideMenu = ({type}) => {
       </TitleWrap>
      
         <TabsWrap>
-          <Tab>
-            <TabIcon><HiStar size={24}/></TabIcon>
-            <TabText>Tab 1</TabText>
-          </Tab>
-
-           <Tab>
-             <TabIcon><HiOutlineStar size={24}/></TabIcon>
-            <TabText>Tab 2</TabText>
-          </Tab>
+            {collections.map((value, index)=>{
+                return <TabComp key={index} collectionData={value} tabState={tabState}/>
+            })}
 
            <Tab>
              <TabIcon><IoAdd size={24} style={{color:``}}/></TabIcon>
@@ -45,6 +41,35 @@ export const SideMenu = ({type}) => {
 
       </Wrapper>
     </Container>
+  )
+}
+
+
+const TabComp = ({collectionData, tabState}) =>{
+
+  const {selectedTab, updateTab} = tabState;
+
+
+  const { currentUser } = useSelector(state=>state.user);
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(()=>{
+    if (currentUser.favorites.includes(collectionData._id)){
+      setIsFavorite(true);
+    }
+
+  },[]);
+
+
+  return (
+     <Tab  onClick={()=>{updateTab(collectionData)}}
+     isSelected={selectedTab._id === collectionData._id}>
+        <TabIcon>
+         {isFavorite ? <HiStar size={24}/> :
+          <HiOutlineStar size={24}/>} 
+          </TabIcon>
+      <TabText>{collectionData.title}</TabText>
+    </Tab>
   )
 }
 
@@ -108,9 +133,11 @@ const Tab = styled.li`
   display:flex;
   align-items: center;
 
-   &:hover{
+  background-color: ${({isSelected})=>(isSelected ? ' rgba(255,255,255, .25)': 'inherit')};
+
+  &:hover{
     cursor: pointer;
-    background-color: rgba(255,255,255, .25)
+    background-color: rgba(255,255,255, .35);
   }
 
 `

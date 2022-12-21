@@ -1,21 +1,43 @@
-import React from 'react';
+import React, { useState,useEffect } from 'react';
 import styled from "styled-components";
 
 import Thumbnail from '../imgs/thumbnail.png';
 import { Link } from "react-router-dom";
 
+import {format} from 'timeago.js';
 
-export const VideoCard = () =>{
+import axios from 'axios';
+
+
+export const VideoCard = ({data}) =>{
+
+  const [username,setUsername] = useState('');
+
+  useEffect(() => {
+   
+    const fetchUsername = async()=>{
+      const res = await axios.get(`/users/find/${data.userId}`)
+      const userNameResult = res.data.name;
+      setUsername(userNameResult);
+    }
+    
+    fetchUsername();
+    return () => {}
+  }, [])
+  
+
+
   return(
     
       <CardContainer>
-        <Link to='video/testVideoId'  style={{textDecoration: 'none', color: 'inherit'}}>
-        <CardImage src={Thumbnail}/>
+        <Link to={`../../video/${data._id}`}  style={{textDecoration: 'none', color: 'inherit'}}>
+        <CardImage src={data.imgUrl}/>
         <Details>
-            <CardTitle>Video 1</CardTitle>
-            <CardSubTitle>reysanxez</CardSubTitle>
+            <CardTitle>{data.title}</CardTitle>
+            <CardSubTitle>{username}</CardSubTitle>
             <span style={{flex:'2'}}/>
-            <CardDate>1 day ago</CardDate>
+            {/* <CardDate>1 day ago</CardDate> */}
+            <CardDate>{format(data.createdAt)}</CardDate>
 
         </Details>
         </Link>
@@ -29,7 +51,7 @@ export const VideoCard = () =>{
 
 const CardContainer = styled.div`
   position: relative;
-  /* height: 160px; */
+  max-height: 250px;
   width: 30%;
   min-width: 215px;
   aspect-ratio: 1.3;
@@ -51,8 +73,8 @@ const CardContainer = styled.div`
 
 
     img{
-      filter: blur(0px);
-      -webkit-filter: blur(0px);
+      filter: blur(4px);
+      -webkit-filter: blur(4px);
       scale: 1;
 
     }
@@ -81,19 +103,33 @@ const Details = styled.div`
  flex-direction: column;
  height: calc(100% - 1rem - 2px);
  z-index: 5;
- /* filter: drop-shadow(-2px 2px 5px #000); */
- text-shadow: 1px 1px 10px #000;
+ filter:  ${({theme})=>theme.textShadow}; 
+ /* text-shadow: ${({theme})=>theme.textShadow};  */
+/* -webkit-filter: ; */
  /* color: ${({theme})=>theme.cardText}; ; */
 
 `
 
 const CardTitle = styled.h3`
- z-index: 2;
+  z-index: 2;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
 
+  width: 100%;
+  max-height: 3.5rem;
 `
 
 const CardSubTitle = styled.h5`
  z-index: 2;
+ text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+
 
 `
 
@@ -115,8 +151,8 @@ const CardImage = styled.img`
   scale: 1.05;
   
 
-  filter: blur(4px);
-  -webkit-filter: blur(4px);
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
   transition: filter ease-in .2s, scale ease-in .2s;
 
 
