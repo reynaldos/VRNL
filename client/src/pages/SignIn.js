@@ -45,10 +45,12 @@ export default SignIn
 
 const SignInView = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [username, setUsername] = useState('');
   const [password, setpassword] = useState('');
-  const dispatch = useDispatch();
+  const [hidePassword, setHidePassword] = useState(true);
+
 
   const handleSignIn = async (e) =>{
       e.preventDefault();
@@ -90,9 +92,10 @@ const SignInView = () => {
       <Title>Welcome to<br/><span style={{textTransform:'uppercase'}}>VRNL!</span></Title>
       <SubTitle>Sign In</SubTitle>
       <Input placeholder='username' onChange={e=>setUsername(e.target.value)}/>
-      <Input type="password" placeholder='password' onChange={e=>setpassword(e.target.value)}/>
+      <Input type={hidePassword ? "password" : "text"} placeholder='password'
+            onChange={e=>setpassword(e.target.value)}/>
 
-      <Button onClick={handleSignIn}>Sign In</Button>
+      <Button type='submit' onClick={handleSignIn}>Sign In</Button>
       <SubTitle style={{lineHeight:'1.2rem'}}>or</SubTitle>
       <Button onClick={signInWithGoogle}>Sign In with Google</Button>
 
@@ -108,11 +111,30 @@ const SignInView = () => {
 }
 
 const SignUpView = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [email, setEmail] = useState('');
+
+
+  const handleNewUser = async (e) =>{
+    e.preventDefault();
+    dispatch(loginStart());
+
+    try {
+      const newUserRes = await axios.post("/auth/signup", {name: username, email, password});
+      const logInres = await axios.post("/auth/signin", {name: username, password});
+      dispatch(loginSuccess(logInres.data));
+      navigate('/');
+        
+    } catch (error) {
+      dispatch(loginFailure());
+
+    }
+  }
 
 
   return (
@@ -124,7 +146,7 @@ const SignUpView = () => {
       <Input type="password" placeholder='password' onChange={e=>setPassword(e.target.value)}/>
       <Input type="password" placeholder='re-enter password' onChange={e=>setConfirmPassword(e.target.value)}/>
 
-      <Button>Sign Up</Button>
+      <Button onClick={handleNewUser}>Sign Up</Button>
 
       <div style={{flex:'2'}}></div>
 
@@ -224,6 +246,9 @@ const Input = styled.input`
   width: 80%;
   padding: 10px;
   color:${({theme})=>theme.btnText};
+  text-transform: none;
+
+
   background: ${({theme})=>theme.inputBG};
 	/* border: ${({theme})=>{ return `solid ${theme.icon} ${theme.borderThickness}}`}}; */
 	border-color: ${({theme})=> theme.icon };
