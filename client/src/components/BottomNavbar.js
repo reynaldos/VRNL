@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect, useState} from 'react';
 import styled from "styled-components";
 import { 
   IoChevronBack,
@@ -13,19 +13,36 @@ import {
   } from "react-icons/hi";
 
 import { Link,useLocation, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/userSlice";
+
 
 export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { currentVideo } = useSelector(state=>state.video);
 
-  const location = useLocation().pathname.split('/')[1];
 
-  const isViewCollection = useLocation().pathname.split('/').includes('collection');
-  const isViewVideo = useLocation().pathname.split('/').includes('video');
-  const record = useLocation().pathname.split('/').includes('record');
+  const pathList =  useLocation().pathname.split('/');
+  const location = pathList[1];
+  const isViewCollection = pathList.includes('collection');
+  const isViewVideo = pathList.includes('video');
+  const record = pathList.includes('record');
+
+ const [backPath, setBackPath] = useState('');
+
+  useEffect(()=>{
+
+    if(isViewCollection || record){
+      setBackPath("../..");
+    } else if(isViewVideo){
+      setBackPath(`/${location}/collection/${currentVideo.collectionId}`);
+    }else{
+      setBackPath("..");
+    }
+
+  },[pathList])
 
 
   const handleLogout = (e) =>{
@@ -43,7 +60,7 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
         {location !== `` && 
         <>
           {/* go back btn */}
-          <Link to={isViewCollection || isViewVideo || record ? "../.." : ".."} relative="path">
+          <Link to={backPath} relative="path">
             <Btn name={'back'}>
               <BtnContent>
                 <IoChevronBack/>
