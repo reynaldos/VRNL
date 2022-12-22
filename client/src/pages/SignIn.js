@@ -10,6 +10,7 @@ import {auth , provider } from '../firebase';
 import { signInWithPopup } from "firebase/auth";
 
 import Modal from '../components/Modal';
+import Button from '../components/Button';
 
 
 const SignIn = ({openModal}) => {
@@ -270,30 +271,6 @@ const Input = styled.input`
   /* &:focus{
     border:inherit;
   } */
-
-`
-
-const Button = styled.button`
-  font-size:1rem;
-  color:${({theme})=>theme.btnText};  
-  background: ${({theme})=>theme.button};
-	/* border: ${({theme})=>`solid transparent  ${theme.borderThickness}`}; */
-  border-color: transparent;
-	border-width: 2px;
-  border-style: solid;
-
-
-  border-radius: ${({theme})=>theme.borderRadius};
-  backdrop-filter: ${({theme})=>theme.blur};
-  padding: 10px 20px;
-
-  &:hover{
-    cursor: pointer;
-	   border-color: white;
-
-
-
-  }
 
 `
 
