@@ -7,33 +7,43 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import {format} from 'timeago.js';
 
+import { LoadingIcon} from '../components/LoadingIcon';
 
 import {
  useLocation
 } from "react-router-dom";
 
+import { useDispatch } from "react-redux";
+import { fetchStart, fetchSuccess, fetchFailure } from "../redux/videoSlice";
+
 
 const VideoPage = () => {
-  const { currentUser } = useSelector(state=>state.user);
+  const { currentVideo,loading } = useSelector(state=>state.video);
   const [ comments, setComments ] = useState([]);
-  const [ videoInfo, setVideoInfo ] = useState({});
 
-  
   const videoId = useLocation().pathname.split('/').pop();
+
+  const dispatch = useDispatch();
+
 
  useEffect(()=>{
 
      const videoData = async () =>{
       try {
 
-        const videoResult = await axios.get(`/videos/find/${videoId}`);  
-        const userNameResult = await axios.get(`/users/find/${videoResult.data.userId}`);
-        setVideoInfo({...videoResult.data, username: userNameResult.data.name});
+        // if(videoId !== currentVideo._id){
+          dispatch(fetchStart());
+          const videoResult = await axios.get(`/videos/find/${videoId}`);  
+          const userNameResult = await axios.get(`/users/find/${videoResult.data.userId}`);
+          const foundComments = await axios.get(`/comments/${videoId}`);
+          setComments(foundComments.data); 
 
-        const foundComments = await axios.get(`/comments/${videoId}`);
-        setComments(foundComments.data); 
+          dispatch(fetchSuccess({...videoResult.data, username: userNameResult.data.name}));
+        // }
+     
+
       } catch (error) {
-        
+        dispatch(fetchFailure());
       }
     }
     videoData();
@@ -41,34 +51,40 @@ const VideoPage = () => {
 
   return (
     <Container>
-      <Title>{videoInfo.title}</Title>
-      <SubTitle>{videoInfo.username}</SubTitle>
-      <SubTitle style={{color:'rgba(217, 217, 217,1)'}}>{format(videoInfo.createdAt)}</SubTitle>
+      <Title>{currentVideo.title}</Title>
+      <SubTitle>{currentVideo.username}</SubTitle>
+      <SubTitle style={{color:'rgba(217, 217, 217,1)'}}>{format(currentVideo.createdAt)}</SubTitle>
 
       <Wrapper>
 
         {/* VIDEO CONTAINER */}
         <VideoContainer>
-            <VideoWrapper>
-                <Video src={videoInfo.videoUrl} poster={videoInfo.imgUrl} controls/>
+            {loading ? 
+             <VideoWrapper><LoadingIcon/></VideoWrapper> :
 
-                 {/* NEW COMMENT SECTION */}
-                <NewCommentWrap>
-                    <SubTitle>new Comment</SubTitle>
-                    <NewComment/>
-                </NewCommentWrap>
+              <VideoWrapper>
+                  <Video src={currentVideo.videoUrl} poster={currentVideo.imgUrl} controls/>
 
-                <div style={{flex: '.75'}}></div>
-              
-            </VideoWrapper>
+                  {/* NEW COMMENT SECTION */}
+                  <NewCommentWrap>
+                      <SubTitle>new Comment</SubTitle>
+                      <NewComment/>
+                  </NewCommentWrap>
+
+                  <div style={{flex: '.75'}}></div>
+                
+              </VideoWrapper>}
         </VideoContainer>
 
         {/* COMMENTS SECTION */}
         <VideoContainer>
-            <VideoWrapper>
+            {loading ? 
+             <VideoWrapper><LoadingIcon/></VideoWrapper> :
+             
+             <VideoWrapper>
                 <SubTitle style={{marginBottom:'0rem'}}>Comments</SubTitle>
                 <CommentSection comments={comments}/>
-            </VideoWrapper>
+            </VideoWrapper>}
         </VideoContainer>
 
       </Wrapper>
@@ -184,6 +200,7 @@ const VideoContainer = styled.div`
 
 const VideoWrapper = styled.div`
   height: calc(100% - 2rem);
+  min-height: 150px;
   margin: 1rem;
   overflow: hidden;
   display: flex;
@@ -200,8 +217,13 @@ const Video = styled.video`
   aspect-ratio: 2;
   object-fit: cover;
   object-position: center;
-  opacity: .55;
+  opacity: .85;
   max-height: 600px;
+
+  /* [poster]{
+  opacity: .55;
+
+  } */
 
 
 `

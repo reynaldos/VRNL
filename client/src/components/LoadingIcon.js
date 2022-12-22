@@ -13,6 +13,11 @@ export const LoadingIcon = () => {
 
 const Wrapper = styled.div`
     align-self: center;
+    justify-self: center;
+    height: 100%;
+    width: 100%;
+    display: grid;
+    place-items: center;
 `
 
 const Icon = styled.div`
@@ -22,10 +27,11 @@ const Icon = styled.div`
     border: ${({theme})=>`6px solid ${theme.elementBG}`};
     border-radius:100%; 
     border-top-color: ${({theme})=>theme.icon};
-    border-bottom-color: ${({theme})=>theme.icon};
+    border-left-color: ${({theme})=>theme.icon};
+    border-right-color: ${({theme})=>theme.icon};
     border-style: dotted;
-    animation: spin 1.5s ease-in-out infinite;
-    -webkit-animation: spin 1.5s ease-in-out infinite;
+    animation: spin 1s ease-in-out infinite;
+    -webkit-animation: spin 1s ease-in-out infinite;
     rotate: 0deg;
 
 

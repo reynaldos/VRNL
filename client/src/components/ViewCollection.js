@@ -27,10 +27,12 @@ export const ViewVideos = () => {
      const fetchVideos = async () =>{
       try {
 
-        dispatch(fetchStart());
-        const foundVideos = await axios.get(`/videos/sub/${collectionId}`)
-        dispatch(fetchSuccess(foundVideos.data));
-
+        // only fetch if collection not already loaded
+        if (collectionId !== currentCollection.collectionId){
+          dispatch(fetchStart());
+          const foundVideos = await axios.get(`/videos/sub/${collectionId}`)
+          dispatch(fetchSuccess({videos: foundVideos.data, collectionId}));
+        }
       } catch (error) { 
          dispatch(fetchFailure());
       }
@@ -45,12 +47,12 @@ export const ViewVideos = () => {
      
     //  finished loading
      <Wrapper>
-        {currentCollection.map((value,index)=>{
+        {currentCollection.videos?.map((value,index)=>{
           return <VideoCard key={index} data={value}/>    
         })}
       
       {/* show message if no video */}
-        {currentCollection.length === 0 &&
+        {currentCollection.videos.length === 0 &&
          <NoVideoContainer>
           <NoVideoTitle>No videos added to this collection!</NoVideoTitle>
           </NoVideoContainer>}
@@ -93,8 +95,8 @@ const Wrapper = styled.div`
 
 
   @media screen and (max-width: ${({theme}) => theme.breakpoint.xs}){
-      width: calc(100% - 1rem); 
-  padding: 0rem;
+    width: calc(100% - 1rem); 
+    padding: 0rem;
 
 
   }

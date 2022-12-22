@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    currentCollection: [],
+    currentCollection: {videos:[]},
     loading: false,
     error: false
 }
@@ -21,9 +21,6 @@ export const colllectionSlice = createSlice({
        fetchFailure: (state)=>{
         state.loading = false;
         state.error = true;
-       },
-        logout: (state)=>{
-            return initialState
        },
     }
 });

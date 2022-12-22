@@ -36,7 +36,6 @@ export const VideoCard = ({data}) =>{
             <CardTitle>{data.title}</CardTitle>
             <CardSubTitle>{username}</CardSubTitle>
             <span style={{flex:'2'}}/>
-            {/* <CardDate>1 day ago</CardDate> */}
             <CardDate>{format(data.createdAt)}</CardDate>
 
         </Details>
@@ -129,6 +128,7 @@ const CardSubTitle = styled.h5`
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;  
   overflow: hidden;
+  color: rgba(217, 217, 217,1);
 
 
 `

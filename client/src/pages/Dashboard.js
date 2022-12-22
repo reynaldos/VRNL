@@ -32,7 +32,6 @@ const Dashboard = ({type}) => {
 
   // updates view when location changes
   useEffect(()=>{
-
     const fetchCollections = async () =>{
       try {
 
@@ -52,8 +51,7 @@ const Dashboard = ({type}) => {
       }
     }
     fetchCollections();
-  },[type])
-
+  },[type, currentUser.subscriberedFolders, currentUser.subscriberedUsers, currentUser.subscriberedGroups])
 
   // returns array of ids depending on location
   const getcollectionIds = () =>{

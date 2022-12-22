@@ -73,13 +73,14 @@ const Title = styled.h1`
   top: 0;
   left: 0;
   margin: 1rem;
-  line-height: 1rem;
+  font-size: 3rem;
+  line-height: 2.5rem;
   text-transform: uppercase;
 
-  span{
+  /* span{
      line-height: 5rem;
     font-size: 1.5rem;
-  }
+  } */
 `
 
 const Container = styled.main`

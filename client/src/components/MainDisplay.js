@@ -41,7 +41,6 @@ const Container = styled.section`
   place-content: center;
   margin: 1rem;
 
-
 `
 
 const Wrapper = styled.div`
