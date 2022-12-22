@@ -1,7 +1,6 @@
 import User from "../models/User.js";
 import Video from "../models/Video.js";
-
-// import {Collection } from "../models/Collection.js";
+import Collection from "../models/Collection.js";
 import {createError} from "../error.js";
 import { query } from "express";
 
@@ -145,4 +144,47 @@ export const searchUsers = async (req, res, next) => {
             next(error);
         }
 
+}
+
+
+
+
+// FAVE A COLLECTION
+export const fave = async (req, res, next) => { 
+    const userId = req.user.id;
+    const collectionId = req.params.collectionId;
+    try {
+        // compare user id to video's user id
+        const collection = await Collection.findById(collectionId);
+        if(!collection) return next(createError(404, 'Collection not found!'));
+        if(!collection.subscriberedUsers.includes(userId))return next(createError(403, 'You most be part of collection to favorite!'));
+
+        const updatedUser = await User.findByIdAndUpdate(userId,{
+            $addToSet: {favorites: collectionId},
+        });
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+
+// UNFAVE A COLLECTION
+export const unfave = async (req, res, next) => { 
+    const userId = req.user.id;
+    const collectionId = req.params.collectionId;
+    try {
+        // compare user id to video's user id
+        const collection = await Collection.findById(collectionId);
+        if(!collection) return next(createError(404, 'Collection not found!'));
+        if(!collection.subscriberedUsers.includes(userId))return next(createError(403, 'You most be part of collection to unfavorite!'));
+
+        const updatedUser = await User.findByIdAndUpdate(userId,{
+            $pull: {favorites: collectionId},
+        });
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        next(error);
+    }
 }

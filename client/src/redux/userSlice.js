@@ -24,9 +24,34 @@ export const userSlice = createSlice({
         logout: (state)=>{
            return initialState;
        },
+       favorite: (state, action)=>{
+          if(!state.currentUser.favorites.includes(action.payload)){
+               state.currentUser.favorites.push(action.payload);
+          }
+       },
+       unfavorite: (state, action)=>{
+          if(state.currentUser.favorites.includes(action.payload)){
+               state.currentUser.favorites.splice( 
+                    state.currentUser.favorites.findIndex(
+                         (collectionId) => collectionId === action.payload
+                    ),
+               1
+               );
+          }
+       },
+       newCollection: (state, action)=>{
+
+          if(action.payload.type === 'subscriberedFolders'){
+               if(!state.currentUser.favorites.includes()){
+                    state.currentUser.subscriberedFolders.push(action.payload.collectionId);
+               }
+          }
+         
+       },
+
     }
 });
 
-export const { loginStart, loginSuccess, loginFailure, logout } = userSlice.actions;
+export const { loginStart, loginSuccess, loginFailure, logout, favorite, unfavorite, newCollection } = userSlice.actions;
 
 export default userSlice.reducer;

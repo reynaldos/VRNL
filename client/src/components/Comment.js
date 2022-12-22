@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useSelector } from 'react-redux';
 import {format} from 'timeago.js';
 
+import axios from 'axios';
 
 
 export const CommentSection = ({comments}) =>{
@@ -24,18 +25,34 @@ export const CommentSection = ({comments}) =>{
 }
 
 const Comment = ({data}) => {
+
+  const [user, setUser] = useState({});
+
+  useEffect(()=>{
+    const fetchUser = async()=>{
+      try {
+        const res = await axios.get(`/users/find/${data.userId}`)
+        setUser(res.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    fetchUser();
+
+  },[])
   
   return (
     <Container>
       <Details>
-      <Avatar src="http://s3.amazonaws.com/37assets/svn/765-default-avatar.png" />
+      <Avatar src={user.image} />
 
         <Name>
-          John Doe<br/><Date>1 day ago</Date>
+           {user.name}<br/><Date>{format(data.createdAt)}</Date>
         </Name>
          </Details>
         <Text>
-            {data}
+            {data.desc}
         </Text>
      
     </Container>
@@ -86,14 +103,14 @@ const CommentsContainer = styled.div`
   width: 100%;
   padding-bottom: 100px;
 
- /* -webkit-mask-image: linear-gradient(transparent, black 10px, black 70% ,transparent);
-  mask-image: linear-gradient(transparent, black 10px, black 70% ,transparent); */
-
-
   -webkit-mask-image: linear-gradient(transparent, black 10px, black 95% ,transparent);
   mask-image: linear-gradient(transparent, black 10px, black 95% ,transparent);
 
   padding-top: 10px;
+
+   div:last-child{
+      margin-bottom: 5%;
+    }
 
     /* width */
   ::-webkit-scrollbar {

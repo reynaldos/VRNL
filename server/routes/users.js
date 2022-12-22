@@ -1,5 +1,5 @@
 import express from "express";
-import { deleteUser, dislike, getUser, like, subscribe, unSubscribe, update,searchUsers } from "../controllers/user.js";
+import { deleteUser, dislike, getUser, like, subscribe, unSubscribe, update,searchUsers,fave,unfave } from "../controllers/user.js";
 import { verifyToken } from "../verifyToken.js";
 
 const router = express.Router();
@@ -27,6 +27,12 @@ router.put("/dislike/:videoId", verifyToken, dislike);
 
 // SEARCH FOR USERS
 router.get("/search", verifyToken, searchUsers);
+
+// FAVE A COLLECTION
+router.put("/favorite/:collectionId", verifyToken, fave);
+
+// UNFAVE A COLLECTION
+router.put("/unfavorite/:collectionId", verifyToken, unfave);
 
 
 export default router; 
