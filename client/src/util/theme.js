@@ -18,6 +18,7 @@ export const darkTheme = {
      text: '#F6C9BA',
     inputBG: 'rgba(246, 201, 186, 0.1)',
     elementBG: 'rgba( 113, 97, 239, 0.5)',
+    modalBG: 'rgba( 113, 97, 239, 0.7)',
     icon: '#F6C9BA',
     border: '#F6C9BA',
     // border: '#50357C',
@@ -28,8 +29,8 @@ export const darkTheme = {
 
     hoverBG: 'rgba(217, 217, 217, 0.2)',
     cardText: 'white',
-    textShadow: 'drop-shadow(0px 0px 3px #50357C)'
-
+    textShadow: 'drop-shadow(0px 0px 3px #50357C)',
+    modalShadow: '0px 0px 20px #F6C9BA'
 }
 
 
@@ -41,11 +42,17 @@ export const lightTheme = {
     // accentText: 'rgba(246, 201, 186, 1)',
     inputBG: 'rgba(246, 201, 186, 0.25)',
     elementBG: 'rgba(217, 217, 217, .35)',
+    modalBG: 'rgba(217, 217, 217, .5)',
+
+    
+
     // icon: '#50357C',
     border: '#F6C9BA',
     // button: '#F6C9BA',
     btnText: 'white',  
     // hoverBG: 'rgba(55, 30, 166, 0.2)'
     cardText: 'black',
+    modalShadow: '0px 0px 20px #50357C'
+    
 
 }

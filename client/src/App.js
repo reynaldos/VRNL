@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import {BottomNavbar} from "./components/BottomNavbar";
 import { darkTheme, lightTheme } from "./util/theme";
@@ -25,9 +25,26 @@ import Settings from "./pages/Settings";
 function App() {
 
   const { currentUser } = useSelector(state=>state.user);
-   const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const [sideMenuController, setSideMenuController] = useState({isOpen: false, isMobile: false})
 
+  useEffect(()=>{
 
+    const checkWidth = ()=>{
+      if(window.innerWidth > 767){
+        setSideMenuController({isOpen: false, isMobile: false});
+      }else{
+        setSideMenuController({isOpen: false, isMobile: true});
+      }
+    }
+
+    checkWidth();
+    window.addEventListener('resize', checkWidth)
+
+    return () => {
+      window.removeEventListener('resize', checkWidth)
+      }
+  },[])
 
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
@@ -52,7 +69,10 @@ function App() {
             </Route>
           </Routes>
 
-        {currentUser && <BottomNavbar isDarkMode={darkMode} setDarkMode={setDarkMode}/>}
+        {currentUser && <BottomNavbar isDarkMode={darkMode} 
+                                      setDarkMode={setDarkMode}
+                                      sideMenuController={sideMenuController}
+                                      setSideMenuController={setSideMenuController}/>}
 
         </BrowserRouter>
       </Container>

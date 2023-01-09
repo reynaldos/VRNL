@@ -44,5 +44,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:8800/api/"
+  "proxy": "http://localhost:8800/api/",
+  "ignoreWarnings": ["./node_modules/source-map-loader"]
 }

@@ -179,11 +179,13 @@ const TitleWrap = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
+  max-width: 430px;
 `
 
 const Title = styled.h1`
   margin: auto .5rem;
   line-height: 2rem;
+  text-align: center;
   
   ${({empty,theme})=>{
     if(empty){
