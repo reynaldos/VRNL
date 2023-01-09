@@ -12,13 +12,27 @@ export const addCollection = async (req, res, next)=>{
         ... req.body });
 
     const type = newCollection.type;
+    const user = await User.findById(req.user.id);
 
     try {
         // add collection to correct user list
         if(type === 'subscriberedFolders'){
+
+            // ensure user vournal titles are unique
+            const duplicateNameRes = await Promise.all(user.subscriberedFolders.map(async (collectionId)=>{
+                const foundCollect = await Collection.findById(collectionId);
+                return foundCollect.title.toLowerCase() === newCollection.title.toLowerCase();
+            }));
+
+       
+            if (duplicateNameRes.includes(true))
+                return next(createError(403,'Collections must have unique names'));
+
+
             await User.findByIdAndUpdate(req.user.id,{
                 $push:{ subscriberedFolders : newCollection._id}
             });
+
         } else if(type === 'subscriberedUsers'){
             await User.findByIdAndUpdate(req.user.id,{
                 $push:{ subscriberedUsers : newCollection._id}
