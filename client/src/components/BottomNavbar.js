@@ -9,7 +9,8 @@ import {
 
   import { 
     HiOutlineUserGroup,
-    HiOutlineUser
+    HiOutlineUser,
+    HiOutlineMenu
   } from "react-icons/hi";
 
 import { Link,useLocation, useNavigate } from "react-router-dom";
@@ -17,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/userSlice";
 
 
-export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
+export const BottomNavbar = ({isDarkMode, setDarkMode, setSideMenuController,sideMenuController}) => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -31,6 +32,7 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
   const record = pathList.includes('record');
 
  const [backPath, setBackPath] = useState('');
+//  const [isOpen, seIsOpen] = useState(false);
 
   useEffect(()=>{
 
@@ -55,12 +57,26 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
     <>
     {!['signin','signup','forgot'].includes(location) && 
     <Container>
+
+      {sideMenuController.isMobile ? <Wrapper><Btn 
+            name={'Hamburger'}
+            onClick={(e)=>{
+              setSideMenuController(old=>({...old, isOpen: !old.isOpen}))
+            }} 
+            isHam={true}>
+          <BtnContent>
+           <HiOutlineMenu/>
+          </BtnContent>
+        </Btn></Wrapper> : 
+  
       <Wrapper>
         
         {location !== `` && 
         <>
           {/* go back btn */}
-          <Link to={backPath} relative="path">
+          <Link 
+            // style={{height: 'inherit'}}
+            to={backPath} relative="path">
             <Btn name={'back'}>
               <BtnContent>
                 <IoChevronBack/>
@@ -71,7 +87,9 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
 
           {/* toggle dashboard view */}
           {location !== `settings` && 
-            <Link to={location === 'myvournals' ? 'subscribers': 'myvournals'}>
+            <Link 
+              // style={{height: 'inherit', boxSizing:'inherit'}}
+              to={location === 'myvournals' ? 'subscribers': 'myvournals'}>
               <Btn name={'Toggle Dashboard'}>
                 <BtnContent>
                 {location === 'myvournals' ? <HiOutlineUserGroup/> : <HiOutlineUser/>}
@@ -92,7 +110,10 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
           <Btn name={'Log Out'} onClick={handleLogout}>
             <BtnContent>Log Out</BtnContent>
           </Btn>
-      </Wrapper>
+
+
+
+      </Wrapper>}
     </Container>
   
   }
@@ -103,10 +124,14 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
 
 const Container = styled.nav`
   position: fixed;
-  right: 0;
   top: 0;
-  margin: 1rem;
+  margin-top: 1rem;
   height: 3rem;
+  width: 100%;
+  outline: 1px blue green;
+  display: grid;
+  place-items: center;
+
   /* scale: 1.5; */
   /* transform-origin: bottom right; */
 /* 
@@ -121,11 +146,19 @@ const Container = styled.nav`
 `
 
 const Wrapper = styled.div`
-  width: 100%;
+  width: calc(100% - 2rem);
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  outline: 1px blue solid;
+
+  /* flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+  gap: 10px; */
+/* flex-wrap: wrap; */
+
 `
 
 const Btn = styled.button`
@@ -134,6 +167,7 @@ const Btn = styled.button`
   border-radius: ${({theme})=>theme.borderRadius};
 	padding: .75rem;
   margin-left: .2rem;
+
 
 	font: inherit;
 
@@ -150,8 +184,9 @@ const Btn = styled.button`
       border: ${({theme})=>`solid ${theme.icon} 2px`};
        /* background-color: rgba(255,255,255, .5) */
   }
-  
+
 `
+
 
 const BtnContent = styled.div`
   color: ${({theme})=>theme.icon};
@@ -159,4 +194,5 @@ const BtnContent = styled.div`
   place-content: center;
   line-height: 1.5rem;
   font-size: 1.5rem;
+  
 `
