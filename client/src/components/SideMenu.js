@@ -1,4 +1,4 @@
-import React,{ useEffect, useState} from 'react';
+import React,{ useEffect, useRef, useState, useMemo} from 'react';
 import styled from "styled-components";
 import axios from 'axios';
 import { useSelector } from 'react-redux';
@@ -19,9 +19,7 @@ import { favorite, unfavorite, newCollection } from "../redux/userSlice";
 export const SideMenu = ({type, collections,tabState }) => {
 
   const { currentUser } = useSelector(state=>state.user);
-
   const [search, setSearch] = useState('');
-
   const [modalOpen, setModalOpen] = useState(false);
 
   const handleSearch = (e)=>{
@@ -52,11 +50,15 @@ export const SideMenu = ({type, collections,tabState }) => {
   }
 
 
-  const sortedCollection = collections.sort(favsSort);
+  const sortedCollection = useMemo(()=> [...collections].filter(name => name.title.toLowerCase().includes(search.toLowerCase()))
+                                                .sort(favsSort), [collections, search]);
 
 
   return (
     <>
+    {/* <Button>Collection</Button>
+ */}
+
   <Container>
     <Wrapper>
       <TitleWrap>
@@ -71,14 +73,17 @@ export const SideMenu = ({type, collections,tabState }) => {
             {sortedCollection.map((value, index)=>{
                 return <TabComp key={index} collectionData={value} tabState={tabState}/>
             })}
-             
+
         </TabsWrap>
 
         <SearchWrap>
           <SearchIcon size={24}/>
            <SearchInput type={'text'} 
                         placeholder={'search collections'} 
-                        onChange={handleSearch}/>
+                        onChange={handleSearch}
+                        value={search}
+                        />
+           {search.length > 0 && <ClearBtn onClick={()=>{setSearch('')}}>x</ClearBtn>}
         </SearchWrap>
 
       </Wrapper>
@@ -162,7 +167,6 @@ const NewCollectionModal = ({type, toggleModal}) => {
 
     
     const res = collectionType && await axios.post("/collections",{title, type: collectionType});
-
 
     if( res.status === 200) {
       dispatch(newCollection({type: collectionType, collectionId: res.data._id}))
@@ -259,6 +263,9 @@ const TabsWrap = styled.ul`
     -webkit-mask-image: linear-gradient(transparent, black 15px, black 90% ,transparent);
     mask-image: linear-gradient(transparent, black 15px, black 90% ,transparent);
 
+    /* li:first-child{
+      margin-top: 5px;
+    } */
 
     li:last-child{
       margin-bottom: 10%;
@@ -274,9 +281,11 @@ const TabsWrap = styled.ul`
   ::-webkit-scrollbar-track {
     border-radius: 8px;
     background: ${({theme})=>theme.elementBG};
-    opacity: .25;
+    opacity: .15;
     transform: translateX(5px);
-
+    background-color:transparent;
+    position: absolute;
+    
   }
 
   /* Track */
@@ -298,9 +307,11 @@ const TabsWrap = styled.ul`
 
 const Tab = styled.li`
   border-bottom: ${({theme})=>`solid ${theme.border} ${theme.borderThickness}`};
-  padding: .55rem 0;
+  padding: .5rem 0;
   display:flex;
   align-items: center;
+  width: 100%;
+  
 
   background-color: ${({isSelected})=>(isSelected ? ' rgba(255,255,255, .25)': 'inherit')};
 
@@ -327,7 +338,11 @@ const TabIcon = styled.div`
 
 const TabText = styled.h4`
   font-size: 1.5rem;
-  line-height: 1.25rem;
+  line-height: 1.85rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
 
 `
 
@@ -340,6 +355,7 @@ const SearchWrap = styled.div`
   display: flex;
   align-items: center;
   margin: 0 1rem;
+
 
 `
 
@@ -378,6 +394,8 @@ const SearchInput = styled.input`
     color:${({theme})=>theme.btnText};  
     
   }
+
+ 
 `
 
 
@@ -385,24 +403,30 @@ const ModalBG = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, .75);
+  background-color: rgba(0, 0, 0, .25);
+  backdrop-filter: ${({theme})=>theme.blur};
+
   width: 100vw;
   height: 100vh;
   z-index: 20;
   display: grid;
   place-items: center;
+
 `
 
 const ModalContainer = styled.div`
   width: calc(430px - 1rem);
   /* height: 100px; */
-  background: ${({theme})=>theme.elementBG};
+  background: ${({theme})=>theme.modalBG};
   border:  ${({theme})=>`solid ${theme.border} ${theme.borderThickness}`};
   border-radius: ${({theme})=>theme.borderRadius};
   margin: 1rem;
+  position:relative;
 
-  backdrop-filter: ${({theme})=>theme.blur};
-  -webkit-backdrop-filter: ${({theme})=>theme.blur};
+  /* backdrop-filter: blur(500px);
+  -webkit-backdrop-filter:blur(500px); */
+
+  box-shadow: ${({theme})=>theme.modalShadow};
 
 
 `
@@ -454,5 +478,26 @@ const SubscribersWrap = styled.div`
   width: 100%;
   height: 200px;
 
+
+`
+
+const ClearBtn = styled(IoClose)`
+    border-radius: 100%;
+    background-color: ${({theme})=> theme.icon };
+    height: 1rem;
+    line-height: .15rem;
+    font-size: .75rem;
+    width: 1rem;
+    z-index: 20;
+    position: absolute;
+    display: grid;
+    place-items: center;
+    top: calc((1.1rem + 32px) / 2);
+    translate: 0% -50%;
+    left: calc(100% - 2rem - 20px - 1rem);
+    cursor: pointer;
+
+     background: ${({theme})=>theme.inputBG};
+  backdrop-filter: ${({theme})=>theme.blur};
 
 `
