@@ -50,8 +50,9 @@ export const SideMenu = ({type, collections,tabState }) => {
   }
 
 
+
   const sortedCollection = useMemo(()=> [...collections].filter(name => name.title.toLowerCase().includes(search.toLowerCase()))
-                                                .sort(favsSort), [collections, search]);
+                                                .sort(favsSort), [currentUser, search]);
 
 
   return (

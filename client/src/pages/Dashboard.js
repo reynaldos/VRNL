@@ -102,7 +102,9 @@ const Dashboard = ({type}) => {
     <Container>
      
      {!isRecordPage &&
-      <SideMenu type={type} collections={collections} tabState={{selectedTab, updateTab}}/> }
+      <SideMenu type={type} 
+                collections={collections} 
+                tabState={{selectedTab, updateTab}}/> }
 
       {selectedTab !== '' ? <Main>
 
