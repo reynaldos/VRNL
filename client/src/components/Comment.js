@@ -60,7 +60,7 @@ const Comment = ({data}) => {
 } ;
 
 
-export const NewComment = () =>{
+export const NewComment = ({videoId, updateComments}) =>{
 
   const { currentUser } = useSelector(state=>state.user);
   
@@ -69,17 +69,38 @@ export const NewComment = () =>{
   const [isActive, setIsActive] = useState(false);
   const [comment, setComment] = useState('');
 
+  const cancelComment = () =>{
+    inputRef.current.value = '';
+    setComment('');
+  }
+
+  const postComment = async(e) =>{
+    e.preventDefault();
+    try {
+      const res = await axios.post("/comments", {videoId, desc: comment});
+      cancelComment();
+      updateComments();
+      // dispatch(loginSuccess(res.data));
+        
+    } catch (error) {
+      // dispatch(loginFailure());
+
+    }
+  }
 
    return <NewCommentContainer>
       <Details>
         <Avatar src={currentUser.image} />
          <Name style={{padding:'12px 0px'}}>{currentUser.name}</Name>
 
-          <div style={{flex:'2',width:'100%'}}></div>
+          {/* <div style={{flex:'2',width:'100%'}}></div> */}
 
-         <BtnHolder active={isActive}>
-             <Button  inverse={true}>Cancel</Button>
-         <Button active={comment.trim().length > 0}>Comment</Button>
+         <BtnHolder active={isActive || comment.trim().length > 0}>
+             <Button inverse={true} onClick={cancelComment}>Cancel</Button>
+              <Button 
+                  active={comment.trim().length > 0}
+                  onClick={postComment}
+                >Comment</Button>
          </BtnHolder>
         
         
@@ -88,7 +109,7 @@ export const NewComment = () =>{
                 placeholder="Add a comment..." 
                 type={'text'}
                 onChange={e=>setComment(e.target.value)}
-                 onFocus={() => setIsActive(true)}
+                onFocus={() => setIsActive(true)}
                 onBlur={() => setIsActive(false)}/>
     </NewCommentContainer>
 }
@@ -234,7 +255,11 @@ const Input = styled.textarea`
 `;
 
 const BtnHolder = styled.div`
-  display: ${({active})=>(active ? 'block' : 'none')};
+  display: ${({active})=>(active ? 'flex' : 'none')};
+  width: 100%;
+  justify-content: flex-end;
+  gap: 10px;
+  
 `
 
 const Button = styled.button`
@@ -245,21 +270,26 @@ const Button = styled.button`
   border-color: transparent;
 	border-width: 2px;
   border-style: solid;
-  margin-left: 10px;
 
 
   border-radius: ${({theme})=>theme.borderRadius};
   backdrop-filter: ${({theme})=>theme.blur};
   padding: 5px 10px;
 
+  @media screen and (max-width: ${({theme}) => theme.breakpoint.sm}){
+   padding: 4px 4px;
+   font-size: small;
+
+  }
+
 
   &:hover{
-    cursor: pointer;
-	   border-color: white;
+    cursor: ${({inverse,active})=> inverse || active ? 'pointer' : ''};
+	  border-color: ${({inverse,active})=> inverse || active ? 'white' : ''};
   }
 
-  &:first{
-     backdrop-filter: none;
-  }
+  /* &:nth-child(2){
+     background-color:red;
+  } */
 
 `

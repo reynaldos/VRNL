@@ -19,6 +19,8 @@ import { fetchStart, fetchSuccess, fetchFailure } from "../redux/videoSlice";
 
 const VideoPage = () => {
   const { currentVideo,loading } = useSelector(state=>state.video);
+
+  const [ loadComments, setLoadComments] = useState(true);
   const [ comments, setComments ] = useState([]);
 
   const videoId = useLocation().pathname.split('/').pop();
@@ -33,21 +35,35 @@ const VideoPage = () => {
 
         // if(videoId !== currentVideo._id){
           dispatch(fetchStart());
-          const videoResult = await axios.get(`/videos/find/${videoId}`);  
-          const userNameResult = await axios.get(`/users/find/${videoResult.data.userId}`);
-          const foundComments = await axios.get(`/comments/${videoId}`);
-          setComments(foundComments.data); 
+            const videoResult = await axios.get(`/videos/find/${videoId}`);  
+            const userNameResult = await axios.get(`/users/find/${videoResult.data.userId}`);
+            const foundComments = await axios.get(`/comments/${videoId}`);
+          setComments(foundComments.data.reverse()); 
 
           dispatch(fetchSuccess({...videoResult.data, username: userNameResult.data.name}));
         // }
-     
-
       } catch (error) {
         dispatch(fetchFailure());
       }
+      setLoadComments(false);
+
     }
     videoData();
   },[]);
+
+
+  const updateComments = async() =>{
+    setLoadComments(true);
+    try {
+
+      const foundComments = await axios.get(`/comments/${videoId}`);
+      setComments(foundComments.data.reverse()); 
+    } catch (error) {
+      console.log(error)
+    }
+    setLoadComments(false);
+
+  }
 
   return (
     <Container>
@@ -68,7 +84,7 @@ const VideoPage = () => {
                   {/* NEW COMMENT SECTION */}
                   <NewCommentWrap>
                       <SubTitle>new Comment</SubTitle>
-                      <NewComment/>
+                      <NewComment videoId={currentVideo._id} updateComments={updateComments}/>
                   </NewCommentWrap>
 
                   <div style={{flex: '.75'}}></div>
@@ -78,7 +94,7 @@ const VideoPage = () => {
 
         {/* COMMENTS SECTION */}
         <VideoContainer>
-            {loading ? 
+            {loadComments ? 
              <VideoWrapper><LoadingIcon/></VideoWrapper> :
              
              <VideoWrapper>
