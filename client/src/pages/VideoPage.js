@@ -53,11 +53,12 @@ const VideoPage = () => {
 
 
   const updateComments = async() =>{
+
     setLoadComments(true);
     try {
-
       const foundComments = await axios.get(`/comments/${videoId}`);
       setComments(foundComments.data.reverse()); 
+
     } catch (error) {
       console.log(error)
     }
@@ -99,7 +100,7 @@ const VideoPage = () => {
              
              <VideoWrapper>
                 <SubTitle style={{marginBottom:'0rem'}}>Comments</SubTitle>
-                <CommentSection comments={comments}/>
+                <CommentSection comments={comments} updateComments={updateComments}/>
             </VideoWrapper>}
         </VideoContainer>
 

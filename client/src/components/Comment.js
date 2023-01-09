@@ -1,17 +1,18 @@
 import React, {useRef, useEffect, useState} from "react";
 import styled from "styled-components";
 
+import { OptionsButton } from "./OptionsButton";
 import { useSelector } from 'react-redux';
 import {format} from 'timeago.js';
 
 import axios from 'axios';
 
 
-export const CommentSection = ({comments}) =>{
+export const CommentSection = ({comments,updateComments}) =>{
   return(
       <CommentsContainer style={{maxHeight:'100%',height:'100%'}}>
         {comments.map((value, index)=>{
-          return <Comment key={index} data={value}/>
+          return <Comment key={index} data={value} updateComments={updateComments}/>
         })}
 
         {comments.length === 0 && 
@@ -24,9 +25,39 @@ export const CommentSection = ({comments}) =>{
 
 }
 
-const Comment = ({data}) => {
+const Comment = ({data, updateComments}) => {
 
   const [user, setUser] = useState({});
+  const [active, setActive] = useState(false);
+
+  const userBtnList = [
+    {
+      title: 'edit',
+      icon: <></>,
+      action: ()=>{}
+    },
+    {
+      title: 'delete',
+      icon: <></>,
+      action: async()=>{
+         try {
+          await axios.delete(`/comments/${data._id}`);
+          updateComments();
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
+  ]
+
+   const reportBtn = [
+    {
+      title: 'report',
+      icon: <></>,
+      action: ()=>{}
+    }
+  ]
+
 
   useEffect(()=>{
     const fetchUser = async()=>{
@@ -37,23 +68,27 @@ const Comment = ({data}) => {
         console.log(error)
       }
     }
-
     fetchUser();
 
   },[])
   
   return (
-    <Container>
+    <Container onMouseEnter={()=>setActive(true)}
+                onMouseLeave={()=>setActive(false)}>
       <Details>
       <Avatar src={user.image} />
 
-        <Name>
+        <Name style={{flex: '2'}}>
            {user.name}<br/><Date>{format(data.createdAt)}</Date>
         </Name>
+
+        {active && <span><OptionsButton btnList={user._id === data.userId ? userBtnList : reportBtn} left={true}/></span>}
+
          </Details>
         <Text>
             {data.desc}
         </Text>
+
      
     </Container>
   );
@@ -177,14 +212,17 @@ const Container = styled.div`
 `;
 
 const Avatar = styled.img`
-  width: 30px;
-  height: 30px;
+  /* width: 30px; */
+  height: 100%;
+  aspect-ratio: 1;
+  
   border-radius: 50%;
   object-fit: cover;
 `;
 
 const Details = styled.div`
   width: 100%;
+  height: 40px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
