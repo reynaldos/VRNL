@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { SideMenu } from '../components/SideMenu';
 import { ViewVideos } from '../components/ViewCollection';
 import { MainDisplay } from '../components/MainDisplay';
+import { OptionsButton } from '../components/OptionsButton';
 
 import Record from './Record';
 import VideoPage from './VideoPage';
@@ -29,6 +30,25 @@ const Dashboard = ({type}) => {
   const [ collections, setCollections ] = useState([]);
 
   const [selectedTab, setSelected] = useState('');
+
+
+  const optionBtnActions = [
+    {
+      title: 'rename',
+      icon: <></>,
+      action: ()=>{}
+    },
+    {
+      title: 'combine',
+      icon: <></>,
+      action: ()=>{}
+    },{
+      title: 'delete',
+      icon: <></>,
+      action: ()=>{}
+    }
+  ]
+
 
   // updates view when location changes
   useEffect(()=>{
@@ -90,7 +110,7 @@ const Dashboard = ({type}) => {
         // defaut title
         <TitleWrap>
           <Title>{selectedTab.title}</Title>
-          <Options/>
+          <OptionsButton btnList={optionBtnActions}/>
         </TitleWrap>}
 
         {/* // record title */}
@@ -125,30 +145,6 @@ const Dashboard = ({type}) => {
 }
 
 export default Dashboard
-
-
-const Options = () => {
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (<div style={{position:'relative'}}>
-    <OptionsIcon isOpen={isOpen} onClick={()=>{setIsOpen(old => !old)}}><span/><span/><span/> </OptionsIcon>
-    
-     {isOpen && <OptionsWrapper>
-      <OptionsList>
-        <OptionsBtn>Rename</OptionsBtn>
-        <OptionsBtn>Combine</OptionsBtn>
-        <OptionsBtn style={{color:'red'}}>Delete</OptionsBtn>
-      </OptionsList>
-    </OptionsWrapper>}
-
-   
-
-   
-    </div>
-  )
-}
-
 
 
 const Container = styled.div`
@@ -202,93 +198,4 @@ const Title = styled.h1`
       `
     }
   }}
-`
-
-const OptionsIcon = styled.button`
-  position: relative;
-  height: 50%;
-  aspect-ratio: 1;
-
-  background: ${({theme})=>theme.elementBG};
-	border: solid transparent 2px;
-  border-radius: ${({theme})=>theme.borderRadius};
-
-  border-radius: 100%; 
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: .2rem;
-
-  span{
-    width: 4px;
-    height: 4px;
-    background-color: ${({theme})=>theme.icon};
-    border-radius: 100%;
-    margin: auto .075rem;
-  }
-
-
-   &:hover{
-    	cursor: pointer;
-      border: ${({theme})=>`solid ${theme.icon} 2px`};
-  }
-
-    ${({isOpen})=>{
-    if(isOpen)
-      return `
-        mix-blend-mode: color-burn;
-
-         &:hover{
-          cursor: pointer;
-          border: solid transparent 2px;
-      }
-      
-      `
-  }}
-
-
-  
-`
-const OptionsWrapper = styled.div`
-  margin: 0 .5rem;
-  top: 0;
-  left: 100%;
-  position: absolute;
-  background: ${({theme})=>theme.elementBG};
-	/* border: solid transparent 2px; */
-  border-radius: ${({theme})=>theme.borderRadius};
-  backdrop-filter: ${({theme})=>theme.blur};
-  z-index: 20;
-  transform-origin: top left;
-  overflow: hidden;
-
-`
-
-const OptionsList = styled.ul`
-padding: 0px;
-margin:0px;
-list-style: none;
-
-
-`
-
-const OptionsBtn = styled.li`
-  padding: .5rem 1rem;
-  color: ${({theme})=>theme.icon};
-  text-align: center;
-
-  
-
-  border-bottom: ${({theme})=>`solid ${theme.border} ${theme.borderThickness}`};
-
-  &:last-child{
-    border-bottom:none;
-  }
-
- &:hover{
-    cursor: pointer;
-    background-color: rgba(255,255,255, .35);
-  }
-
 `
