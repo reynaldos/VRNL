@@ -8,6 +8,12 @@ import { createError } from "../error.js";
 export const signup = async(req,res, next) =>{
     console.log(req.body);
     try{
+
+        const nameTaken = await User.findOne({name: req.body.name});
+        if(nameTaken) return next(createError(403, "Username taken!"));
+
+        const emailTaken = await User.findOne({email: req.body.email});
+        if(emailTaken) return next(createError(403, "Email taken!"));
         
         // encrypt password 
         const salt = bcrypt.genSaltSync(10);
@@ -78,5 +84,28 @@ export const googleAuth = async (req, res, next) =>{
     }
     catch(err){
         next(err); 
+    }
+}
+
+
+export const available = async (req, res, next) =>{
+    console.log(req.body);
+
+    try{
+
+        
+        const nameTaken = await User.findOne({name: req.body.name});
+        if(nameTaken) return next(createError(403, "Username taken!"));
+
+        const emailTaken = await User.findOne({email: req.body.email});
+        if(emailTaken) return next(createError(403, "Email taken!"));
+        
+        // if(!req.body.name && !req.body.email) return next(createError(400, "No info given!"));
+
+        res.status(200).send("Username/email is available!");
+
+    }catch(err){
+        // fire off error handling
+        next(err);
     }
 }

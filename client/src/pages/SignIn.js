@@ -9,6 +9,9 @@ import { Link,useLocation, useNavigate } from "react-router-dom";
 import {auth , provider } from '../firebase';
 import { signInWithPopup } from "firebase/auth";
 
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+
 import Modal from '../components/Modal';
 import Button from '../components/Button';
 
@@ -21,13 +24,14 @@ const SignIn = ({openModal}) => {
     <Container>
 
       {/* SIGN IN VIEW */}
-      {location === 'signin' && <SignInView/>}
+      {location === 'signin' && <SignInView modalRef={modalRef}/>}
 
       {/* SIGN UP VIEW */}
-      {location === 'signup' && <SignUpView/> }
+      {location === 'signup' && <SignUpView modalRef={modalRef}/> }
 
       {/* FORGOT PASSWORD VIEW */}
-      {location === 'forgot' && <ForgotPasswordView/>}
+      {location === 'forgot' && <ForgotPasswordView modalRef={modalRef}/>}
+
      
      {/* BOTTOM LINKS */}
       <More>
@@ -43,7 +47,7 @@ const SignIn = ({openModal}) => {
 
 export default SignIn
 
-
+// SIGN IN
 const SignInView = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -111,46 +115,141 @@ const SignInView = () => {
   )
 }
 
-const SignUpView = () => {
+// SIGN UP
+const SignUpView = ({modalRef}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [email, setEmail] = useState('');
+  const ValdationSchema = Yup.object({
+        username: Yup.string()
+          .min(6, 'Must be at least 6 characters')
+          .max(20, 'Must be 20 characters or less')
+          .required('Required')
+          .test('Unique Username', 'Username is taken', // <- key, message
+                function (value) {
+                  if (6 <= value.length && value.length <= 20){
+                    return new Promise((resolve, reject) => {
+                        axios.post("/auth/available", {name: value})
+                            .then((res) => {
+                                resolve(true)
+                            })
+                            .catch((error) => {
+                                if (error.response.data.message === "Username taken!") {
+                                    resolve(false);
+                                }
+                            })
+                    })
+                  }
+                }
+            ),
+        email: Yup.string()
+          .email('Invalid email address')
+          .required('Required')
+          .test('Unique Email', 'Email is taken', // <- key, message
+                function (value) {
+                   if (value && 6 <= value.length){
+                    return new Promise((resolve, reject) => {
+                        axios.post("/auth/available", {email: value})
+                            .then((res) => {
+                                resolve(true)
+                            })
+                            .catch((error) => {
+                                if (error.response.data.message === "Email taken!") {
+                                    resolve(false);
+                                }
+                            })
+                      })  
+                   }
+                }
+            ),
+        password: Yup.string()
+          .min(6, 'Must be at least 6 characters')
+          .required('Required'),
+        confirmPassword: Yup.string()
+          .required('Required')
+          .oneOf([Yup.ref("password"), null], "Passwords must match")
+          
+      });
+
+  // form hook
+  const formik = useFormik({
+     initialValues: {
+        username:'',
+        email: '',
+        password:'',
+        confirmPassword: ''
+     },
+      validationSchema: ValdationSchema,
+      validateOnChange: false,
+     onSubmit: values => {
+       alert(JSON.stringify(values, null, 2));
+     },
+     onSubmit: values => {
+      //  alert(JSON.stringify(values, null, 2));
+       handleNewUser();
+     },
+   });
 
 
-  const handleNewUser = async (e) =>{
-    e.preventDefault();
+  // log user in
+  const handleNewUser = async () =>{
     dispatch(loginStart());
 
     try {
-      const newUserRes = await axios.post("/auth/signup", {name: username, email, password});
-      const logInres = await axios.post("/auth/signin", {name: username, password});
+      const newUserRes = await axios.post("/auth/signup", {name: formik.values.username, email: formik.values.email, password: formik.values.password});
+
+      const logInres = await axios.post("/auth/signin", {name: formik.values.username, password: formik.values.password});
       dispatch(loginSuccess(logInres.data));
       navigate('/');
         
     } catch (error) {
+      // console.log(error.response.data.message)
       dispatch(loginFailure());
-
     }
   }
 
 
   return (
-   <Wrapper>
+   <Wrapper onSubmit={formik.handleSubmit}>
       <Title>Welcome to<br/><span style={{textTransform:'uppercase'}}>VRNL!</span></Title>
       <SubTitle>Sign Up</SubTitle>
-      <Input placeholder='username' onChange={e=>setUsername(e.target.value)}/>
-      <Input placeholder='email' onChange={e=>setEmail(e.target.value)}/>
-      <Input type="password" placeholder='password' onChange={e=>setPassword(e.target.value)}/>
-      <Input type="password" placeholder='re-enter password' onChange={e=>setConfirmPassword(e.target.value)}/>
 
-      <Button onClick={handleNewUser}>Sign Up</Button>
+      <InputHolder>
+        {formik.touched.username && formik.errors.username ? <ErrMsg>{formik.errors.username}</ErrMsg> : null}
+        <Input  
+                type="text"
+                placeholder='username' 
+                id='username' 
+                {...formik.getFieldProps('username')}/>
+      </InputHolder>
+
+      <InputHolder>
+        {formik.touched.email && formik.errors.email ? <ErrMsg>{formik.errors.email}</ErrMsg> : null}
+        <Input  type="email"    
+                placeholder='email'    
+                id='email' 
+                {...formik.getFieldProps('email')}/>
+       </InputHolder>
+
+      <InputHolder>
+        {formik.touched.password && formik.errors.password ? <ErrMsg>{formik.errors.password}</ErrMsg> : null}
+        <Input  type="password" 
+                placeholder='password' 
+                id='password'
+                {...formik.getFieldProps('password')}/>
+      </InputHolder>
+
+      <InputHolder>
+        {formik.touched.confirmPassword && formik.errors.confirmPassword ? <ErrMsg>{formik.errors.confirmPassword}</ErrMsg> : null}
+        <Input  type="password" 
+                placeholder='re-enter password' 
+                name='confirmPassword' 
+                {...formik.getFieldProps('confirmPassword')}/>
+       </InputHolder>
+
+      <Button type='submit'>Sign Up</Button>
 
       <div style={{flex:'2'}}></div>
-
       <BtnHolder>
           <TextBtn to={"/signin"}>sign in instead</TextBtn>
       </BtnHolder>
@@ -159,6 +258,7 @@ const SignUpView = () => {
   )
 }
 
+// FORGOT PASSWORD
 const ForgotPasswordView = () => {
   return (
      <Wrapper>
@@ -192,7 +292,7 @@ const Container = styled.main`
   }
 `
 
-const Wrapper = styled.div`
+const Wrapper = styled.form`
   width: 280px;
   margin-top: 1.5rem;
  
@@ -243,9 +343,23 @@ const SubTitle = styled.h1`
 
 `
 
+const ErrMsg = styled.div`
+  align-self: flex-start;
+  font-size: small;
+`
+
+const InputHolder = styled.span`
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .25rem;
+
+`
+
 const Input = styled.input`
-  width: 80%;
-  padding: 10px;
+  width: 100%;
+  padding: 10px 10px;
   color:${({theme})=>theme.btnText};
   text-transform: none;
 
