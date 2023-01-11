@@ -15,33 +15,38 @@ import * as Yup from 'yup';
 import Modal from '../components/Modal';
 import Button from '../components/Button';
 
+import ConditionsInfo from '../components/ConditionsInfo';
 
 const SignIn = ({openModal}) => {
   const location = useLocation().pathname.split('/').pop();
   const modalRef = useRef();
 
   return (
-    <Container>
+    <>
+      <Container>
 
-      {/* SIGN IN VIEW */}
-      {location === 'signin' && <SignInView modalRef={modalRef}/>}
+        {/* SIGN IN VIEW */}
+        {location === 'signin' && <SignInView modalRef={modalRef}/>}
 
-      {/* SIGN UP VIEW */}
-      {location === 'signup' && <SignUpView modalRef={modalRef}/> }
+        {/* SIGN UP VIEW */}
+        {location === 'signup' && <SignUpView modalRef={modalRef}/> }
 
-      {/* FORGOT PASSWORD VIEW */}
-      {location === 'forgot' && <ForgotPasswordView modalRef={modalRef}/>}
+        {/* FORGOT PASSWORD VIEW */}
+        {location === 'forgot' && <ForgotPasswordView modalRef={modalRef}/>}
 
-     
-     {/* BOTTOM LINKS */}
-      <More>
-        <Links onClick={()=>{modalRef.current.open('hello word')}}>Help</Links>
-        <Links>Privacy</Links>
-        <Links>Terms</Links>
-      </More>
+      
+      {/* BOTTOM LINKS */}
+        <More>
+          {ConditionsInfo.map((value, index)=>{
+              return <Links key={index} onClick={()=>{modalRef.current.open(value)}}>
+                {value.title}
+              </Links>
+          })}
+        </More>
+      </Container>
 
-        <Modal ref={modalRef}/>
-    </Container>
+      <Modal ref={modalRef}/>
+    </>
   )
 }
 
@@ -56,24 +61,66 @@ const SignInView = () => {
   const [password, setpassword] = useState('');
   const [hidePassword, setHidePassword] = useState(true);
 
+  const validate = async(values) => {
+    const errors = {};
 
-  const handleSignIn = async (e) =>{
-      e.preventDefault();
+    if (values.usernameEmail?.length === 0 ) {
+      errors.usernameEmail = 'Required';
+    } 
+  
+    if (values.password?.length === 0 ) {
+      errors.password = 'Required';
+    }
+
+    if(values.usernameEmail?.length !== 0 && values.password?.length !== 0){
+      const signInError = await handleSignIn(values);
+      console.log(signInError.response.data)
+
+      if (signInError.response.data.message === 'User not found!') errors.usernameEmail = "User not found";
+      else if(signInError.response.data.message === 'Wrong Credentials!') errors.password = "Incorrect password";
+      else  errors.usernameEmail = "Wrong Credentials";
+    }
+  
+    console.log(errors)
+    return errors;
+  };
+
+  // form hook
+    const formik = useFormik({
+      initialValues: {
+          usernameEmail:'',
+          password:'',
+      },
+      validate,
+      validateOnChange: false,
+      validateOnBlur: false,
+      onSubmit: values => {
+        console.log('submit');
+        validate(values);
+        // handleSignIn()
+        //  alert(JSON.stringify(values, null, 2));
+        // handleNewUser();
+      },
+    });
+
+
+  const handleSignIn = async (values) =>{
+
       dispatch(loginStart());
 
       try {
-        const res = await axios.post("/auth/signin", {name: username, password});
+        const res = await axios.post("/auth/signin", {usernameEmail: values.usernameEmail, password: values.password});
         dispatch(loginSuccess(res.data));
         navigate('/');
           
       } catch (error) {
         dispatch(loginFailure());
-
+        return error
       }
   }
 
-  const signInWithGoogle = async () => {
-
+  const signInWithGoogle = async (e) => {
+    e.preventDefault();
       dispatch(loginStart());
       signInWithPopup(auth, provider)
         .then(async (result)=>{
@@ -93,14 +140,27 @@ const SignInView = () => {
 
 
   return (
-    <Wrapper>
+    <Wrapper onSubmit={formik.handleSubmit}>
       <Title>Welcome to<br/><span style={{textTransform:'uppercase'}}>VRNL!</span></Title>
       <SubTitle>Sign In</SubTitle>
-      <Input placeholder='username' onChange={e=>setUsername(e.target.value)}/>
-      <Input type={hidePassword ? "password" : "text"} placeholder='password'
-            onChange={e=>setpassword(e.target.value)}/>
 
-      <Button type='submit' onClick={handleSignIn}>Sign In</Button>
+      <InputHolder>
+        {formik.errors.usernameEmail ? <ErrMsg>{formik.errors.usernameEmail}</ErrMsg> : null}
+        <Input  type="text"
+                placeholder='username or email' 
+                id='usernameEmail' 
+                {...formik.getFieldProps('usernameEmail')}/>
+       </InputHolder>
+
+      <InputHolder>
+        {formik.errors.password ? <ErrMsg>{formik.errors.password}</ErrMsg> : null}
+        <Input  type={hidePassword ? "password" : "text"} 
+                placeholder='password'
+                id='password' 
+                {...formik.getFieldProps('password')}/>
+      </InputHolder>
+
+      <Button type='submit'>Sign In</Button>
       <SubTitle style={{lineHeight:'1.2rem'}}>or</SubTitle>
       <Button onClick={signInWithGoogle}>Sign In with Google</Button>
 
@@ -181,9 +241,6 @@ const SignUpView = ({modalRef}) => {
      },
       validationSchema: ValdationSchema,
       validateOnChange: false,
-     onSubmit: values => {
-       alert(JSON.stringify(values, null, 2));
-     },
      onSubmit: values => {
       //  alert(JSON.stringify(values, null, 2));
        handleNewUser();
