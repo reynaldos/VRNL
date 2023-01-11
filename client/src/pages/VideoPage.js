@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import styled from "styled-components";
 import { NewComment, CommentSection } from '../components/Comment.js';
-import Thumbnail from '../imgs/thumbnail.png';
+// import Thumbnail from '../imgs/thumbnail.png';
 
 import axios from 'axios';
 import { useSelector } from 'react-redux';

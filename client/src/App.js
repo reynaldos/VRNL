@@ -28,6 +28,7 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [sideMenuController, setSideMenuController] = useState({isOpen: false, isMobile: false})
 
+  // hamburger <-> side menu
   useEffect(()=>{
 
     const checkWidth = ()=>{
@@ -56,8 +57,6 @@ function App() {
                 <Route path="signin" element={<SignIn/>}/>
                 <Route path="signup" element={<SignIn/>}/>
                 <Route path="forgot" element={<SignIn/>}/>
-
-              
 
                {currentUser &&<>
                   <Route path="myvournals/*" element={<Dashboard type={'myvournals'}/>}/>
@@ -89,8 +88,8 @@ const Container = styled.div`
   width: 100vw;
   color: ${({theme})=>theme.text};
 
- background-size: cover;
- overflow: auto;
- background-repeat: repeat-y;
- background-position: center;
+  background-size: cover;
+  overflow: auto;
+  background-repeat: repeat-y;
+  background-position: center;
 `

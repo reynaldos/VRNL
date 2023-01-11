@@ -128,7 +128,7 @@ const Container = styled.nav`
   margin-top: 1rem;
   height: 3rem;
   width: 100%;
-  outline: 1px blue green;
+  /* outline: 1px blue green; */
   display: grid;
   place-items: center;
 
@@ -151,7 +151,7 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  outline: 1px blue solid;
+  /* outline: 1px blue solid; */
 
   /* flex-direction: column;
   justify-content: flex-start;
