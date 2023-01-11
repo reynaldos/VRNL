@@ -7,14 +7,13 @@ import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
 
 import { Link,useLocation, useNavigate } from "react-router-dom";
 import {auth , provider } from '../firebase';
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup, sendPasswordResetEmail } from "firebase/auth";
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
 import Modal from '../components/Modal';
 import Button from '../components/Button';
-
 import ConditionsInfo from '../components/ConditionsInfo';
 
 const SignIn = ({openModal}) => {
@@ -317,15 +316,61 @@ const SignUpView = ({modalRef}) => {
 
 // FORGOT PASSWORD
 const ForgotPasswordView = () => {
+
+  const [submitted, setSubmitted] = useState(false);
+
+  const ValdationSchema = Yup.object({
+      email: Yup.string()
+        .email('Invalid email address')
+        .required('Required')
+    });
+
+  // form hook
+  const formik = useFormik({
+     initialValues: {
+        email: '',
+     },
+      validationSchema: ValdationSchema,
+      validateOnChange: false,
+     onSubmit: values => {
+       handleSubmit(values);
+     },
+   });
+
+  const handleSubmit = async (values) => {
+
+    // try {
+    //   await sendPasswordResetEmail(auth, values.email);
+    // } catch (error) {
+    //   console.log(error.message)
+    // }
+
+    setSubmitted(true);
+  }
+
   return (
-     <Wrapper>
+     <Wrapper onSubmit={formik.handleSubmit}>
         <Title>Welcome to<br/><span style={{textTransform:'uppercase'}}>VRNL!</span></Title>
         <SubTitle>Forgot Password</SubTitle>
-        <Input placeholder='email'/>
-        <Button>Send</Button>
+
+       {!submitted ? <>
+        <InputHolder>
+          {formik.touched.email && formik.errors.email ? <ErrMsg>{formik.errors.email}</ErrMsg> : null}
+          <Input  type="email"    
+                  placeholder='email'    
+                  id='email' 
+                  {...formik.getFieldProps('email')}/>
+        </InputHolder>
+
+        <Button type='submit'>Send</Button>
 
         <div style={{flex:'2'}}></div>
-        
+        </>: 
+        <Recovery>
+       Account recovery email sent to: <br/><strong>{formik.values.email}</strong>
+        </Recovery>
+        }
+
         <BtnHolder>   
           <TextBtn to={"/signin"}>sign in instead</TextBtn>
         </BtnHolder>
@@ -499,5 +544,22 @@ const Links = styled.button`
     @media screen and (max-width: ${({theme}) => theme.breakpoint.xs}){
     font-size: 12px;
   }
+
+`
+
+const Recovery = styled.div`
+  width: 100%;
+  padding: 10px 20px;
+  color:${({theme})=>theme.btnText};
+  background-color: #A6D9B7E3;
+	border-color: ${({theme})=> theme.icon };
+	border-width: ${({theme})=> theme.borderThickness };
+  border: 1px solid limegreen;
+  border-radius: ${({theme})=>theme.borderRadius};
+  backdrop-filter: ${({theme})=>theme.blur};
+  /* gap: 10px; */
+  font-size:1rem;
+  text-align: center;
+
 
 `

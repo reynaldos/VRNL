@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.2.1",
     "firebase": "^9.15.0",
+    "formik": "^2.2.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.7.1",
@@ -18,7 +19,8 @@
     "redux-persist": "^6.0.0",
     "styled-components": "^5.3.6",
     "timeago.js": "^4.0.2",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "yup": "^0.32.11"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -45,5 +47,7 @@
     ]
   },
   "proxy": "http://localhost:8800/api/",
-  "ignoreWarnings": ["./node_modules/source-map-loader"]
+  "ignoreWarnings": [
+    "./node_modules/source-map-loader"
+  ]
 }

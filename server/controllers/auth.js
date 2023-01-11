@@ -33,11 +33,14 @@ export const signin = async(req,res, next) =>{
     console.log(req.body);
     try{
         
-       const user = await User.findOne({name: req.body.name});
+       const userByName = await User.findOne({name: req.body.usernameEmail});
+       const userByEmail = await User.findOne({email: req.body.usernameEmail});
+
 
         // send custom error msg if user not found
-       if(!user) return next(createError(404, "User not found!"));
+       if(!userByName && !userByEmail) return next(createError(404, "User not found!"));
 
+       const user = userByName || userByEmail;
        const isCorrect = await bcrypt.compare(req.body.password, user.password);
 
         // send custom error msg if password wrong
