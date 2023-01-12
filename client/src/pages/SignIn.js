@@ -14,9 +14,9 @@ import * as Yup from 'yup';
 
 import Modal from '../components/Modal';
 import Button from '../components/Button';
-import ConditionsInfo from '../components/ConditionsInfo';
+import ConditionsInfo from '../data/ConditionsInfo';
 
-const SignIn = ({openModal}) => {
+const SignIn = () => {
   const location = useLocation().pathname.split('/').pop();
   const modalRef = useRef();
 

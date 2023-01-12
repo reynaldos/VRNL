@@ -1,38 +1,42 @@
 TODO:
 
 - Overall
-    - Connect Backend
     - Improve Color Scheme
     - Get Better BG images
     - Screen height queries
-    - Safari loading not spinning
+    - loading not spinning on Safari 
+    - help, privacy, terms text
 
 - Sign In
-    - sign up form validation
-    - help, privacy, terms modal
     - forgot password funcitonality
     - toggle hide password
 
 - Dashbaord
     - Collection Options
-    - Collection Creation UI
     - side bar view for mobile
-    - Add Collection to favorites
+    - Title text slide for overflow
 
 - Video Page
     - Backdrop Blur
-    - Options Btn for comments
+    - Options Btn for comments - edit
+    - Sort Comments By
 
 - Rcord Page
-   - give prompt funcitonality
    - fix recording funcitonality
    - video file upload funcitonality
    - thumbnail funcitonality
    - Backdrop Blur
 
+- Side Menu
+    - Scroll Bar track showing
+    - Title overflow text slide
+    - have collections scroll but not collection creation
+
+- Botton Nav
+    - Btn Height vs Link Btn
+
 - Settings Page
     - Build UI
-
 
 - 404 Page
     - Build UI
@@ -42,4 +46,14 @@ COMPLETE:
 Build UI✅
 sign up funcitonality✅
 Use redux for data loading states✅
+Search Filtering (useMemo)✅
+Add Collection to favorites✅
+Collection Creation UI✅
+Post Comments✅
+Options Btn for comments - delete✅
+Favorites sort bug✅
+sign up form validation✅
+sign in form validation✅
+help, privacy, terms modal✅
+give prompt funcitonality✅
 

@@ -14,7 +14,7 @@
     /* font-family: 'Stardew_Valley', serif; */
     letter-spacing: 1px;
     text-transform: lowercase;
-    /* outline: 1px solid  red; */
+    /* outline: 1px solid red; */
 
 }
 
@@ -26,3 +26,21 @@
 .hide{
     display: none;
 }
+
+
+.slidein {
+    animation: slidein .5s 1 ease-in-out;
+}
+
+.fadeout {
+    bottom: -2.5rem !important;
+}
+
+@keyframes slidein {
+    from {
+        bottom: -2.5rem;
+    }
+    to {
+        bottom: .5rem;
+    }
+};

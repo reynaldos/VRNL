@@ -105,7 +105,7 @@ const VideoPage = () => {
         </VideoContainer>
 
       </Wrapper>
-    </Container>
+    </Container> 
   )
 }
 
@@ -124,6 +124,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: flex-start;
 
+
   @media screen and (max-width: ${({theme}) => theme.breakpoint.xs}){
        width: calc(100% - .5rem); 
   } 
@@ -138,9 +139,8 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: flex-start;
   align-items: stretch;
-
   overflow-y: auto;
-  gap: 1rem;  
+  gap: 1rem;
 
   padding-top: 10px;
 
@@ -211,6 +211,8 @@ const VideoContainer = styled.div`
   background: ${({theme})=>theme.elementBG};
   border-radius: ${({theme})=>theme.borderRadius};
 
+  backdrop-filter: ${({theme})=>theme.blur};
+  -webkit-backdrop-filter: ${({theme})=>theme.blur};
  
 
 `

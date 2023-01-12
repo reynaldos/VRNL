@@ -19,6 +19,8 @@ export const darkTheme = {
     inputBG: 'rgba(246, 201, 186, 0.1)',
     elementBG: 'rgba( 113, 97, 239, 0.5)',
     modalBG: 'rgba( 113, 97, 239, 0.7)',
+    promptBG: 'rgba( 113, 97, 239, 0.5)',
+
     icon: '#F6C9BA',
     border: '#F6C9BA',
     // border: '#50357C',
@@ -43,8 +45,8 @@ export const lightTheme = {
     inputBG: 'rgba(246, 201, 186, 0.25)',
     elementBG: 'rgba(217, 217, 217, .35)',
     modalBG: 'rgba(217, 217, 217, .5)',
+    promptBG: 'rgba(217, 217, 217, .25)',
 
-    
 
     // icon: '#50357C',
     border: '#F6C9BA',
