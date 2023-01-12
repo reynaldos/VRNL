@@ -40,7 +40,7 @@ const Modal = forwardRef((props, publicRef) => {
             {modalData?.info.map((value, index)=>{
                 return <Info key={index}>{value}</Info>
             })}
-            <CloseBtn onClick={hideModal}><IoClose/></CloseBtn>
+            <CloseBtn onClick={hideModal}><IoClose size={24}/></CloseBtn>
         </Wrapper>
     </Container>
   )
@@ -85,7 +85,7 @@ const Wrapper = styled.div`
 
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
 
     gap: 15px;
     padding: 2rem 3rem;
@@ -126,17 +126,16 @@ const CloseBtn = styled.button`
   right: 0;
   top: 0;
   border-radius: 100%;
-  height: 1.5rem;
-  width: 1.5rem;
+  height: 24px;
+  width: 24px;
   border: transparent 2px solid;
   background: ${({theme})=>theme.elementBG};
   color: ${({theme})=>theme.icon};
 
   cursor: pointer;
   
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
 
   :hover{
      border:  ${({theme})=>`solid ${theme.border} ${theme.borderThickness}`};

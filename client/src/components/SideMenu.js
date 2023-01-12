@@ -1,4 +1,4 @@
-import React,{ useEffect, useRef, useState, useMemo} from 'react';
+import React,{ useState, useMemo} from 'react';
 import styled from "styled-components";
 import axios from 'axios';
 import { useSelector } from 'react-redux';
@@ -30,7 +30,7 @@ export const SideMenu = ({type, collections,tabState }) => {
     const aIsFave =  currentUser.favorites?.includes(a._id);
     const bIsFave =  currentUser.favorites?.includes(b._id);
 
-    if (aIsFave == bIsFave) {
+    if (aIsFave === bIsFave) {
       return 0;
     }
     if (aIsFave) {
@@ -50,9 +50,8 @@ export const SideMenu = ({type, collections,tabState }) => {
   }
 
 
-
   const sortedCollection = useMemo(()=> [...collections].filter(name => name.title.toLowerCase().includes(search.toLowerCase()))
-                                                .sort(favsSort), [currentUser, search]);
+                                                .sort(favsSort), [currentUser, search, collections]);
 
 
   return (
@@ -123,11 +122,7 @@ const TabComp = ({collectionData, tabState}) =>{
         dispatch(favorite(collectionData._id));
         await axios.put(`/users/favorite/${collectionData._id}`);
     }
-
-
   }
-
-
 
   return (
      <Tab  onClick={handleTabChange}
@@ -405,7 +400,7 @@ const ModalBG = styled.div`
   top: 0;
   left: 0;
   background-color: rgba(0, 0, 0, .25);
-  backdrop-filter: ${({theme})=>theme.blur};
+  backdrop-filter: blur(20px);
 
   width: 100vw;
   height: 100vh;
@@ -419,7 +414,7 @@ const ModalContainer = styled.div`
   width: calc(430px - 1rem);
   /* height: 100px; */
   background: ${({theme})=>theme.modalBG};
-  border:  ${({theme})=>`solid ${theme.border} ${theme.borderThickness}`};
+  /* border:  ${({theme})=>`solid ${theme.border} ${theme.borderThickness}`}; */
   border-radius: ${({theme})=>theme.borderRadius};
   margin: 1rem;
   position:relative;

@@ -101,6 +101,7 @@ const Dashboard = ({type}) => {
   return (
     <Container>
      
+     {/* side menu */}
      {!isRecordPage &&
       <SideMenu type={type} 
                 collections={collections} 
