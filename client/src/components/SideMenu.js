@@ -11,6 +11,8 @@ import {
 } from "react-icons/hi2";
 
 import { IoAdd, IoSearch , IoClose} from "react-icons/io5";
+import {MdOutlineCollectionsBookmark} from 'react-icons/md';
+
 
 import { useDispatch } from "react-redux";
 import { favorite, unfavorite, newCollection } from "../redux/userSlice";
@@ -21,6 +23,8 @@ export const SideMenu = ({type, collections,tabState }) => {
   const { currentUser } = useSelector(state=>state.user);
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+
 
   const handleSearch = (e)=>{
     setSearch(e.target.value);
@@ -49,17 +53,24 @@ export const SideMenu = ({type, collections,tabState }) => {
     setModalOpen(old => !old);
   }
 
-
   const sortedCollection = useMemo(()=> [...collections].filter(name => name.title.toLowerCase().includes(search.toLowerCase()))
                                                 .sort(favsSort), [currentUser, search, collections]);
 
+  
+  const toggleMobileMenu = () => {
+      setShowMobileMenu(oldVal => !oldVal);
+  }
 
   return (
     <>
-    {/* <Button>Collection</Button>
- */}
 
-  <Container>
+    <MobileTag onClick={toggleMobileMenu}
+    showMobileMenu={showMobileMenu}>
+      <MdOutlineCollectionsBookmark size={32}/>
+    </MobileTag>
+
+
+  <Container showMobileMenu={showMobileMenu}>
     <Wrapper>
       <TitleWrap>
         <Title>{type === 'myvournals'? 'My Vournals':'Subscribers'}</Title>
@@ -101,8 +112,10 @@ const TabComp = ({collectionData, tabState}) =>{
 
   const { currentUser } = useSelector(state=>state.user);
 
-  const dispatch = useDispatch();
+  const titleScanLimit = 15;
 
+  const dispatch = useDispatch();
+  
 
 
   const handleTabChange =(e)=>{
@@ -133,7 +146,7 @@ const TabComp = ({collectionData, tabState}) =>{
             <HiOutlineStar size={24}/>} 
           </TabIcon>
 
-      <TabText>{collectionData.title}</TabText>
+      <TabTextHolder scan={collectionData.title.length > titleScanLimit}><h4>{collectionData.title}</h4></TabTextHolder>
     </Tab>
   )
 }
@@ -203,22 +216,34 @@ const NewCollectionModal = ({type, toggleModal}) => {
 
 
 const Container = styled.menu`
-    /* position: fixed; */
-    flex: 1;
+    position: fixed;
     height: 90%;
     max-height: 900px;
     min-width: 300px;
     max-width: 360px;
+    width: 30%;
     color:white;
 
     align-self: center;
+
     display: grid;
     place-items: center;
+    z-index: 20;
+    /* outline: solid 1px red; */
 
     @media screen and (max-width: ${({theme}) => theme.breakpoint.md}){
-       display: none;
+       /* display: none; */
+       transition: transform .5s ease;
+       transform: ${({showMobileMenu})=> (showMobileMenu ? `translateX(0%)`: `translateX(-105%)`)}
     } 
 
+    @media screen and (max-width: ${({theme}) => theme.breakpoint.xs}){
+       /* display: none; */
+      max-width: none;
+      width: 100vw;
+      height: 100vh;
+      
+    } 
 `
 const Wrapper = styled.div`
     height: 100%;
@@ -236,6 +261,12 @@ const Wrapper = styled.div`
     backdrop-filter: ${({theme})=>theme.blur};
     -webkit-backdrop-filter: ${({theme})=>theme.blur};
 
+
+    @media screen and (max-width: ${({theme}) => theme.breakpoint.xs}){
+      border-radius: 0%;
+      border: none;
+
+    } 
 `
 
 const TitleWrap = styled.div`
@@ -244,6 +275,10 @@ const TitleWrap = styled.div`
   border-bottom:  ${({theme})=>`solid ${theme.border} ${theme.borderThickness}`};
   display:flex;
   align-items:flex-end;
+
+  @media screen and (max-width: ${({theme}) => theme.breakpoint.xs}){
+      padding-top: 3rem;
+    } 
 `
 
 const Title = styled.h1`
@@ -307,8 +342,6 @@ const Tab = styled.li`
   display:flex;
   align-items: center;
   width: 100%;
-  
-
   background-color: ${({isSelected})=>(isSelected ? ' rgba(255,255,255, .25)': 'inherit')};
 
   &:hover{
@@ -340,6 +373,82 @@ const TabText = styled.h4`
   white-space: nowrap;
   width: 100%;
 
+`
+
+const TabTextHolder = styled.div`
+  overflow: hidden;
+  text-overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+
+  cursor: pointer;
+
+  -webkit-mask-image: linear-gradient(to right, transparent, black 5px , black 95% ,transparent);
+  mask-image: linear-gradient(to right, transparent, black 5px ,black 95% ,transparent);
+
+  &:hover{
+    h4{
+      animation: ${({scan})=>(scan ? 'slide 10s .5s infinite linear' : '')}
+    }
+  }
+
+  h4{
+    font-size: 1.5rem;
+    line-height: 1.85rem;
+    padding-left: 5px;
+    position: relative;
+    left: 0%;
+    width: 100%;
+    white-space: nowrap;
+    transition: left 5s linear;
+  }
+
+
+  @keyframes slide {
+     0% {
+        left: 0%;
+    }
+    50%{
+      left: -100%;
+      opacity: 1;
+    }
+    50.1%{
+      opacity: 0;
+    }
+    50.2%{
+      left: 100%; 
+    }
+    51%{
+      left: 100%; 
+      opacity: 1;
+    }
+    100%{
+      left: 0%;
+    }
+  }
+
+  @-webkit-keyframes slide {
+    0% {
+        left: 0%;
+    }
+    50%{
+      left: -100%;
+      opacity: 1;
+    }
+    50.1%{
+      opacity: 0;
+    }
+    50.2%{
+      left: 100%; 
+    }
+    51%{
+      left: 100%; 
+      opacity: 1;
+    }
+    100%{
+      left: 0%;
+    }
+  }
 `
 
 const SearchWrap = styled.div`
@@ -404,7 +513,7 @@ const ModalBG = styled.div`
 
   width: 100vw;
   height: 100vh;
-  z-index: 20;
+  z-index: 26;
   display: grid;
   place-items: center;
 
@@ -424,6 +533,9 @@ const ModalContainer = styled.div`
 
   box-shadow: ${({theme})=>theme.modalShadow};
 
+  @media screen and (max-width: ${({theme}) => theme.breakpoint.xs}){
+       width: calc(100% - 1rem);
+    } 
 
 `
 
@@ -495,5 +607,41 @@ const ClearBtn = styled(IoClose)`
 
      background: ${({theme})=>theme.inputBG};
   backdrop-filter: ${({theme})=>theme.blur};
+
+`
+
+
+const MobileTag = styled.button`
+    z-index: 25;
+    height: 3.5rem;
+    width: 5rem;
+    position: fixed;
+    left: 0;
+    top: 1rem;
+
+    background: ${({theme})=>theme.elementBG};
+    color: ${({theme})=> theme.icon };
+	  border:  ${({theme, showMobileMenu})=> showMobileMenu ? `solid ${theme.border} ${theme.borderThickness}` : `solid transparent ${theme.borderThickness}`};
+    border-left: none;
+    border-top-right-radius: ${({theme})=>theme.borderRadius};
+    border-bottom-right-radius: ${({theme})=>theme.borderRadius};
+
+    backdrop-filter: ${({theme})=>theme.blur};
+    -webkit-backdrop-filter: ${({theme})=>theme.blur};
+
+    cursor: pointer;
+
+    &:hover{
+	    border:  ${({theme})=>`solid ${theme.border} ${theme.borderThickness}`};
+      border-left: none;
+      filter:${({showMobileMenu})=>showMobileMenu ? `brightness(85%)` : `0`};
+    }
+
+    transition: transform .5s ease;
+    transform: translateX(-105%);
+
+ @media screen and (max-width: ${({theme}) => theme.breakpoint.md}){
+       transform: translateX(0%);
+    } 
 
 `

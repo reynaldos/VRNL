@@ -100,12 +100,15 @@ const Dashboard = ({type}) => {
   
   return (
     <Container>
+      
      
      {/* side menu */}
      {!isRecordPage &&
       <SideMenu type={type} 
                 collections={collections} 
                 tabState={{selectedTab, updateTab}}/> }
+
+      <SideSpacer />
 
       {selectedTab !== '' ? <Main>
 
@@ -202,3 +205,16 @@ const Title = styled.h1`
     }
   }}
 `
+
+
+const SideSpacer = styled.div`
+flex: 1;
+min-width: 300px;
+
+  @media screen and (max-width: ${({theme}) => theme.breakpoint.md}){
+       display: none;
+    } 
+
+`
+
+

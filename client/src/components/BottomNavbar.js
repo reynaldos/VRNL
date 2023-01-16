@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from 'react';
+import React,{useEffect, useState, useRef} from 'react';
 import styled from "styled-components";
 import { 
   IoChevronBack,
@@ -18,21 +18,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/userSlice";
 
 
-export const BottomNavbar = ({isDarkMode, setDarkMode, setSideMenuController,sideMenuController}) => {
+export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
+
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { currentVideo } = useSelector(state=>state.video);
 
-
+  // nav buttons setup
   const pathList =  useLocation().pathname.split('/');
   const location = pathList[1];
   const isViewCollection = pathList.includes('collection');
   const isViewVideo = pathList.includes('video');
   const record = pathList.includes('record');
-
  const [backPath, setBackPath] = useState('');
-//  const [isOpen, seIsOpen] = useState(false);
 
   useEffect(()=>{
 
@@ -53,24 +52,70 @@ export const BottomNavbar = ({isDarkMode, setDarkMode, setSideMenuController,sid
      navigate('/signin');
   }
 
+  // hamburger <-> side menu
+  const [isOpen, setIsOpen] = useState(false);
+  const navItemsRef = useRef();
+  const hamburgerRef = useRef();
+
+  useEffect(()=>{
+
+    const checkWidth = ()=>{
+      if(window.innerWidth > 767){
+        navItemsRef.current.style.marginTop = '0rem';
+        hamburgerRef.current.style.display = 'none';
+        navItemsRef.current.style.display = 'flex';
+
+      }else{
+        hamburgerRef.current.style.display = 'flex';
+        navItemsRef.current.style.marginTop = '.5rem';
+        navItemsRef.current.style.display = 'none';
+      }
+    }
+
+    checkWidth();
+    window.addEventListener('resize', checkWidth)
+
+    return () => {
+      window.removeEventListener('resize', checkWidth)
+      }
+  },[]);
+
+  const toggleNav = () =>{
+  
+
+     setIsOpen(oldVal => !oldVal);
+  }
+
+useEffect(() => {
+    if(isOpen || window.innerWidth > 767){
+      navItemsRef.current.style.display = 'flex';
+    }else{
+      navItemsRef.current.style.display = 'none';
+    }
+
+  }, [isOpen])
+  
+
   return (
     <>
     {!['signin','signup','forgot'].includes(location) && 
     <Container>
 
-      {sideMenuController.isMobile ? <Wrapper><Btn 
+
+      <Wrapper ref={hamburgerRef}>
+        <Btn 
             name={'Hamburger'}
-            onClick={(e)=>{
-              setSideMenuController(old=>({...old, isOpen: !old.isOpen}))
-            }} 
+            onClick={toggleNav} 
             isHam={true}>
           <BtnContent>
            <HiOutlineMenu/>
           </BtnContent>
-        </Btn></Wrapper> : 
+        </Btn>
+      </Wrapper>
   
-      <Wrapper>
-        
+      {/* btn system */}
+      <Wrapper ref={navItemsRef} >
+
         {location !== `` && 
         <>
           {/* go back btn */}
@@ -111,11 +156,10 @@ export const BottomNavbar = ({isDarkMode, setDarkMode, setSideMenuController,sid
             <BtnContent>Log Out</BtnContent>
           </Btn>
 
+      </Wrapper>
 
-
-      </Wrapper>}
     </Container>
-  
+
   }
   </>
   )
@@ -126,38 +170,47 @@ const Container = styled.nav`
   position: fixed;
   top: 0;
   margin-top: 1rem;
-  height: 3rem;
+  height: 3.5rem;
   width: 100%;
-  /* outline: 1px blue green; */
-  display: grid;
-  place-items: center;
+  /* outline: 1px blue solid; */
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  pointer-events: none;
 
-  /* scale: 1.5; */
-  /* transform-origin: bottom right; */
-/* 
-  @media screen and (min-width: ${({theme}) => theme.breakpoint.sm}){
-    scale: 1.5;
-  }
 
-   @media screen and (max-width: ${({theme}) => theme.breakpoint.xs}){
-    scale: 1.5;
-  } */
+  @media screen and (max-width: ${({theme}) => theme.breakpoint.md}){
+    flex-direction: column;
+    justify-content: flex-start;
+    /* align-items: flex-start; */
+    /* transition: height .5s ease; */
+    /* overflow: hidden; */
+}
 
 `
 
 const Wrapper = styled.div`
+/* position: relative; */
   width: calc(100% - 2rem);
+  margin: 0 1rem;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  /* outline: 1px blue solid; */
+  /* outline: 1px green solid; */
+  pointer-events: none;
+  /* height: 3rem; */
 
-  /* flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-end;
-  gap: 10px; */
-/* flex-wrap: wrap; */
+@media screen and (max-width: ${({theme}) => theme.breakpoint.md}){
+    transform-origin: top center;
+    gap: .5rem;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+    transition: height .5s ease;
+    /* overflow: hidden; */
+}
+
 
 `
 
@@ -167,7 +220,8 @@ const Btn = styled.button`
   border-radius: ${({theme})=>theme.borderRadius};
 	padding: .75rem;
   margin-left: .2rem;
-
+  pointer-events: auto;
+  
 
 	font: inherit;
 
