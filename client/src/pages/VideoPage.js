@@ -211,9 +211,18 @@ const VideoContainer = styled.div`
   background: ${({theme})=>theme.elementBG};
   border-radius: ${({theme})=>theme.borderRadius};
 
-  backdrop-filter: ${({theme})=>theme.blur};
-  -webkit-backdrop-filter: ${({theme})=>theme.blur};
- 
+   &::before
+  {
+    content: "";
+    display: block;
+    width: 100%;
+    background-color: transparent;
+    backdrop-filter: ${({theme})=>theme.blur};
+    -webkit-backdrop-filter: ${({theme})=>theme.blur};
+    border-radius: ${({theme})=>theme.borderRadius};
+    position:absolute;
+    /* outline: 2px red solid; */
+  }
 
 `
 

@@ -23,7 +23,6 @@ const Container = styled.div`
   height: 100vh;
   display: grid;
   place-items: center;
-
 `
 
 const Wrapper = styled.main`
@@ -34,6 +33,21 @@ const Wrapper = styled.main`
   background: ${({theme})=>theme.elementBG};
 	border: ${({theme})=>`solid ${theme.icon} ${theme.borderThickness}`};
   border-radius: ${({theme})=>theme.borderRadius};
+
+  &::before
+  {
+    content: "";
+    display: block;
+    background-color: transparent;
+    backdrop-filter: ${({theme})=>theme.blur};
+    -webkit-backdrop-filter: ${({theme})=>theme.blur};
+    border-radius: ${({theme})=>theme.borderRadius};
+    position:absolute;
+    width: calc(100% - 2rem);
+    max-width: 1000px;
+    height: calc(100% - 10rem);
+    /* outline: 2px red solid; */
+  }
 
   @media screen and (min-width: ${({theme}) => theme.breakpoint.sm}){
     height: calc(100% - 10rem);
