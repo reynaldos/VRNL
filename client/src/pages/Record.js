@@ -4,15 +4,14 @@ import { Link } from "react-router-dom";
 import { IoClose} from "react-icons/io5";
 
 
-import {log, startRecording, stop} from '../util/record';
+import {log, startRecording, stop} from '../util/recordUtil';
 
 import Prompts from '../data/Prompts';
 
 
 const maxCaptureTime = 5; //in minutes
-const recordingTimeMS = 1000 * 60 * maxCaptureTime; //specifies max length of the videos recorded in ms
-// const recordingTimeMS = 5000; //specifies max length of the videos recorded in ms
-
+// const recordingTimeMS = 1000 * 60 * maxCaptureTime; //specifies max length of the videos recorded in ms
+const recordingTimeMS = 5000; //specifies max length of the videos recorded in ms
 
 
 const Record = () => {
@@ -34,103 +33,105 @@ const Record = () => {
 
 
   useEffect(() => {
-      videoCapturWrapppereRef.current.classList.add("show");
-      videoRecordingWappereRef.current.classList.add("hide");
+    console.log('set up')
+    videoCapturWrapppereRef.current.classList.add("show");
+    videoRecordingWappereRef.current.classList.add("hide");
 
-      // console.log( videoRecordingRef.current.classList);
+    const video = videoCaptureRef.current;
 
+    if (navigator.mediaDevices.getUserMedia && !videoComplete) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function (stream) {
+           video.srcObject = stream;
+        })
+        .catch(function (err) {
+          console.log("Something went wrong!");
+        });
+    }
+
+    return () => {
+      console.log('clean up');
+      if( video?.srcObject !== null && !videoComplete){
+        console.log('close recording');
+        var stream =  video.srcObject;
+        var tracks = stream.getTracks();
+
+        for (var i = 0; i < tracks.length; i++) {
+          console.log('stop')
+          var track = tracks[i];
+          track.stop();
+        }
+
+        video.srcObject = null;
+      }
+    };
   },[]);
-    // const video = videoCaptureRef.current;
-
-    // if (navigator.mediaDevices.getUserMedia && !videoComplete) {
-    //   navigator.mediaDevices.getUserMedia({ video: true })
-    //     .then(function (stream) {
-    //        video.srcObject = stream;
-    //     })
-    //     .catch(function (err0r) {
-    //       console.log("Something went wrong!");
-    //     });
-    // }
-
-  //   return () => {
-
-  //     if( video && video.srcObject !== null && !videoComplete){
-  //       console.log('close recording')
-  //       var stream =  video.srcObject;
-  //       var tracks = stream.getTracks();
-
-  //       for (var i = 0; i < tracks.length; i++) {
-  //         console.log('stop')
-  //         var track = tracks[i];
-  //         track.stop();
-  //       }
-
-  //       video.srcObject = null;
-  //     }
-  //   };
-  // },[videoComplete]);
   
 
-  const recordProccess = () =>{
+  const recordProccess = async () =>{
     const preview = videoCaptureRef.current;
     const downloadButton = downloadBtnRef.current;
     const recording = videoRecordingRef.current;
 
-    navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true
-    }).then((stream) => {
+    console.log('ref gather')
+    try{
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true
+      });
+      
+      console.log(`stream: ${stream}`);
+
       preview.srcObject = stream;
-      // downloadButton.href = stream;
+      downloadButton.href = stream;
       preview.captureStream = preview.captureStream || preview.mozCaptureStream;
 
-      return new Promise((resolve) => preview.onplaying = resolve);
+      await new Promise((resolve) => preview.onplaying = resolve);
+      console.log(`preview playing`);
 
-    }).then(() => startRecording(preview.captureStream(), recordingTimeMS))
-    .then ((recordedChunks) => {
+      const recordedChunks = await startRecording(preview.captureStream(), recordingTimeMS);
 
-      console.log(downloadButton)
 
       let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
       recording.src = URL.createObjectURL(recordedBlob);
       downloadButton.href = recording.src;
       downloadButton.download = "RecordedVideo.webm";
+      console.log(recording.src);
+
 
       log(`Successfully recorded ${recordedBlob.size} bytes of ${recordedBlob.type} media.`);
-    })
-    .catch((error) => {
+    
+    } 
+    catch (error) {
       if (error.name === "NotFoundError") {
         log("Camera or microphone not found. Can't record.");
       } else {
         log(error);
-      }
-    });
+      };
+    }
   }
-
 
   const toggleRecordCycle = () =>{
     if(recordBtnText === 'Record'){
-      // recordProccess();
+      console.log('start record')
+
+      recordProccess();
       setRecordBtnText('Stop');
 
-
     }else if(recordBtnText === 'Stop'){
+      console.log('stop record')
 
-      // recordingFinished();
+      recordingFinished();
       setRecordBtnText('Record');
-      videoRecordingWappereRef.current.classList.remove("hide");
-      videoRecordingWappereRef.current.classList.add("show");
-
-      videoCapturWrapppereRef.current.classList.remove("show");
-      videoCapturWrapppereRef.current.classList.add("hide");
-
+      videoRecordingWappereRef.current.classList.replace("hide","show");
+      videoCapturWrapppereRef.current.classList.replace("show", "hide");
     }
   }
 
   const recordingFinished = ()=>{
     setVideoComplete(true);
-    stop(videoCaptureRef.current.srcObject);
-    videoCaptureRef.current.srcObject = null;
+    // stop(videoCaptureRef.current.srcObject);
+    // videoCaptureRef.current.srcObject = null;
   }
 
   const handleFileUpload = ()=>{
@@ -187,11 +188,12 @@ const Record = () => {
       <Container>
       <Wrapper onSubmit={handleVideoPost}>
 
-        <VideoController ref={videoCapturWrapppereRef}>
         {/*  video capture */}
-        <VidCaptureWrap >
+        <VideoController ref={videoCapturWrapppereRef}>
+          <VidCaptureWrap >
             <TitleInput style={{backdropFilter: 'blur(10px)'}} type={'text'} placeholder={'Preview Window'} disabled/>
-            <VideoCapture ref={videoCaptureRef} autoPlay muted />
+
+               <VideoCapture ref={videoCaptureRef} autoPlay muted invert={true}/>
 
             <PromptWrap>
               <PromptHolder ref={promptRef}>
@@ -199,16 +201,17 @@ const Record = () => {
                 <CloseBtn><IoClose size={18}/></CloseBtn>
               </PromptHolder>
             </PromptWrap>
-
           </VidCaptureWrap>
 
         {/* recording btns */}
           <VideoBtnWrap>
             <Btn  onClick={generatePrompt}>Need a prompt?</Btn>
-            {recordBtnText === 'Record' && <VidInput type="file" accept="image/*" capture="camera"/>}
+            {recordBtnText === 'Record' && <VidInput type="file" accept="video/mp4,video/x-m4v,video/*" capture="camera"/>}
             <Btn onClick={toggleRecordCycle} type='button'>{recordBtnText}</Btn>
           </VideoBtnWrap>
         </VideoController>
+
+      {/* //////////////////////////////////////////////////////// /////////////////// */}
 
           {/* video recording  */}
           <VideoController ref={videoRecordingWappereRef}>
@@ -333,8 +336,18 @@ const VideoCapture = styled.video`
   border-radius: ${({theme})=>theme.borderRadius};
   object-fit: cover;
   object-position: center;
-  opacity: .55;
+  opacity: .75;
+  aspect-ratio:1.75;
 
+  ${({invert})=>{
+    if (invert){
+      return `
+        transform: rotateY(180deg);
+        -webkit-transform:rotateY(180deg); /* Safari and Chrome */
+        -moz-transform:rotateY(180deg); /* Firefox */
+    `}
+  }}
+    
   @media screen and (max-width: ${({theme}) => theme.breakpoint.md}){
     /* width: 80%; */
     
@@ -369,7 +382,7 @@ const VidInput = styled.input`
   outline: inherit; 
   backdrop-filter: ${({theme})=>theme.blur};
   cursor: pointer;
-  
+
   &::-webkit-file-upload-button {
     visibility: hidden;
   }
@@ -384,6 +397,7 @@ const VidInput = styled.input`
     user-select: none;
     -webkit-user-select: none;
   }
+
   &:hover::before {}
   &:active {}
   &:active::before {}
@@ -437,8 +451,8 @@ const BtnLink = styled.a`
 `
 
 const PromptWrap = styled.span`
-  position:relative;
-  top: calc(-5rem - 5px);
+  position:absolute;
+  bottom: 0rem;
   width: 100%;
   height: 4.5rem;
   overflow: hidden;
@@ -521,6 +535,8 @@ const NewPrompt = styled.div`
   text-overflow: hidden;
   white-space: nowrap;
   width: 100%;
+    	cursor: pointer;
+
 
   -webkit-mask-image: linear-gradient(to right, transparent, black 5px , black 95% ,transparent);
   mask-image: linear-gradient(to right, transparent, black 5px ,black 95% ,transparent);
@@ -544,7 +560,7 @@ const NewPrompt = styled.div`
     width: 100%;
     white-space: nowrap;
     transition: left 5s linear;
-    font-weight: bold;
+    /* font-weight: bold; */
   }
 
 
@@ -613,4 +629,10 @@ const CloseBtn = styled.button`
   &:hover{
      border:  ${({theme})=>`solid ${theme.border} ${theme.borderThickness}`};
   }
+`
+
+
+const VidCapWrap = styled.span`
+
+
 `
