@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import {BottomNavbar} from "./components/BottomNavbar";
 import { darkTheme, lightTheme } from "./util/theme";
@@ -14,6 +14,7 @@ import {
   Routes,
   Navigate
 } from "react-router-dom";
+
 import { useSelector } from 'react-redux';
 
 
@@ -44,6 +45,7 @@ function App() {
                   <Route path="subscribers/*" element={<Dashboard type={'subscribers'}/>}/>
                   <Route path="settings" element={<Settings/>}/>
                 </>}
+                
                 <Route path="*" element={<>Error</>}/>
 
             </Route>

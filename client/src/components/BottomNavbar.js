@@ -72,7 +72,8 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
       }
     }
 
-    checkWidth();
+    
+    if(navItemsRef.current && hamburgerRef.current) checkWidth();
     window.addEventListener('resize', checkWidth)
 
     return () => {
@@ -81,17 +82,17 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
   },[]);
 
   const toggleNav = () =>{
-  
-
      setIsOpen(oldVal => !oldVal);
   }
 
 useEffect(() => {
+  if(navItemsRef.current){
     if(isOpen || window.innerWidth > 767){
       navItemsRef.current.style.display = 'flex';
     }else{
       navItemsRef.current.style.display = 'none';
     }
+  }
 
   }, [isOpen])
   

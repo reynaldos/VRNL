@@ -108,7 +108,7 @@ const Dashboard = ({type}) => {
                 collections={collections} 
                 tabState={{selectedTab, updateTab}}/> }
 
-      <SideSpacer />
+      {!isRecordPage &&<SideSpacer />}
 
       {selectedTab !== '' ? <Main>
 
