@@ -8,13 +8,20 @@ export const wait = (delayInMS) => {
   return new Promise((resolve) => setTimeout(resolve, delayInMS));
 }
 
-export const startRecording = async (stream, lengthInMS) => {
+
+export const stop = (stream) => {
+  if (stream){
+    stream.getTracks().forEach((track) => track.stop());
+  }
+}
+
+
+export const startRecording = (stream, lengthInMS) => {
   let recorder = new MediaRecorder(stream);
   let data = [];
 
   recorder.ondataavailable = (event) => data.push(event.data);
   recorder.start();
-
   log(`${recorder.state} for ${lengthInMS / 1000} seconds…`);
 
   let stopped = new Promise((resolve, reject) => {
@@ -22,20 +29,23 @@ export const startRecording = async (stream, lengthInMS) => {
     recorder.onerror = (event) => reject(event.name);
   });
 
+  // window.addEventListener('stopRecording',()=>{
+  //   console.log('stop event')
+  //   return data
+  //  });
 
-  let recorded = await wait(lengthInMS);
-  if (recorder.state === "recording") {
-    recorder.stop();
-    console.log('recording max reached')
+  let recorded = wait(lengthInMS).then(
+    () => {
+      if (recorder.state === "recording") {
+        recorder.stop();
+      }
+    },
+  );
 
-  }
+  return Promise.all([
+    stopped,
+    recorded
+  ])
+  .then(() => data);
 
-  return await Promise.all([stopped, recorded]);
-}
-
-
-export const stop = (stream) => {
-  if (stream){
-    stream.getTracks().forEach((track) => track.stop());
-  }
 }

@@ -3,15 +3,21 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { IoClose} from "react-icons/io5";
 
+import axios from 'axios';
 
-import {log, startRecording, stop} from '../util/recordUtil';
+
+import {
+ useLocation
+} from "react-router-dom";
+
+import {log, stop, startRecording} from '../util/recordUtil';
 
 import Prompts from '../data/Prompts';
 
 
-const maxCaptureTime = 5; //in minutes
+// const maxCaptureTime = 5; //in minutes
 // const recordingTimeMS = 1000 * 60 * maxCaptureTime; //specifies max length of the videos recorded in ms
-const recordingTimeMS = 5000; //specifies max length of the videos recorded in ms
+const recordingTimeMS = 10000; //specifies max length of the videos recorded in ms
 
 
 const Record = () => {
@@ -22,14 +28,19 @@ const Record = () => {
 
   const videoRecordingRef = useRef();
   const videoRecordingWappereRef = useRef();
+  const recordingTitleRef = useRef();
 
   const downloadBtnRef = useRef();
+  const videoUploadRef = useRef();
 
   const promptRef = useRef();
-
+  const promptList = useRef([]);
   
   const [recordBtnText, setRecordBtnText] = useState('Record');
   const [videoComplete, setVideoComplete] = useState(false);
+
+  const collectionId = useLocation().pathname.split('/').pop();
+
 
 
   useEffect(() => {
@@ -67,81 +78,163 @@ const Record = () => {
     };
   },[]);
   
-
-  const recordProccess = async () =>{
+  const recordProccess =  () =>{
     const preview = videoCaptureRef.current;
     const downloadButton = downloadBtnRef.current;
     const recording = videoRecordingRef.current;
 
-    console.log('ref gather')
-    try{
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true
-      });
-      
-      console.log(`stream: ${stream}`);
+    navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true
+    }).then((stream) => {
 
       preview.srcObject = stream;
       downloadButton.href = stream;
       preview.captureStream = preview.captureStream || preview.mozCaptureStream;
 
-      await new Promise((resolve) => preview.onplaying = resolve);
-      console.log(`preview playing`);
-
-      const recordedChunks = await startRecording(preview.captureStream(), recordingTimeMS);
-
-
+      return new Promise((resolve) => preview.onplaying = resolve);
+    }).then(() => startRecording(preview.captureStream(), recordingTimeMS))
+    .then ((recordedChunks) => {
       let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
       recording.src = URL.createObjectURL(recordedBlob);
       downloadButton.href = recording.src;
       downloadButton.download = "RecordedVideo.webm";
-      console.log(recording.src);
-
 
       log(`Successfully recorded ${recordedBlob.size} bytes of ${recordedBlob.type} media.`);
-    
-    } 
-    catch (error) {
+    })
+    .catch((error) => {
       if (error.name === "NotFoundError") {
         log("Camera or microphone not found. Can't record.");
       } else {
         log(error);
-      };
-    }
+      }
+    });
+
   }
 
   const toggleRecordCycle = () =>{
     if(recordBtnText === 'Record'){
       console.log('start record')
 
+      // recordProccess();
       recordProccess();
       setRecordBtnText('Stop');
 
     }else if(recordBtnText === 'Stop'){
       console.log('stop record')
-
       recordingFinished();
-      setRecordBtnText('Record');
-      videoRecordingWappereRef.current.classList.replace("hide","show");
-      videoCapturWrapppereRef.current.classList.replace("show", "hide");
+      
     }
   }
 
   const recordingFinished = ()=>{
+    const recordStopEvent = new Event('stopRecording');
+    window.dispatchEvent(recordStopEvent);
+
     setVideoComplete(true);
-    // stop(videoCaptureRef.current.srcObject);
-    // videoCaptureRef.current.srcObject = null;
+    setRecordBtnText('Record');
+    videoRecordingWappereRef.current.classList.replace("hide","show");
+    videoCapturWrapppereRef.current.classList.replace("show", "hide");
+
+    // removes shown prompts
+    promptList.current.map((promptBubble, index)=>{
+      promptBubble.removeEventListener('click', closePrompt);
+      promptBubble.remove();
+      return null;
+    })
+     promptList.current = [];
+
   }
 
-  const handleFileUpload = ()=>{
+  // restarts video record cycle
+  const reset = () =>{
+    videoCapturWrapppereRef.current.classList.replace("hide","show");
+    videoRecordingWappereRef.current.classList.replace("show", "hide");
+    setRecordBtnText('Record');
+    setVideoComplete(false);
+    videoUploadRef.current.value = null;
+    recordingTitleRef.current.value = null;
+  }
+
+  const handleFileUpload = (e)=>{
+    const downloadButton = downloadBtnRef.current;
+    const recording = videoRecordingRef.current;
+    const videoUpload = videoUploadRef.current;
+
+    const media = URL.createObjectURL(videoUpload.files[0]);
+
+    console.log(videoUpload.files[0])
+    //  const blob = new Blob([videoUpload.files[0]], {
+    //   type: "file",
+    // });
+
+
+    // console.log(blob);
+  //   var reader = new FileReader();
+  //     reader.readAsDataURL(blob); 
+  //     reader.onloadend = async () => {
+  //       const contentType = reader.result.split(',')[0];     
+  //       const base64data = reader.result.split(',')[1];  
+       
+  //       console.log(contentType);       
+  //       console.log(base64data);
+  //       const base64Response = await fetch(`${contentType},${base64data}`);
+  //       const newBlob = await base64Response.blob();
+  //       const blobUrl = URL.createObjectURL(newBlob);
+  //       recording.src = blobUrl;
+
+  //     // const newblob = b64toBlob(base64data);
+  //     console.log(blobUrl);
+  // }
     
+
+
+    recording.src = media;
+    downloadButton.href = media;
+    downloadButton.download = "RecordedVRNL.webm";
+    videoUploadRef.current.blur();
+
+    recordingFinished();
+    console.log('video uploaded');
   }
 
-  const handleVideoPost = () =>{
-    console.log('post video')
+  const handleVideoPost = async () =>{
+    console.log('post video');
+ 
+    // get title from input or use current date
+    const title = recordingTitleRef.current.value || new Date().toDateString().replaceAll(' ','_');
+    
+    console.log(videoRecordingRef.current.src);
+    console.log(collectionId);
+
+     const blob = new Blob([videoRecordingRef.current.src], {
+      type: "file",
+    });
+
+     var reader = new FileReader();
+      reader.readAsDataURL(blob); 
+      reader.onloadend = async () => {
+        
+        const contentType = reader.result.split(',')[0];     
+        const base64data = reader.result.split(',')[1];  
+       
+        console.log(contentType);       
+        console.log(base64data);
+        // const base64Response = await fetch(`${contentType},${base64data}`);
+
+        // const newBlob = await base64Response.blob();
+        // const blobUrl = URL.createObjectURL(newBlob);
+
+      // const newblob = b64toBlob(base64data);
+      // console.log(blobUrl);
+
+    const res = await axios.post("/videos",{title, collectionId, videoUrl: base64data});
+
   }
 
+
+
+  }
 
   const generatePrompt = (e) => {
     e.preventDefault();
@@ -160,14 +253,19 @@ const Record = () => {
     newPromptBubble.key = 'prompt' + promptWrap.children.length;
     newPromptBubble.style.visibility = 'visible';
 
+
+    promptList.current.push(newPromptBubble);
+
     // add close btn event listener
     newPromptBubble.querySelector("button").addEventListener('click', ()=>{closePrompt(newPromptBubble)})
 
     // removes oldest prompt once limit reached
     if(promptWrap.children.length > 4 ) {
+      promptList.current.shift();
+
       const removed = promptWrap.children[promptWrap.children.length-2];
       removed.lastChild.removeEventListener('click', closePrompt);
-      removed.remove()
+      removed.remove();
     }
   }
 
@@ -177,16 +275,13 @@ const Record = () => {
     setTimeout(() => {
       promptBubble.remove();
     }, 500);
-    // 
-    // console.log(e.target);
-
   }
 
   
   return (
     <>
       <Container>
-      <Wrapper onSubmit={handleVideoPost}>
+      <Wrapper>
 
         {/*  video capture */}
         <VideoController ref={videoCapturWrapppereRef}>
@@ -206,7 +301,12 @@ const Record = () => {
         {/* recording btns */}
           <VideoBtnWrap>
             <Btn  onClick={generatePrompt}>Need a prompt?</Btn>
-            {recordBtnText === 'Record' && <VidInput type="file" accept="video/mp4,video/x-m4v,video/*" capture="camera"/>}
+            {recordBtnText === 'Record' && <VidInput 
+                                                ref={videoUploadRef}
+                                                onChange={handleFileUpload}
+                                                type="file" 
+                                                accept="video/mp4,video/x-m4v,video/*" 
+                                                capture="camera"/>}
             <Btn onClick={toggleRecordCycle} type='button'>{recordBtnText}</Btn>
           </VideoBtnWrap>
         </VideoController>
@@ -217,20 +317,20 @@ const Record = () => {
           <VideoController ref={videoRecordingWappereRef}>
             <VidCaptureWrap>
             
-            <TitleInput type={'text'} placeholder={'Name your vrnl entry'}/>
+            <TitleInput ref={recordingTitleRef} type={'text'} placeholder={'Name your vrnl entry'}/>
               <VideoCapture ref={videoRecordingRef} controls/>
             </VidCaptureWrap>
 
             {/* thumbnail and save btns */}
             <VideoBtnWrap>
             <Link to={'../..'} style={{textDecoration:'none', color:'inherit'}}><Btn>Cancel</Btn></Link>
-            <Btn type='reset'>restart</Btn>
+            <Btn type='reset' onClick={reset}>restart</Btn>
             <BtnLink
                 href=''
                 ref={downloadBtnRef}>
               Save to device
             </BtnLink>
-            <Btn  type='submit'>post</Btn>
+            <Btn onClick={handleVideoPost}>post</Btn>
           </VideoBtnWrap>
         </VideoController>
 
@@ -629,10 +729,4 @@ const CloseBtn = styled.button`
   &:hover{
      border:  ${({theme})=>`solid ${theme.border} ${theme.borderThickness}`};
   }
-`
-
-
-const VidCapWrap = styled.span`
-
-
 `
