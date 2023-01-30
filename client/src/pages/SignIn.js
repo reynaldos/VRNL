@@ -56,8 +56,6 @@ const SignInView = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [username, setUsername] = useState('');
-  const [password, setpassword] = useState('');
   const [hidePassword, setHidePassword] = useState(true);
 
   const validate = async(values) => {
@@ -159,9 +157,9 @@ const SignInView = () => {
                 {...formik.getFieldProps('password')}/>
       </InputHolder>
 
-      <Button type='submit'>Sign In</Button>
+      <Button active={true} type='submit'>Sign In</Button>
       <SubTitle style={{lineHeight:'1.2rem'}}>or</SubTitle>
-      <Button onClick={signInWithGoogle}>Sign In with Google</Button>
+      <Button active={true} onClick={signInWithGoogle}>Sign In with Google</Button>
 
 
       <div style={{flex:'2'}}></div>
@@ -303,7 +301,7 @@ const SignUpView = ({modalRef}) => {
                 {...formik.getFieldProps('confirmPassword')}/>
        </InputHolder>
 
-      <Button type='submit'>Sign Up</Button>
+      <Button active={true} type='submit'>Sign Up</Button>
 
       <div style={{flex:'2'}}></div>
       <BtnHolder>
@@ -362,7 +360,7 @@ const ForgotPasswordView = () => {
                   {...formik.getFieldProps('email')}/>
         </InputHolder>
 
-        <Button type='submit'>Send</Button>
+        <Button active={true} type='submit'>Send</Button>
 
         <div style={{flex:'2'}}></div>
         </>: 

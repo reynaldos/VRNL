@@ -4,7 +4,7 @@ import styled from "styled-components";
 const Button = styled.button`
   font-size:1rem;
   color:${({theme})=>theme.btnText};  
-  background: ${({theme})=>theme.button};
+  background: ${({theme, inverse,active})=> !inverse && active ? theme.button : 'transparent'};
 	/* border: ${({theme})=>`solid transparent  ${theme.borderThickness}`}; */
   border-color: transparent;
 	border-width: 2px;
@@ -16,9 +16,11 @@ const Button = styled.button`
   padding: 10px 20px;
 
   &:hover{
-    cursor: pointer;
-	   border-color: white;
+   cursor: ${({inverse,active})=> (inverse && active) || active ? 'pointer' : ''};
+	  border-color: ${({inverse,active})=> (inverse && active) || active ? 'white' : ''};
   }
 
 `
+
+
 export default Button
