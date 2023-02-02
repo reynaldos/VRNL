@@ -3,7 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
     currentUser: null,
     loading: false,
-    error: false
+    error: false,
+    newUpload: false
 }
 
 export const userSlice = createSlice({
@@ -49,9 +50,13 @@ export const userSlice = createSlice({
          
        },
 
+       toggleUpload: (state, action) =>{
+          state.newUpload = action.payload;
+       }
+
     }
 });
 
-export const { loginStart, loginSuccess, loginFailure, logout, favorite, unfavorite, newCollection } = userSlice.actions;
+export const { loginStart, loginSuccess, loginFailure, logout, favorite, unfavorite, newCollection, toggleUpload } = userSlice.actions;
 
 export default userSlice.reducer;

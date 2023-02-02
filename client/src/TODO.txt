@@ -23,8 +23,6 @@ TODO:
 
 - Rcord Page
    - fix recording funcitonality
-   - video file upload funcitonality
-   - thumbnail funcitonality
    - Backdrop Blur
 
 - Side Menu
@@ -35,7 +33,7 @@ TODO:
     - Btn Height vs Link Btn
 
 - Settings Page
-    - Build UI
+    - Update User functionality
 
 - 404 Page
     - Build UI
@@ -56,5 +54,6 @@ sign in form validation✅
 help, privacy, terms modal✅
 give prompt funcitonality✅
 Title overflow text slide✅
-
-
+Build UI✅
+video file upload funcitonality✅
+thumbnail funcitonality✅

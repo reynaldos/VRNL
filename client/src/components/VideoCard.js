@@ -74,7 +74,7 @@ const CardContainer = styled.div`
     img{
       filter: blur(4px);
       -webkit-filter: blur(4px);
-      scale: 1;
+      scale: 1.15;
 
     }
 
@@ -148,12 +148,12 @@ const CardImage = styled.img`
   object-position: center;
   opacity: .55;
   border-radius: ${({theme})=>theme.borderRadius};
-  scale: 1.05;
+  scale: 1;
   
 
-  filter: blur(8px);
-  -webkit-filter: blur(8px);
-  transition: filter ease-in .2s, scale ease-in .2s;
+  filter: blur(1px);
+  -webkit-filter: blur(1px);
+  transition: filter ease .3s, scale ease .3s;
 
 
 `

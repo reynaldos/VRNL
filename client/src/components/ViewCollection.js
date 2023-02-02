@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 
 import { useDispatch } from "react-redux";
 import { fetchStart, fetchSuccess, fetchFailure } from "../redux/collectionSlice";
-
+import { toggleUpload } from "../redux/userSlice";
 import {
   useLocation
 } from "react-router-dom";
@@ -19,6 +19,7 @@ export const ViewVideos = () => {
   const { currentCollection, loading } = useSelector(state=>state.collection);
   const collectionId = useLocation().pathname.split('/').pop();
 
+  const { newUpload } = useSelector(state=>state.user);
   const dispatch = useDispatch();
 
 
@@ -28,7 +29,9 @@ export const ViewVideos = () => {
       try {
 
         // only fetch if collection not already loaded
-        if (collectionId !== currentCollection.collectionId){
+        if (collectionId !== currentCollection.collectionId || newUpload){
+
+          newUpload && dispatch(toggleUpload(false));
           dispatch(fetchStart());
           const foundVideos = await axios.get(`/videos/sub/${collectionId}`)
           dispatch(fetchSuccess({videos: foundVideos.data, collectionId}));

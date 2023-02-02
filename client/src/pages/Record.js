@@ -4,15 +4,26 @@ import { Link } from "react-router-dom";
 import { IoClose} from "react-icons/io5";
 
 import axios from 'axios';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { toggleUpload } from "../redux/userSlice";
 
 import {
- useLocation
+ useLocation,
+ useNavigate
 } from "react-router-dom";
 
-import {log, stop, startRecording} from '../util/recordUtil';
+import {log, 
+        stop, 
+        startRecording, 
+        toggleRecordCycle, 
+        showImageAt, 
+        closePrompt, 
+        selectThumbnail,
+        uploadFile
+      } from '../util/recordUtil';
 
 import Prompts from '../data/Prompts';
+
 
 
 // const maxCaptureTime = 5; //in minutes
@@ -21,6 +32,9 @@ const recordingTimeMS = 10000; //specifies max length of the videos recorded in 
 
 
 const Record = () => {
+
+  const { currentUser } = useSelector(state=>state.user);
+  const navigate = useNavigate();
 
   // container refs
   const videoCaptureRef = useRef();
@@ -35,12 +49,19 @@ const Record = () => {
 
   const promptRef = useRef();
   const promptList = useRef([]);
+
+  // thumbnail logic
+  const [thumbNails, setThumbNails] = useState([]);
+  const [chosenThumbnail, setThumbnail] = useState(-1);
+
   
   const [recordBtnText, setRecordBtnText] = useState('Record');
   const [videoComplete, setVideoComplete] = useState(false);
 
   const collectionId = useLocation().pathname.split('/').pop();
+  const collectionType =useLocation().pathname.split('/')[1];
 
+  const dispatch = useDispatch();
 
 
   useEffect(() => {
@@ -112,21 +133,6 @@ const Record = () => {
 
   }
 
-  const toggleRecordCycle = () =>{
-    if(recordBtnText === 'Record'){
-      console.log('start record')
-
-      // recordProccess();
-      recordProccess();
-      setRecordBtnText('Stop');
-
-    }else if(recordBtnText === 'Stop'){
-      console.log('stop record')
-      recordingFinished();
-      
-    }
-  }
-
   const recordingFinished = ()=>{
     const recordStopEvent = new Event('stopRecording');
     window.dispatchEvent(recordStopEvent);
@@ -144,6 +150,8 @@ const Record = () => {
     })
      promptList.current = [];
 
+    showImageAt(videoRecordingRef.current.src, setThumbNails, 0);
+
   }
 
   // restarts video record cycle
@@ -154,6 +162,7 @@ const Record = () => {
     setVideoComplete(false);
     videoUploadRef.current.value = null;
     recordingTitleRef.current.value = null;
+    setThumbNails([]);
   }
 
   const handleFileUpload = (e)=>{
@@ -163,31 +172,7 @@ const Record = () => {
 
     const media = URL.createObjectURL(videoUpload.files[0]);
 
-    console.log(videoUpload.files[0])
-    //  const blob = new Blob([videoUpload.files[0]], {
-    //   type: "file",
-    // });
-
-
-    // console.log(blob);
-  //   var reader = new FileReader();
-  //     reader.readAsDataURL(blob); 
-  //     reader.onloadend = async () => {
-  //       const contentType = reader.result.split(',')[0];     
-  //       const base64data = reader.result.split(',')[1];  
-       
-  //       console.log(contentType);       
-  //       console.log(base64data);
-  //       const base64Response = await fetch(`${contentType},${base64data}`);
-  //       const newBlob = await base64Response.blob();
-  //       const blobUrl = URL.createObjectURL(newBlob);
-  //       recording.src = blobUrl;
-
-  //     // const newblob = b64toBlob(base64data);
-  //     console.log(blobUrl);
-  // }
-    
-
+    console.log(videoUpload.files[0]);
 
     recording.src = media;
     downloadButton.href = media;
@@ -198,42 +183,57 @@ const Record = () => {
     console.log('video uploaded');
   }
 
+
   const handleVideoPost = async () =>{
+
     console.log('post video');
  
     // get title from input or use current date
-    const title = recordingTitleRef.current.value || new Date().toDateString().replaceAll(' ','_');
-    
-    console.log(videoRecordingRef.current.src);
-    console.log(collectionId);
+    const title = recordingTitleRef.current.value || new Date().toDateString()
+    const imgSrc = chosenThumbnail >= 0 ? thumbNails[chosenThumbnail] : thumbNails[0]
 
-     const blob = new Blob([videoRecordingRef.current.src], {
-      type: "file",
-    });
+    // get thumbnail blob
+    const base64Response = await fetch(imgSrc);
+    const imgBlob = await base64Response.blob();
 
-     var reader = new FileReader();
-      reader.readAsDataURL(blob); 
-      reader.onloadend = async () => {
+    // get video blob
+    const videobase64Response = await fetch(videoRecordingRef.current.src);
+    const videoBlob =  await videobase64Response.blob();
+
+    // upload files to storage
+    const videoUrl =  await uploadFile(currentUser._id, videoBlob,title ,'videoUrl');
+    const imgUrl = await uploadFile(currentUser._id, imgBlob,title ,'imgUrl');
+
+    var fileBody = {
+      title, 
+      videoUrl,
+      imgUrl,
+      collectionId,   
+    }
+
+    // console.table(fileBody);
+    // console.log('done loading');
+
+    // submit data to db
+    const res = await axios.post("/videos", fileBody);
+    res.status===200 && dispatch(toggleUpload(true));
+    res.status===200 && navigate(`/${collectionType}/video/${res.data._id}`)
+
+// ////////////// ENCRYPTION  TODO //////////////
+  //    const blob = new Blob([videoRecordingRef.current.src], {
+  //     type: "file",
+  //   });
+
+  //    var reader = new FileReader();
+  //     reader.readAsDataURL(blob); 
+  //     reader.onloadend = async () => {
         
-        const contentType = reader.result.split(',')[0];     
-        const base64data = reader.result.split(',')[1];  
+  //       const contentType = reader.result.split(',')[0];     
+  //       const base64data = reader.result.split(',')[1];  
        
-        console.log(contentType);       
-        console.log(base64data);
-        // const base64Response = await fetch(`${contentType},${base64data}`);
-
-        // const newBlob = await base64Response.blob();
-        // const blobUrl = URL.createObjectURL(newBlob);
-
-      // const newblob = b64toBlob(base64data);
-      // console.log(blobUrl);
-
-    const res = await axios.post("/videos",{title, collectionId, videoUrl: base64data});
-
-  }
-
-
-
+  //       console.log(contentType);       
+  //       console.log(base64data);
+  // }
   }
 
   const generatePrompt = (e) => {
@@ -269,14 +269,6 @@ const Record = () => {
     }
   }
 
-  const closePrompt = (promptBubble) => {
-    // e.preventDefault();
-    promptBubble.classList.replace('slidein', 'fadeout');
-    setTimeout(() => {
-      promptBubble.remove();
-    }, 500);
-  }
-
   
   return (
     <>
@@ -307,7 +299,11 @@ const Record = () => {
                                                 type="file" 
                                                 accept="video/mp4,video/x-m4v,video/*" 
                                                 capture="camera"/>}
-            <Btn onClick={toggleRecordCycle} type='button'>{recordBtnText}</Btn>
+                                                
+            <Btn type='button'
+                 onClick={()=>toggleRecordCycle(recordBtnText, setRecordBtnText, recordProccess, recordingFinished)} 
+                 >{recordBtnText}</Btn>
+
           </VideoBtnWrap>
         </VideoController>
 
@@ -321,7 +317,20 @@ const Record = () => {
               <VideoCapture ref={videoRecordingRef} controls/>
             </VidCaptureWrap>
 
-            {/* thumbnail and save btns */}
+            {/* thumbnails */}
+            <VideoBtnWrap>
+              <ThumnbnailList>
+                  {thumbNails.map((val,i)=>{
+                    return <Thumbnail 
+                            isActive={i === chosenThumbnail}
+                            onClick={()=>{selectThumbnail(i, setThumbnail, chosenThumbnail)}}
+                            key={i}
+                            src={val} />
+                  })}
+              </ThumnbnailList>
+            </VideoBtnWrap>
+
+            {/* save btns */}
             <VideoBtnWrap>
             <Link to={'../..'} style={{textDecoration:'none', color:'inherit'}}><Btn>Cancel</Btn></Link>
             <Btn type='reset' onClick={reset}>restart</Btn>
@@ -362,6 +371,7 @@ const Container = styled.section`
   mask-image: linear-gradient(transparent, black 10px, black 90% ,transparent);
   padding-top: 10px;
 
+
 `
 
 const Wrapper = styled.div`
@@ -372,6 +382,7 @@ const Wrapper = styled.div`
   justify-content: flex-start;
   align-items: center;
   gap: 10px;
+
   
 `
 
@@ -383,6 +394,7 @@ const VideoController = styled.section`
   gap: 10px;
   width: 100%;
   max-width: 800px;
+
 
 
 `
@@ -730,3 +742,44 @@ const CloseBtn = styled.button`
      border:  ${({theme})=>`solid ${theme.border} ${theme.borderThickness}`};
   }
 `
+
+
+const ThumnbnailList = styled.ol`
+  gap: 10px;
+  display: flex;
+  justify-content: start;
+  margin: .5rem 0;
+  overflow-x: scroll;
+  padding: 0 4% 0 4%;
+  list-style-type: none;
+
+  -webkit-mask-image: linear-gradient(to right, transparent, black 4% , black 96% ,transparent);
+  mask-image: linear-gradient(to right, transparent, black 4% ,black 96% ,transparent);
+
+`
+
+
+
+const Thumbnail = styled.img`
+  
+  height: 100px;
+  aspect-ratio: 1;
+  background: ${({theme})=>theme.elementBG};
+  border-radius: ${({theme})=>theme.borderRadius};
+  object-fit: cover;
+  object-position: center;
+  opacity: ${({isActive})=>isActive ? `.85` : '.65'};
+  border-radius: ${({theme})=>theme.borderRadius};
+  /* border: ${({})=>`solid transparent 2px`}; */
+  transition: opacity .3s ease, scale .3s ease ;
+  box-sizing: border-box;
+  border: ${({theme, isActive})=>isActive ? `solid ${theme.icon} 2px` : ''};
+
+  cursor: pointer;
+  &:hover{
+    opacity: .85;
+    border: ${({theme})=>`solid ${theme.icon} 2px`};
+    /* scale: 1.2; */
+  }
+`
+
