@@ -26,6 +26,12 @@ const Settings = () => {
           .required('Required')
           .test('Unique Username', 'Username is taken', // <- key, message
                 function (value) {
+                  if (value == currentUser.name){
+                    return new Promise((resolve, reject) => {
+                      resolve(true);
+                    })
+                  }
+
                   if (value && 6 <= value.length && value.length <= 20){
                     return new Promise((resolve, reject) => {
                         axios.post("/auth/available", {name: value})
@@ -46,6 +52,12 @@ const Settings = () => {
           .required('Required')
           .test('Unique Email', 'Email is taken', // <- key, message
                 function (value) {
+                  if (value == currentUser.email){
+                    return new Promise((resolve, reject) => {
+                      resolve(true);
+                    })
+                  }
+
                    if (value && 6 <= value.length){
                     return new Promise((resolve, reject) => {
                         axios.post("/auth/available", {email: value})
@@ -85,7 +97,7 @@ const Settings = () => {
         password: isEditting ? '......' : '',
         confirmPassword: ''
      },
-      validationSchema: !isEditting ? ValdationSchema : null,
+      validationSchema: isEditting ? ValdationSchema : null,
       validateOnChange: false,
      onSubmit: values => {
       //  alert(JSON.stringify(values, null, 2));

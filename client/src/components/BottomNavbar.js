@@ -1,4 +1,4 @@
-import React,{useEffect, useState, useRef} from 'react';
+import React,{useEffect, useState, useRef, useMemo} from 'react';
 import styled from "styled-components";
 import { 
   IoChevronBack,
@@ -57,6 +57,9 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
   const navItemsRef = useRef();
   const hamburgerRef = useRef();
 
+
+
+
   useEffect(()=>{
 
     const checkWidth = ()=>{
@@ -72,8 +75,11 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
       }
     }
 
-    
-    if(navItemsRef.current && hamburgerRef.current) checkWidth();
+    if(navItemsRef.current && hamburgerRef.current){ checkWidth()} else{
+      setTimeout(() => {
+         if(navItemsRef.current && hamburgerRef.current) checkWidth();
+      }, 25);
+    };
     window.addEventListener('resize', checkWidth)
 
     return () => {
@@ -95,6 +101,11 @@ useEffect(() => {
   }
 
   }, [isOpen])
+
+  useMemo(() => {
+    setIsOpen(false);
+    return null;
+  }, [location]);
   
 
   return (

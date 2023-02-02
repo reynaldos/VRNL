@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
 
 import { Link,useLocation, useNavigate } from "react-router-dom";
-import {auth , provider } from '../firebase';
+import {auth , provider } from '../util/firebase';
 import { signInWithPopup, sendPasswordResetEmail } from "firebase/auth";
 
 import { useFormik } from 'formik';
