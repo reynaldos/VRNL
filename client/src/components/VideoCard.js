@@ -51,8 +51,8 @@ export const VideoCard = ({data}) =>{
 const CardContainer = styled.div`
   position: relative;
   max-height: 250px;
-  width: 30%;
-  min-width: 215px;
+  width: 32%;
+
   aspect-ratio: 1.3;
   background: ${({theme})=>theme.elementBG};
   /* border: solid transparent 2px; */
@@ -62,8 +62,7 @@ const CardContainer = styled.div`
   -webkit-box-sizing: border-box;
   backdrop-filter: ${({theme})=>theme.blur};
   padding:2px; 
-
-  
+  transition: width .3s ease, height .3s ease, aspect-ratio .3s ease;
 
   &:hover{
     cursor: pointer;
@@ -84,16 +83,21 @@ const CardContainer = styled.div`
     }
   }
 
+  @media screen and (min-width: ${({theme}) => theme.breakpoint.xl}){
+    width: 24%;
+  }
+
+  @media screen and (max-width: ${({theme}) => theme.breakpoint.lg}){
+    aspect-ratio: .75;
+  }
+
   @media screen and (max-width: ${({theme}) => theme.breakpoint.sm}){
-   width: 45%;
-    min-width: auto;
-
+    width: 48%;
   }
 
-  @media screen and (max-width: ${({theme}) => theme.breakpoint.xs}){
-    min-width: auto;
-  }
-  
+  /* @media screen and (max-width: ${({theme}) => theme.breakpoint.xs}){
+    width: 8%;
+  } */
 `
 
 const Details = styled.div`

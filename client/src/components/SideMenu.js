@@ -219,9 +219,9 @@ const Container = styled.menu`
     position: fixed;
     height: 90%;
     max-height: 900px;
+    width: 30%;
     min-width: 300px;
     max-width: 360px;
-    width: 30%;
     color:white;
 
     align-self: center;

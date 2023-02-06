@@ -208,8 +208,10 @@ const Title = styled.h1`
 
 
 const SideSpacer = styled.div`
-flex: 1;
+/* flex: 1; */
+width: 30%;
 min-width: 300px;
+max-width: 360px;
 
   @media screen and (max-width: ${({theme}) => theme.breakpoint.md}){
        display: none;

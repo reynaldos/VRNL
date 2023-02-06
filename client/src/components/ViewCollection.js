@@ -65,7 +65,6 @@ export const ViewVideos = () => {
 }
 
 
-
 const Container = styled.section`
   flex: 2;
   height: 100%;
@@ -78,30 +77,31 @@ const Container = styled.section`
   margin: 1rem;
   overflow: hidden;
 
+  /* outline: 1px red solid; */
+
 `
 
 const Wrapper = styled.div`
   flex: 2;
-  width: calc(100% - 2rem); 
+  width: calc(100%); 
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
-  max-width: 1000px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+
+  max-width: 1400px;
   overflow: auto;
 
-  padding: 1rem;
-  gap: 1rem;
+  gap:.45rem;
 
-  padding-bottom: 20%;
-  -webkit-mask-image: linear-gradient(transparent, black 10%, black 70% ,transparent);
+  padding-top: 10px;
+  padding-bottom: 100px;
+  -webkit-mask-image: linear-gradient(transparent, black 10px, black 70% ,transparent);
   mask-image: linear-gradient(transparent, black 10px, black 70% ,transparent);
-
-
-  @media screen and (max-width: ${({theme}) => theme.breakpoint.xs}){
-    width: calc(100% - 1rem); 
-    padding: 0rem;
-
-
+  
+  @media screen and (max-width: ${({theme}) => theme.breakpoint.sm}){
+    padding-bottom: 30%;
   }
 
 
