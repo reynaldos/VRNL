@@ -49,11 +49,17 @@ export const startRecording = (stream, lengthInMS) => {
     },
   );
 
+  console.log(recorded);
+
   return Promise.all([
     stopped,
     recorded
   ])
-  .then(() => data);
+  .then(() => {
+    console.log(data);
+    return data
+    }
+  );
 
 }
 
@@ -72,8 +78,6 @@ export const toggleRecordCycle = (recordBtnText, setRecordBtnText, recordProcces
       
     }
   }
-
-
 
 
 export const showImageAt = (vidSource, setThumbNails, secs) => {
@@ -135,9 +139,7 @@ export const getVideoImage = (path, duration, secs, callback) => {
             callback.call(me, undefined, undefined, e);
         };
         video.src = path;
-    }
-
- 
+  }
 
 export const closePrompt = (promptBubble) => {
     // e.preventDefault();
@@ -155,16 +157,22 @@ export const selectThumbnail = (key, setThumbnail, chosenThumbnail) =>{
     setThumbnail(key);
 
   }
-
 }
 
-export const uploadFile = (userId, file, name, urlType) => {
+export const uploadFile = (userId, file, urlType, isProfile) => {
   // Return a promise that will either resolve or emit an error
   return new Promise((resolve, reject) => {
 
     const storage = getStorage(app);
-    const fileName = `${new Date().getTime()}_${name}`;
-    const storageRef = ref(storage, `${urlType}/${userId}/${fileName}`);
+    const fileName = `${new Date().getTime()}`;
+
+    var storageRef
+    if (urlType === "imgUrl"){
+     storageRef = ref(storage, isProfile ? `${urlType}/${userId}/profilepic/${fileName}` : `${urlType}/${userId}/thumbnail/${fileName}`);
+    }else{
+     storageRef = ref(storage, `${urlType}/${userId}/${fileName}`);
+      
+    }
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on(

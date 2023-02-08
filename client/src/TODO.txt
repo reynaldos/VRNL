@@ -6,6 +6,7 @@ TODO:
     - Screen height queries
     - loading not spinning on Safari 
     - help, privacy, terms text
+    - Delete Assets from storage upon profile pic change/video deletion
 
 - Sign In
     - forgot password funcitonality
@@ -20,9 +21,11 @@ TODO:
     - Backdrop Blur
     - Options Btn for comments - edit
     - Sort Comments By
+    - Edit Video Title
 
 - Rcord Page
    - fix recording funcitonality
+   - Thumnbnail list scroll for mobile
    - Backdrop Blur
 
 - Side Menu
@@ -33,7 +36,7 @@ TODO:
     - Btn Height vs Link Btn
 
 - Settings Page
-    - Update User functionality
+    - Show prev profile pics
 
 - 404 Page
     - Build UI
@@ -57,3 +60,5 @@ Title overflow text slide✅
 Build UI✅
 video file upload funcitonality✅
 thumbnail funcitonality✅
+Update User functionality✅
+Delete Video✅

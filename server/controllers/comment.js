@@ -14,7 +14,7 @@ export const addComment = async (req,res,next) =>{
     }
 }
 
-// ADD COMMENT
+// DELETE COMMENT
 export const deleteComment = async (req,res,next) =>{
     try {
         const comment = await Comment.findById(req.params.id);
