@@ -1,20 +1,24 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import styled from "styled-components";
 import { NewComment, CommentSection } from '../components/Comment.js';
 // import Thumbnail from '../imgs/thumbnail.png';
 
 import axios from 'axios';
-import { useSelector } from 'react-redux';
 import {format} from 'timeago.js';
 
 import { LoadingIcon} from '../components/LoadingIcon';
+import { OptionsButton } from '../components/OptionsButton';
 
 import {
- useLocation
+ useLocation,
+ useNavigate
 } from "react-router-dom";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchStart, fetchSuccess, fetchFailure } from "../redux/videoSlice";
+import { toggleUpload } from "../redux/userSlice";
+
+
 
 
 const VideoPage = () => {
@@ -23,9 +27,46 @@ const VideoPage = () => {
   const [ loadComments, setLoadComments] = useState(true);
   const [ comments, setComments ] = useState([]);
 
+  const navigate = useNavigate();
   const videoId = useLocation().pathname.split('/').pop();
+  const location =  useLocation().pathname.split('/')[1];
+
+  const [editTitle, setEditTitle] = useState(false);
+  const titleRef = useRef();
 
   const dispatch = useDispatch();
+
+  const optionBtnActions = [
+    {
+      title: 'rename',
+      icon: <></>,
+      action: ()=>{}
+    },
+    {
+      title: 'delete',
+      icon: <></>,
+      action: ()=>{deleteVideo()}
+    }
+  ]
+
+  const renameVideo = async() => {
+
+
+  }
+
+  const deleteVideo =  async() => {
+
+
+    try {
+      const res = await axios.delete(`/videos/${videoId}`);  
+      dispatch(toggleUpload(true));
+      navigate(`/${location}/collection/${currentVideo.collectionId}`);
+
+    } catch (error) {
+      dispatch(fetchFailure());
+    }
+
+  }
 
 
  useEffect(()=>{
@@ -68,7 +109,15 @@ const VideoPage = () => {
 
   return (
     <Container>
-      <Title>{currentVideo.title}</Title>
+      <Row>
+        <Title 
+            ref={titleRef}type={'text'} 
+            value={currentVideo.title} 
+            disabled={!editTitle}/>
+            
+          <OptionsButton btnList={optionBtnActions}/>
+        </Row>
+
       <SubTitle>{currentVideo.username}</SubTitle>
       <SubTitle style={{color:'rgba(217, 217, 217,1)'}}>{format(currentVideo.createdAt)}</SubTitle>
 
@@ -188,11 +237,13 @@ const Wrapper = styled.div`
 
 
 
-const Title = styled.h2`
-  align-self: flex-start;
-  line-height: 1rem;
-  margin-top: 1rem;
-  margin-bottom: .5rem;
+const Title = styled.input`
+  all: unset;
+  font-weight: 700;
+  font-size: 1.5rem;
+  background-color: blue;
+  width: 80%;
+ 
 
 `
 
@@ -265,3 +316,11 @@ const NewCommentWrap = styled.div`
 
 
 
+const Row = styled.span`
+ align-self: flex-start;
+
+  display: flex;
+  /* gap: 10px; */
+  align-items: center;
+  align-content: center;
+`

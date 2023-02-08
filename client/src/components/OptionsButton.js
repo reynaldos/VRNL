@@ -69,7 +69,7 @@ const OptionsIcon = styled.button`
     ${({isOpen})=>{
     if(isOpen)
       return `
-        mix-blend-mode: color-burn;
+        // mix-blend-mode: color-burn;
 
          &:hover{
           cursor: pointer;
@@ -84,7 +84,7 @@ const OptionsIcon = styled.button`
 `
 const OptionsWrapper = styled.div`
   margin: 0 .5rem;
-  top: 0;
+  top: .5rem;
 
   ${({left})=>{
     return left ? 
