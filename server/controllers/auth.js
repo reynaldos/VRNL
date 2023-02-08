@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import { createError } from "../error.js";
 
+const defaultAvatarUrl = 'https://firebasestorage.googleapis.com/v0/b/vrnl-5055e.appspot.com/o/defaultAvatar.jpg?alt=media&token=faabde89-1119-4819-be57-2c7fc7e294db';
+
 // CREATE A USER
 export const signup = async(req,res, next) =>{
     console.log(req.body);
@@ -18,7 +20,7 @@ export const signup = async(req,res, next) =>{
         // encrypt password 
         const salt = bcrypt.genSaltSync(10);
         const hash = bcrypt.hashSync(req.body.password, salt);
-        const newUser = User({...req.body, password: hash}); // new user object
+        const newUser = User({...req.body, password: hash, image: defaultAvatarUrl}); // new user object
         await newUser.save() // saves to DB
         res.status(200).send("User has been created!");
 

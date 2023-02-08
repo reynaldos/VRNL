@@ -4,15 +4,24 @@ import Collection from "../models/Collection.js";
 import {createError} from "../error.js";
 import { query } from "express";
 
-
+import bcrypt from "bcryptjs";
 
 // UPDATE USER
 export const update = async (req, res, next) => { 
+
+    console.log(req.body);
+    
+     // encrypt password 
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(req.body.password, salt);
+
     // check if current user matches user to update
     if(req.params.id === req.user.id) {
         try {
             const updatedUser = await User.findByIdAndUpdate(req.params.id,{
-                $set: req.body
+                $set: {...req.body, password: hash}
+
+
             },{
                 new: true
             });

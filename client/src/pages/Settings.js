@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from "styled-components";
 
 import { useFormik } from 'formik';
@@ -11,13 +11,21 @@ import Button from '../components/Button';
 
 import { Link } from "react-router-dom";
 
+import { uploadFile } from '../util/recordUtil';
+
+import { loginSuccess } from "../redux/userSlice";
+
+
 
 const Settings = () => {
 
   const dispatch = useDispatch();
   const { currentUser } = useSelector(state=>state.user);
   const [isEditting, setIsEditting] = useState(false);
+  const [profileChanged, setProfileChanged] = useState(false);
 
+
+  const profileRef = useRef();
 
   const ValdationSchema = Yup.object({
         username: Yup.string()
@@ -26,7 +34,7 @@ const Settings = () => {
           .required('Required')
           .test('Unique Username', 'Username is taken', // <- key, message
                 function (value) {
-                  if (value == currentUser.name){
+                  if (value === currentUser.name){
                     return new Promise((resolve, reject) => {
                       resolve(true);
                     })
@@ -52,12 +60,11 @@ const Settings = () => {
           .required('Required')
           .test('Unique Email', 'Email is taken', // <- key, message
                 function (value) {
-                  if (value == currentUser.email){
+                  if (value === currentUser.email){
                     return new Promise((resolve, reject) => {
                       resolve(true);
                     })
                   }
-
                    if (value && 6 <= value.length){
                     return new Promise((resolve, reject) => {
                         axios.post("/auth/available", {email: value})
@@ -83,10 +90,11 @@ const Settings = () => {
       });
 
   const changeProfile = (event) =>{
-        var image = document.getElementById("output");
-        image.src = URL.createObjectURL(event.target.files[0]);
     
+    var image = document.getElementById("output");
+    image.src = URL.createObjectURL(event.target.files[0]);
 
+    setProfileChanged(true);
   }
 
   // form hook
@@ -99,9 +107,9 @@ const Settings = () => {
      },
       validationSchema: isEditting ? ValdationSchema : null,
       validateOnChange: false,
-     onSubmit: values => {
-      //  alert(JSON.stringify(values, null, 2));
-      //  handleNewUser();
+     onSubmit: (v)=>{
+
+        submitHandler(v)
      },
    });
 
@@ -118,6 +126,9 @@ const Settings = () => {
    }
 
    const cancelHandler = (e) =>{
+
+    setProfileChanged(false);
+
     e.preventDefault();
     setIsEditting(false);
     formik.values.username='resetted'
@@ -126,6 +137,25 @@ const Settings = () => {
     formik.values.email = currentUser.email;
     formik.values.password = '......';
     formik.values.confirmPassword = '';
+   }
+
+   const submitHandler = async (values) => {
+
+      var newUser;
+      if (profileChanged) {
+        const base64Response = await fetch(profileRef.current.src);
+        const profileBlob =  await base64Response.blob();
+        const imageURL = await uploadFile(currentUser._id, profileBlob, 'imgUrl');
+        newUser = {name: values.username, email: values.email, password: values.password, image: imageURL};
+      }else{
+        newUser = {name: values.username, email: values.email, password: values.password};
+      }
+
+      const res = await axios.put(`/users/${currentUser._id}`, newUser);
+      res.status === 200 && setIsEditting(false);
+      dispatch(loginSuccess(res.data));
+      setProfileChanged(false);
+
    }
 
 
@@ -138,8 +168,8 @@ const Settings = () => {
          <label className="-label" htmlFor="file">
           <span>Change Image</span>
         </label>
-        <input id="file" type="file" onChange={changeProfile}/>
-        <Avatar src={currentUser.image} id="output" width="200"/>
+        <input id="file" type="file" accept="image/*" onChange={changeProfile}/>
+        <Avatar ref={profileRef} src={currentUser.image} id="output" width="200"/>
       </AvatarWrap>
       
 
@@ -184,7 +214,8 @@ const Settings = () => {
        </InputHolder>}
 
       <Row>
-        {isEditting && <Button inverse={true}
+        {isEditting && <Button 
+                  inverse={true}
                  active={isEditting}
             onClick={cancelHandler}>Cancel</Button>}
         <Button active={true}
