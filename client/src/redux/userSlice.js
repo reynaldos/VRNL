@@ -43,8 +43,21 @@ export const userSlice = createSlice({
        newCollection: (state, action)=>{
 
           if(action.payload.type === 'subscriberedFolders'){
-               if(!state.currentUser.favorites.includes()){
-                    state.currentUser.subscriberedFolders.push(action.payload.collectionId);
+               state.currentUser.subscriberedFolders.push(action.payload.collectionId);
+          }
+         
+       },
+
+        deleteCollection: (state, action)=>{
+          
+          if(action.payload.type === 'subscriberedFolders'){
+               if( state.currentUser.subscriberedFolders.includes(action.payload.collectionId)){
+                     state.currentUser.subscriberedFolders.splice( 
+                          state.currentUser.subscriberedFolders.findIndex(
+                              (collectionId) => collectionId === action.payload.collectionId
+                         ),
+                    1
+                    );
                }
           }
          
@@ -57,6 +70,6 @@ export const userSlice = createSlice({
     }
 });
 
-export const { loginStart, loginSuccess, loginFailure, logout, favorite, unfavorite, newCollection, toggleUpload } = userSlice.actions;
+export const { loginStart, loginSuccess, loginFailure, logout, favorite, unfavorite, newCollection, deleteCollection, toggleUpload } = userSlice.actions;
 
 export default userSlice.reducer;

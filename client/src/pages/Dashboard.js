@@ -11,7 +11,10 @@ import VideoPage from './VideoPage';
 import { HiOutlineVideoCamera} from "react-icons/hi2";
 
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+
+import { deleteCollection as reduxDeleteCollection} from "../redux/userSlice";
+
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -26,6 +29,8 @@ const Dashboard = ({type}) => {
   const isVideoPage = useLocation().pathname.split('/').includes('video');
 
   const { currentUser } = useSelector(state=>state.user);
+  const dispatch = useDispatch();
+
 
   const [ collections, setCollections ] = useState([]);
 
@@ -45,31 +50,13 @@ const Dashboard = ({type}) => {
     },{
       title: 'delete',
       icon: <></>,
-      action: ()=>{}
+      action: ()=>{deleteCollection()}
     }
   ]
 
 
   // updates view when location changes
   useEffect(()=>{
-    const fetchCollections = async () =>{
-      try {
-
-        const collectionIds = getcollectionIds();
-        const CollectionRes = await Promise.all(collectionIds.map(async (id) =>{
-
-          return await (await axios.get(`/collections/${id}`)).data
-        }));
-
-        setCollections(CollectionRes); 
-
-        // update main display when tab changes
-        setSelected(CollectionRes.length > 0 ? CollectionRes[0] : '');  
-        
-      } catch (error) {
-        
-      }
-    }
     fetchCollections();
   },[type, currentUser.subscriberedFolders, currentUser.subscriberedUsers, currentUser.subscriberedGroups])
 
@@ -96,6 +83,38 @@ const Dashboard = ({type}) => {
     }
     
     navigate(`/${type}`);
+  }
+
+  // fetch new collections
+  const fetchCollections = async () =>{
+      try {
+
+        const collectionIds = getcollectionIds();
+        const CollectionRes = await Promise.all(collectionIds.map(async (id) =>{
+
+          return await (await axios.get(`/collections/${id}`)).data
+        }));
+
+        setCollections(CollectionRes); 
+
+        // update main display when tab changes
+        setSelected(CollectionRes.length > 0 ? CollectionRes[0] : '');  
+        
+      } catch (error) {
+        
+      }
+    }
+
+  // Delete collection
+   const deleteCollection =  async() => {
+      try {
+        const res = await axios.delete(`/collections/${selectedTab._id}`);  
+        dispatch(reduxDeleteCollection({type: type === 'myvournals' ? 'subscriberedFolders' : '', collectionId: selectedTab._id}))
+        setSelected('');
+        fetchCollections();
+
+      } catch (error) {
+      }
   }
   
   return (
@@ -173,7 +192,6 @@ const Main = styled.main`
   padding: 0 1rem;
   position: relative;
 
-  /* outline: 1px solid black; */
 `
 
 const TitleWrap = styled.div`
@@ -182,6 +200,10 @@ const TitleWrap = styled.div`
   justify-content: center;
   width: 100%;
   max-width: 430px;
+
+  /* outline: 1px solid black; */
+  margin-top: 1rem;
+
 `
 
 const Title = styled.h1`

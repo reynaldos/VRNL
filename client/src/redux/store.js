@@ -21,7 +21,16 @@ const persistConfig = {
   storage,
 };
 
-const rootReducer = combineReducers({ user: userReducer, video: videoReducer, collection: collectionReducer });
+const appReducer = combineReducers({ user: userReducer, video: videoReducer, collection: collectionReducer });
+
+const rootReducer = (state, action) => {
+
+  if (action.type === 'user/logout') {
+    state = undefined;
+  }
+
+  return appReducer(state, action);
+};
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -35,4 +44,4 @@ export const store = configureStore({
     }),
 });
 
-export const persistor = persistStore(store)
+export const persistor = persistStore(store);

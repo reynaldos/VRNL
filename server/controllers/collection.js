@@ -82,8 +82,10 @@ export const deleteCollection = async (req, res, next)=>{
         if(!collection) return next(createError(404, 'Collection not found!'));
         if(!collection.subscriberedUsers.includes(req.user.id))return next(createError(403, 'You most be part of collection to delete!'));
 
+        const collectionId = req.params.collectionId;
+
         // get user videos from collection
-        const userCollectionVideos = await Video.find({ collectionId: req.params.collectionId, 
+        const userCollectionVideos = await Video.find({ collectionId: collectionId, 
                                                         userId: req.user.id });
         
         // delete all videos made by user
@@ -92,22 +94,23 @@ export const deleteCollection = async (req, res, next)=>{
         })
 
         // remove collection from user collections
-        await User.findByIdAndUpdate(req.user.id,{
-            $pull:{subscriberedFolders: req.params.collectionId,
-                    subscriberedUsers: req.params.collectionId,
-                    subscriberedGroups: req.params.collectionId
-            },
-
-        });
-
+        await User.findByIdAndUpdate(
+            req.user.id,
+            { $pull:{ subscriberedFolders: collectionId,
+                    subscriberedUsers: collectionId,
+                    subscriberedGroups: collectionId,
+                    favorites:  collectionId},},
+            {new: true}
+        );
+        
         // remove user from collection subsciber list
-        const updatedCollection = await Collection.findByIdAndUpdate(req.params.collectionId,{
-            $pull:{subscriberedUsers: req.user.id}
-        });
+        const updatedCollection = await Collection.findByIdAndUpdate(
+            collectionId,
+            { $pull: {subscriberedUsers: req.user.id} },
+            {new: true});
 
         // remove collection from DB if no more subscribers
         if( updatedCollection.subscriberedUsers.length === 0 ) await updatedCollection.delete();
-        
         res.status(200).json('Collection has been deleted.');
 
     } catch (error) {
@@ -122,7 +125,7 @@ export const getCollection = async (req, res, next)=>{
         if(!collection) return next(createError(404, 'Collection not found!'));
         if(!collection.subscriberedUsers.includes(req.user.id)) return next(createError(403, 'You most be part of collection to access!'));
 
-        res.status(200).json(collection);
+        res.status(200).json(collection);``
     } catch (error) {
          next(error);
     }

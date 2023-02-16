@@ -22,9 +22,6 @@ export const videoSlice = createSlice({
         state.loading = false;
         state.error = true;
        },
-        logout: (state)=>{
-            return initialState
-       },
     }
 });
 
