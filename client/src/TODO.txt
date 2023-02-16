@@ -13,7 +13,7 @@ TODO:
     - toggle hide password
 
 - Dashbaord
-    - Collection Options
+    - Collection Options(rename | combine)
     - side bar view for mobile
     - Title text slide for overflow
 
@@ -62,3 +62,5 @@ video file upload funcitonality✅
 thumbnail funcitonality✅
 Update User functionality✅
 Delete Video✅
+save dark mode into cookies✅
+Delete Collections Backend✅

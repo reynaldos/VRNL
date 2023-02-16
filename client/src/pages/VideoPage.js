@@ -7,6 +7,7 @@ import axios from 'axios';
 import {format} from 'timeago.js';
 
 import { LoadingIcon} from '../components/LoadingIcon';
+
 import { OptionsButton } from '../components/OptionsButton';
 
 import {
@@ -108,53 +109,56 @@ const VideoPage = () => {
   }
 
   return (
-    <Container>
-      <Row>
-        <Title 
-            ref={titleRef}type={'text'} 
-            value={currentVideo.title} 
-            disabled={!editTitle}/>
-            
-          <OptionsButton btnList={optionBtnActions}/>
-        </Row>
+    <>
+      <Container>
+        <Row>
+          <Title 
+              ref={titleRef}type={'text'} 
+              value={currentVideo.title} 
+              disabled={!editTitle}/>
+              
+            <OptionsButton btnList={optionBtnActions}/>
+          </Row>
 
-      <SubTitle>{currentVideo.username}</SubTitle>
-      <SubTitle style={{color:'rgba(217, 217, 217,1)'}}>{format(currentVideo.createdAt)}</SubTitle>
+        <SubTitle>{currentVideo.username}</SubTitle>
+        <SubTitle style={{color:'rgba(217, 217, 217,1)'}}>{format(currentVideo.createdAt)}</SubTitle>
 
-      <Wrapper>
+        <Wrapper>
 
-        {/* VIDEO CONTAINER */}
-        <VideoContainer>
-            {loading ? 
-             <VideoWrapper><LoadingIcon/></VideoWrapper> :
+          {/* VIDEO CONTAINER */}
+          <VideoContainer>
+              {loading ? 
+              <VideoWrapper><LoadingIcon/></VideoWrapper> :
 
+                <VideoWrapper>
+                    <Video src={currentVideo.videoUrl} poster={currentVideo.imgUrl} controls/>
+
+                    {/* NEW COMMENT SECTION */}
+                    <NewCommentWrap>
+                        <SubTitle>new Comment</SubTitle>
+                        <NewComment videoId={currentVideo._id} updateComments={updateComments}/>
+                    </NewCommentWrap>
+
+                    <div style={{flex: '.75'}}></div>
+                  
+                </VideoWrapper>}
+          </VideoContainer>
+
+          {/* COMMENTS SECTION */}
+          <VideoContainer>
+              {loadComments ? 
+              <VideoWrapper><LoadingIcon/></VideoWrapper> :
+              
               <VideoWrapper>
-                  <Video src={currentVideo.videoUrl} poster={currentVideo.imgUrl} controls/>
-
-                  {/* NEW COMMENT SECTION */}
-                  <NewCommentWrap>
-                      <SubTitle>new Comment</SubTitle>
-                      <NewComment videoId={currentVideo._id} updateComments={updateComments}/>
-                  </NewCommentWrap>
-
-                  <div style={{flex: '.75'}}></div>
-                
+                  <SubTitle style={{marginBottom:'0rem'}}>Comments</SubTitle>
+                  <CommentSection comments={comments} updateComments={updateComments}/>
               </VideoWrapper>}
-        </VideoContainer>
+          </VideoContainer>
 
-        {/* COMMENTS SECTION */}
-        <VideoContainer>
-            {loadComments ? 
-             <VideoWrapper><LoadingIcon/></VideoWrapper> :
-             
-             <VideoWrapper>
-                <SubTitle style={{marginBottom:'0rem'}}>Comments</SubTitle>
-                <CommentSection comments={comments} updateComments={updateComments}/>
-            </VideoWrapper>}
-        </VideoContainer>
-
-      </Wrapper>
-    </Container> 
+        </Wrapper>
+      </Container> 
+    </>
+   
   )
 }
 
@@ -241,7 +245,7 @@ const Title = styled.input`
   all: unset;
   font-weight: 700;
   font-size: 1.5rem;
-  background-color: blue;
+  /* background-color: blue; */
   width: 80%;
  
 

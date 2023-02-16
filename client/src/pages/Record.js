@@ -7,6 +7,8 @@ import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleUpload } from "../redux/userSlice";
 
+import {Loading as LoadingModal} from '../components/Loading';
+
 import {
  useLocation,
  useNavigate
@@ -57,9 +59,10 @@ const Record = () => {
   
   const [recordBtnText, setRecordBtnText] = useState('Record');
   const [videoComplete, setVideoComplete] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const collectionId = useLocation().pathname.split('/').pop();
-  const collectionType =useLocation().pathname.split('/')[1];
+  const collectionType = useLocation().pathname.split('/')[1];
 
   const dispatch = useDispatch();
 
@@ -134,9 +137,8 @@ const Record = () => {
   }
 
   const recordingFinished = ()=>{
-    const recordStopEvent = new Event('stopRecording');
-    window.dispatchEvent(recordStopEvent);
 
+    showImageAt(videoRecordingRef.current.src, setThumbNails, 0);
     setVideoComplete(true);
     setRecordBtnText('Record');
     videoRecordingWappereRef.current.classList.replace("hide","show");
@@ -150,7 +152,7 @@ const Record = () => {
     })
      promptList.current = [];
 
-    showImageAt(videoRecordingRef.current.src, setThumbNails, 0);
+    
 
   }
 
@@ -183,14 +185,13 @@ const Record = () => {
     console.log('video uploaded');
   }
 
-
-  const handleVideoPost = async () =>{
-
+  const handleVideoPost = async (e) =>{
+    setLoading(true);
     console.log('post video');
  
     // get title from input or use current date
-    const title = recordingTitleRef.current.value || new Date().toDateString()
-    const imgSrc = chosenThumbnail >= 0 ? thumbNails[chosenThumbnail] : thumbNails[0]
+    const title = recordingTitleRef.current.value || new Date().toDateString();
+    const imgSrc = chosenThumbnail >= 0 ? thumbNails[chosenThumbnail] : thumbNails[0];
 
     // get thumbnail blob
     const base64Response = await fetch(imgSrc);
@@ -201,8 +202,8 @@ const Record = () => {
     const videoBlob =  await videobase64Response.blob();
 
     // upload files to storage
-    const videoUrl =  await uploadFile(currentUser._id, videoBlob,title ,'videoUrl');
-    const imgUrl = await uploadFile(currentUser._id, imgBlob,title ,'imgUrl');
+    const videoUrl =  await uploadFile(currentUser._id, videoBlob ,'videoUrl');
+    const imgUrl = await uploadFile(currentUser._id, imgBlob ,'imgUrl');
 
     var fileBody = {
       title, 
@@ -332,20 +333,30 @@ const Record = () => {
 
             {/* save btns */}
             <VideoBtnWrap>
-            <Link to={'../..'} style={{textDecoration:'none', color:'inherit'}}><Btn>Cancel</Btn></Link>
-            <Btn type='reset' onClick={reset}>restart</Btn>
+            {!loading ? 
+              <Link 
+                to={'../..'} style={{textDecoration:'none', color:'inherit'}}><Btn>Cancel</Btn>
+              </Link> :
+              <Btn isdisabled={loading}  disabled={loading}>Cancel</Btn>}
+
+            <Btn 
+              isdisabled={loading}
+              disabled={loading}
+              type='reset' onClick={reset}>restart</Btn>
             <BtnLink
                 href=''
                 ref={downloadBtnRef}>
               Save to device
             </BtnLink>
-            <Btn onClick={handleVideoPost}>post</Btn>
+            <Btn isdisabled={loading}  disabled={loading} onClick={handleVideoPost}>post</Btn>
           </VideoBtnWrap>
         </VideoController>
 
         </Wrapper>
       </Container>
  
+
+      {loading && <LoadingModal/>}
      </>
   )
 }
@@ -537,6 +548,20 @@ const Btn = styled.button`
       border: ${({theme})=>`solid ${theme.icon} 2px`};
        /* background-color: rgba(255,255,255, .5) */
   }
+
+
+  ${({isdisabled})=>{
+
+    if(isdisabled){
+      return `
+          filter: brightness(65%);
+
+          &:hover{
+            cursor: default;
+            border: solid transparent 2px;
+        }
+      ` }
+    }}
 
 `
 
@@ -749,7 +774,7 @@ const ThumnbnailList = styled.ol`
   display: flex;
   justify-content: start;
   margin: .5rem 0;
-  overflow-x: scroll;
+  overflow-x: hidden;
   padding: 0 4% 0 4%;
   list-style-type: none;
 
