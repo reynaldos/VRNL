@@ -22,7 +22,8 @@ const Btns = [
    {
     name: 'Subscribers',
     path: 'subscribers',
-    Icon: HiOutlineUserGroup
+    Icon: HiOutlineUserGroup,
+    disabled: true
   },
    {
     name: 'Settings',

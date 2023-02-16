@@ -146,8 +146,9 @@ useEffect(() => {
           {location !== `settings` && 
             <Link 
               // style={{height: 'inherit', boxSizing:'inherit'}}
-              to={location === 'myvournals' ? 'subscribers': 'myvournals'}>
-              <Btn name={'Toggle Dashboard'}>
+              // to={location === 'myvournals' ? 'subscribers': 'myvournals'}>
+              to={null}>
+              <Btn name={'Toggle Dashboard'} disabled={true}>
                 <BtnContent>
                 {location === 'myvournals' ? <HiOutlineUserGroup/> : <HiOutlineUser/>}
                 </BtnContent>
@@ -251,6 +252,12 @@ const Btn = styled.button`
        /* background-color: rgba(255,255,255, .5) */
   }
 
+   &:disabled {
+      cursor: default;
+      border: solid transparent 2px;
+      filter: brightness(70%);
+      -webkit-filter: brightness(70%);
+  }
 `
 
 

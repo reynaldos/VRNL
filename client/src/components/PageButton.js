@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 
 export const PageButton = ({info}) => {
-    const { name,path,Icon } = info;
+    const { name,path,Icon, disabled } = info;
 
     const [iconSize, setIconSize] = useState(64);
 
@@ -26,11 +26,11 @@ export const PageButton = ({info}) => {
   },[]);
 
   return (<div>
-      <Link to={path}>
-          <Btn name={name}>
-          <BtnContent>
-              <Icon size={iconSize}/>
-          </BtnContent>
+      <Link to={disabled ? null : path}>
+          <Btn name={name} disabled={disabled}>
+            <BtnContent>
+                <Icon size={iconSize}/>
+            </BtnContent>
           </Btn>
       </Link>
       <BtnTitle>{name}</BtnTitle>
@@ -56,7 +56,7 @@ const Btn = styled.button`
   align-items:center;
   justify-content:center;
   backdrop-filter: ${({theme})=>theme.blur};
- 
+
 
   @media screen and (max-width: ${({theme}) => `calc(${theme.breakpoint.md} + 100px)`}){
    width: 136px;
@@ -70,6 +70,14 @@ const Btn = styled.button`
   &:hover{
     cursor: pointer;
      border: ${({theme})=>`solid ${theme.icon} 4px`};
+  }
+
+
+  &:disabled{
+    cursor: default;
+    border: solid transparent 4px;
+    filter: brightness(70%);
+    -webkit-filter:brightness(70%);
   }
   
 `
