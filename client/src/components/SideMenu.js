@@ -205,6 +205,7 @@ const NewCollectionModal = ({type, toggleModal}) => {
             </SubscribersContainer>}
 
           <Button 
+              active={true}
               onClick={createNewCollection}
               style={{width:'33%', alignSelf: 'center'}}>Create</Button>
         </ModalWrapper>
@@ -291,12 +292,12 @@ const TabsWrap = styled.ul`
     outline: blue 1px solid;
     height: calc(100% - 100px - 2.1rem - .25rem - 32px);
     overflow-y: auto;
-    -webkit-mask-image: linear-gradient(transparent, black 15px, black 90% ,transparent);
-    mask-image: linear-gradient(transparent, black 15px, black 90% ,transparent);
+    -webkit-mask-image: linear-gradient(black, black 15px, black 90% ,transparent);
+    mask-image: linear-gradient(black, black 15px, black 90% ,transparent);
 
-    /* li:first-child{
-      margin-top: 5px;
-    } */
+    li:first-child{
+      margin-top: 0px;
+    }
 
     li:last-child{
       margin-bottom: 10%;
@@ -460,6 +461,12 @@ const SearchWrap = styled.div`
   display: flex;
   align-items: center;
   margin: 0 1rem;
+
+
+  @media screen and (max-width: ${({theme}) => theme.breakpoint.xs}){
+   bottom: 120px;
+  } 
+
 
 
 `

@@ -14,7 +14,6 @@ TODO:
 
 - Dashbaord
     - Collection Options(rename | combine)
-    - side bar view for mobile
     - Title text slide for overflow
 
 - Video Page
@@ -64,3 +63,4 @@ Update User functionality✅
 Delete Video✅
 save dark mode into cookies✅
 Delete Collections Backend✅
+side bar view for mobile✅

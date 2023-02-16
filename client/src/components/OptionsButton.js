@@ -1,8 +1,18 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from "styled-components";
+
+import { useLocation } from "react-router-dom";
 
 export const OptionsButton = ({btnList, left}) => {
     const [isOpen, setIsOpen] = useState(false);
+
+    const pathList =  useLocation().pathname;
+
+    useEffect(() => {
+      setIsOpen(false);
+  
+    }, [pathList])
+    
 
     return (
     <div style={{position:'relative'}}>
