@@ -157,7 +157,7 @@ useEffect(() => {
      
         {/* toggle dark mode */}
         <Btn name={'Toggle Dark Mode'}
-            onClick={(e)=>{setDarkMode(old=>!old)}} >
+            onClick={setDarkMode} >
           <BtnContent>
             {isDarkMode ? <IoSunnyOutline/> : <IoMoonOutline/>}
           </BtnContent>

@@ -6,6 +6,7 @@ import darkBG from './imgs/darkmode.png';
 import lightBG from './imgs/lightmode.png';
 // import {IconContext} from 'react-icons';
 
+import Cookies from 'js-cookie'
 
 import {
   Route,
@@ -26,8 +27,21 @@ import Settings from "./pages/Settings";
 function App() {
 
   const { currentUser } = useSelector(state=>state.user);
-  const [darkMode, setDarkMode] = useState(false);
- 
+  const [darkMode, setDarkMode] = useState(Cookies.get('darkMode') === 'true' ? true : false);
+
+
+  const toggleDarkMode = () => {
+
+    if (darkMode){
+      setDarkMode(false);
+      Cookies.set('darkMode', 'false')
+    } else {
+      setDarkMode(true);
+      Cookies.set('darkMode', 'true')
+
+    }
+
+  }
 
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
@@ -52,7 +66,7 @@ function App() {
           </Routes>
 
         {currentUser && <BottomNavbar isDarkMode={darkMode} 
-                                      setDarkMode={setDarkMode}/>}
+                                      setDarkMode={toggleDarkMode}/>}
 
         </BrowserRouter>
       </Container>
