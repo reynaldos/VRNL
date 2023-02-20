@@ -37,9 +37,13 @@ const Modal = forwardRef((props, publicRef) => {
     <Container ref={modalRef} role="dialog" aria-modal="true">
         <Wrapper>
             <Title>{modalData?.title}</Title>
-            {modalData?.info.map((value, index)=>{
-                return <Info key={index}>{value}</Info>
-            })}
+            <InfoWrap>
+                  {modalData?.info.map((value, index)=>{
+                        return <Info key={index}>{value}</Info>
+                    })}
+
+            </InfoWrap>
+
             <CloseBtn onClick={hideModal}><IoClose size={24}/></CloseBtn>
         </Wrapper>
     </Container>
@@ -73,8 +77,9 @@ const Wrapper = styled.div`
     position: relative;
     top: 50%;
     translate: 0 -50%;
-    width: 280px;
+    width: 380px;
     margin: auto;
+    max-height: 600px;
 
     background: ${({theme})=>theme.elementBG};
     /* border: ${({theme})=>`solid ${theme.icon} ${theme.borderThickness}`}; */
@@ -88,7 +93,7 @@ const Wrapper = styled.div`
     align-items: flex-start;
 
     gap: 15px;
-    padding: 2rem 3rem;
+    padding: 2rem 1.5rem;
 
     /* animation: slidein .7s 1 ease-in-out;
 
@@ -114,9 +119,18 @@ const Title = styled.h1`
 
 `
 
+const InfoWrap = styled.span`
+    /* outline: 1px solid red; */
+    overflow-y: scroll;
+    width: 100%;
+
+`
+
 const Info = styled.p`
     width: 100%;
     color: white;
+    text-transform: none;
+    margin: .75rem auto;
 
 ` 
 
