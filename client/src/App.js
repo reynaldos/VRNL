@@ -45,7 +45,10 @@ function App() {
 
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-      <Container  style={{ backgroundImage: `url(${darkMode ? darkBG : lightBG})`}}>
+      <Container  
+        // style={{ backgroundImage: `url(${darkMode ? darkBG : lightBG})`}}
+        >
+        <BGimg src={`${darkMode ? darkBG : lightBG}`} loading={'lazy'}/>
         <BrowserRouter>
           <Routes>
             <Route path="/">
@@ -83,8 +86,20 @@ const Container = styled.div`
   width: 100vw;
   color: ${({theme})=>theme.text};
 
-  background-size: cover;
   overflow: auto;
+/* 
+  background-size: cover;
   background-repeat: repeat-y;
-  background-position: center;
+  background-position: center; */
+
+  position: relative;
+`
+
+const BGimg = styled.img`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+
 `
