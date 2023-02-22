@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from "styled-components";
 import {PageButton} from '../components/PageButton';
 
@@ -11,6 +11,7 @@ import {
 
 import { useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
+import { MouseDialogue } from '../components/MouseDialogue';
 
   
 const Btns = [
@@ -36,6 +37,7 @@ const Home = () => {
   const { currentUser } = useSelector(state=>state.user);
   const navigate = useNavigate();
 
+  const btnRef = useRef();
 
   useEffect(() => {
     
@@ -51,12 +53,20 @@ const Home = () => {
 
   return (
     <>
+      {/* <MouseDialogue text={'Coming soon...'} containerRef={btnRef}/> */}
+
+
       <Title>VRNL</Title>
       <Container>
         <UserTag>hey {currentUser.name}!</UserTag>
 
         <Wrapper>
           {Btns.map((btn, i)=>{
+
+              if (i===1){
+                return <PageButton key={i} info={btn} ref={btnRef}/>
+              }
+
               return <PageButton key={i} info={btn}/>   
             })}
 

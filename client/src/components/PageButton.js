@@ -1,11 +1,11 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect, forwardRef} from 'react';
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 
 
-export const PageButton = ({info}) => {
-    const { name,path,Icon, disabled } = info;
+export const PageButton = forwardRef((props, ref) => {
+    const { name,path,Icon, disabled } = props.info;
 
     const [iconSize, setIconSize] = useState(64);
 
@@ -26,8 +26,8 @@ export const PageButton = ({info}) => {
   },[]);
 
   return (<div>
-      <Link to={disabled ? null : path}>
-          <Btn name={name} disabled={disabled}>
+      <Link to={disabled ? null : path} ref={ref}>
+          <Btn name={name} disabled={disabled} >
             <BtnContent>
                 <Icon size={iconSize}/>
             </BtnContent>
@@ -36,7 +36,7 @@ export const PageButton = ({info}) => {
       <BtnTitle>{name}</BtnTitle>
      </div>
   )
-}
+});
 
 
 const Btn = styled.button`
