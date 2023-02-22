@@ -7,7 +7,9 @@ import * as Yup from 'yup';
 import axios from "axios";
 import { useDispatch,useSelector } from "react-redux";
 
+import Modal from '../components/Modal';
 import Button from '../components/Button';
+import ConditionsInfo from '../data/ConditionsInfo';
 
 import { Link } from "react-router-dom";
 
@@ -24,7 +26,7 @@ const Settings = () => {
   const [isEditting, setIsEditting] = useState(false);
   const [profileChanged, setProfileChanged] = useState(false);
 
-
+  const modalRef = useRef();
   const profileRef = useRef();
 
   const ValdationSchema = Yup.object({
@@ -161,6 +163,7 @@ const Settings = () => {
 
 
   return (
+    <>
    <Container>
        <Wrapper onSubmit={formik.handleSubmit}>
       <Title>settings</Title>
@@ -169,7 +172,7 @@ const Settings = () => {
           <span>Change Image</span>
         </label>
         <input id="file" type="file" accept="image/*" onChange={changeProfile}/>
-        <Avatar ref={profileRef} src={currentUser.image} id="output" width="200"/>
+        <Avatar ref={profileRef} src={currentUser.image} id="output" width="200" loading='lazy'/>
       </AvatarWrap>
       
 
@@ -224,7 +227,18 @@ const Settings = () => {
 
 
     </Wrapper>
+      
+      {/* BOTTOM LINKS */}
+        <More>
+          {ConditionsInfo.map((value, index)=>{
+              return <Links key={index} onClick={()=>{modalRef.current.open(value)}}>
+                {value.title}
+              </Links>
+          })}
+        </More>
    </Container>
+
+   <Modal ref={modalRef}/></>
   )
 }
 
@@ -418,3 +432,38 @@ const Avatar = styled.img`
   border-radius: 50%;
   object-fit: cover; */
 `;
+
+const Links = styled.button`
+    background: none;
+    color:${({theme})=>theme.btnText};
+    border: none;
+    padding: 5px 10px;
+
+
+   &:hover{
+    cursor: pointer;
+    background: ${({theme})=>theme.hoverBG};
+    border-radius: ${({theme})=>theme.borderRadius};
+    backdrop-filter: ${({theme})=>theme.blur};
+  }
+
+    @media screen and (max-width: ${({theme}) => theme.breakpoint.xs}){
+    font-size: 12px;
+  }
+
+`
+
+const More = styled.div`
+  margin-top: .25rem;
+  width: 320px;
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  z-index: 2;
+
+
+  @media screen and (max-width: ${({theme}) => theme.breakpoint.xs}){
+    width: 280px;
+  }
+
+`
