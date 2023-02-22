@@ -480,7 +480,8 @@ const ViewIconWrap = styled.div`
 
   svg{
     cursor: pointer;
-    filter: brightness(80%);
+    filter: brightness(95%);
+    -webkit-filter: brightness(95%);
   }
 `
 
