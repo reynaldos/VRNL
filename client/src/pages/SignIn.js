@@ -474,7 +474,8 @@ const InputHolder = styled.span`
 const ViewIconWrap = styled.div`
   position: absolute;
   right: 0;
-  height: 100%;
+  bottom: .5rem;
+  /* height: 100%; */
   display: grid;
   place-content: center;
 

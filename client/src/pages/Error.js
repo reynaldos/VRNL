@@ -15,7 +15,7 @@ const Error = () => {
        <Subtitle>The page you were looking for does not exist.</Subtitle>
 
         <BtnWrap to={'/'}>
-          <Button active={true}>Go back Home</Button>
+          <Btn active={true} inverse={true}>Go back Home</Btn>
         </BtnWrap>
     </Container>
   )
@@ -53,7 +53,43 @@ const Subtitle = styled.p`
 
 const BtnWrap = styled(Link)`
   all: unset;
-  width: 200px;
+  /* width: 200px; */
   margin: 2rem auto;
 
+`
+
+const Btn = styled.button`
+  background: ${({theme})=>theme.elementBG};
+	border: ${({theme})=>`solid transparent 2px`};
+  border-radius: ${({theme})=>theme.borderRadius};
+	padding: .75rem;
+
+	font: inherit;
+	outline: inherit;
+
+  display: flex;
+  align-items:center;
+  justify-content:center;
+ 
+  backdrop-filter: ${({theme})=>theme.blur};
+
+  &:hover{
+    	cursor: pointer;
+      border: ${({theme})=>`solid ${theme.icon} 2px`};
+       /* background-color: rgba(255,255,255, .5) */
+  }
+
+   &:disabled {
+      cursor: default;
+      border: solid transparent 2px;
+      filter: brightness(70%);
+      -webkit-filter: brightness(70%);
+  }
+
+   color: ${({theme})=>theme.icon};
+   display: grid;
+  place-content: center;
+  line-height: 1.5rem;
+  font-size: 1.25rem;
+  
 `
