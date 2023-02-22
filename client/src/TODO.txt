@@ -36,9 +36,6 @@ TODO:
 - Settings Page
     - Show prev profile pics
 
-- 404 Page
-    - Build UI
-
 
 COMPLETE:
 Build UI✅
@@ -65,3 +62,4 @@ Delete Collections Backend✅
 side bar view for mobile✅
 help, privacy, terms text✅
 toggle hide password✅
+Build 404 page✅

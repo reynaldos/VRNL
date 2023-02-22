@@ -23,6 +23,8 @@ import SignIn from "./pages/SignIn";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
+import Error from "./pages/Error";
+
 
 function App() {
 
@@ -63,7 +65,7 @@ function App() {
                   <Route path="settings" element={<Settings/>}/>
                 </>}
                 
-                <Route path="*" element={<>Error</>}/>
+                <Route path="*" element={<Error/>}/>
 
             </Route>
           </Routes>
@@ -96,6 +98,7 @@ const Container = styled.div`
 `
 
 const BGimg = styled.img`
+z-index: -1;
   position: absolute;
   width: 100%;
   height: 100%;
