@@ -15,7 +15,7 @@ import {
 } from "react-router-dom";
 
 import {log, 
-        stop, 
+        // stop, 
         startRecording, 
         toggleRecordCycle, 
         showImageAt, 
@@ -378,8 +378,8 @@ const Container = styled.section`
   margin: 1rem;
   overflow-y: auto;
 
-   -webkit-mask-image: linear-gradient(transparent, black 10px, black 90% ,transparent);
-  mask-image: linear-gradient(transparent, black 10px, black 90% ,transparent);
+   -webkit-mask-image: linear-gradient(transparent, black 10px, black 98% ,transparent);
+  mask-image: linear-gradient(transparent, black 10px, black 98% ,transparent);
   padding-top: 10px;
 
 
@@ -390,10 +390,13 @@ const Wrapper = styled.div`
   width: 100%; 
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
   gap: 10px;
 
+  @media screen and (min-height: 830px){
+
+    justify-content: center;
+  }
   
 `
 
@@ -404,7 +407,7 @@ const VideoController = styled.section`
   align-items: center;
   gap: 10px;
   width: 100%;
-  max-width: 800px;
+  max-width: 700px;
 
 
 
@@ -795,7 +798,6 @@ const Thumbnail = styled.img`
   object-position: center;
   opacity: ${({isActive})=>isActive ? `.85` : '.65'};
   border-radius: ${({theme})=>theme.borderRadius};
-  /* border: ${({})=>`solid transparent 2px`}; */
   transition: opacity .3s ease, scale .3s ease ;
   box-sizing: border-box;
   border: ${({theme, isActive})=>isActive ? `solid ${theme.icon} 2px` : ''};

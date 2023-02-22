@@ -11,7 +11,7 @@ import {
 
 import { useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
-import { MouseDialogue } from '../components/MouseDialogue';
+// import { MouseDialogue } from '../components/MouseDialogue';
 
   
 const Btns = [

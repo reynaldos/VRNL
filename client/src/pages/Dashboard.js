@@ -108,7 +108,7 @@ const Dashboard = ({type}) => {
   // Delete collection
    const deleteCollection =  async() => {
       try {
-        const res = await axios.delete(`/collections/${selectedTab._id}`);  
+        await axios.delete(`/collections/${selectedTab._id}`);  
         dispatch(reduxDeleteCollection({type: type === 'myvournals' ? 'subscriberedFolders' : '', collectionId: selectedTab._id}))
         setSelected('');
         fetchCollections();
@@ -182,8 +182,8 @@ const Container = styled.div`
 
 const Main = styled.main`
   flex: 3.5;
-  height: calc(100% - 5rem);
-  margin-top: 5rem;
+  height: calc(100% - 5rem - 2.5rem);
+  margin-top: 2.5rem;
   width: 100%;
   display: flex;
   flex-direction: column;

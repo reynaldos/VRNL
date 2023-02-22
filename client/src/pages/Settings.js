@@ -11,7 +11,7 @@ import Modal from '../components/Modal';
 import Button from '../components/Button';
 import ConditionsInfo from '../data/ConditionsInfo';
 
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 import { uploadFile } from '../util/recordUtil';
 
@@ -359,13 +359,13 @@ const Row = styled.div`
 `
 
 
-const BtnHolder = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 2px;
-`
+// const BtnHolder = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   align-items: center;
+//   gap: 2px;
+// `
 
 const AvatarWrap = styled.div`
     color: transparent;

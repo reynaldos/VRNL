@@ -7,7 +7,9 @@ import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
 
 import { Link,useLocation, useNavigate } from "react-router-dom";
 import {auth , provider } from '../util/firebase';
-import { signInWithPopup, sendPasswordResetEmail } from "firebase/auth";
+import { signInWithPopup, 
+  // sendPasswordResetEmail 
+} from "firebase/auth";
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -258,7 +260,7 @@ const SignUpView = ({modalRef}) => {
     dispatch(loginStart());
 
     try {
-      const newUserRes = await axios.post("/auth/signup", {name: formik.values.username, email: formik.values.email, password: formik.values.password});
+      await axios.post("/auth/signup", {name: formik.values.username, email: formik.values.email, password: formik.values.password});
 
       const logInres = await axios.post("/auth/signin", {name: formik.values.username, password: formik.values.password});
       dispatch(loginSuccess(logInres.data));

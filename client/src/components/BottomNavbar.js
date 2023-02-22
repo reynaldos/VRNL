@@ -55,10 +55,6 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
   // hamburger <-> side menu
   const [isOpen, setIsOpen] = useState(false);
   const navItemsRef = useRef();
-  const hamburgerRef = useRef();
-
-
-
 
   useEffect(()=>{
 
