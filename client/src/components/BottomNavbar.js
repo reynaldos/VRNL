@@ -64,22 +64,12 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
 
     const checkWidth = ()=>{
       if(window.innerWidth > 767){
-        navItemsRef.current.style.marginTop = '0rem';
-        hamburgerRef.current.style.display = 'none';
-        navItemsRef.current.style.display = 'flex';
-
+        setIsOpen(true)
       }else{
-        hamburgerRef.current.style.display = 'flex';
-        navItemsRef.current.style.marginTop = '.5rem';
-        navItemsRef.current.style.display = 'none';
+        setIsOpen(false)
       }
     }
 
-    if(navItemsRef.current && hamburgerRef.current){ checkWidth()} else{
-      setTimeout(() => {
-         if(navItemsRef.current && hamburgerRef.current) checkWidth();
-      }, 25);
-    };
     window.addEventListener('resize', checkWidth)
 
     return () => {
@@ -90,17 +80,6 @@ export const BottomNavbar = ({isDarkMode, setDarkMode}) => {
   const toggleNav = () =>{
      setIsOpen(oldVal => !oldVal);
   }
-
-useEffect(() => {
-  if(navItemsRef.current){
-    if(isOpen || window.innerWidth > 767){
-      navItemsRef.current.style.display = 'flex';
-    }else{
-      navItemsRef.current.style.display = 'none';
-    }
-  }
-
-  }, [isOpen])
 
   useMemo(() => {
     setIsOpen(false);
@@ -114,7 +93,7 @@ useEffect(() => {
     <Container>
 
 
-      <Wrapper ref={hamburgerRef}>
+      <HamWrapper>
         <Btn 
             name={'Hamburger'}
             onClick={toggleNav} 
@@ -123,10 +102,10 @@ useEffect(() => {
            <HiOutlineMenu/>
           </BtnContent>
         </Btn>
-      </Wrapper>
+      </HamWrapper>
   
       {/* btn system */}
-      <Wrapper ref={navItemsRef} >
+      <ItemsWrapper isOpen={isOpen} ref={navItemsRef} >
 
         {location !== `` && 
         <>
@@ -169,7 +148,7 @@ useEffect(() => {
             <BtnContent>Log Out</BtnContent>
           </Btn>
 
-      </Wrapper>
+      </ItemsWrapper>
 
     </Container>
 
@@ -181,8 +160,8 @@ useEffect(() => {
 
 const Container = styled.nav`
   position: fixed;
-  top: 0;
-  margin-top: 1rem;
+  bottom: 0;
+  margin: 1rem 0;
   height: 3.5rem;
   width: 100%;
   /* outline: 1px blue solid; */
@@ -191,39 +170,56 @@ const Container = styled.nav`
   justify-content: flex-end;
   pointer-events: none;
 
-
-  @media screen and (max-width: ${({theme}) => theme.breakpoint.md}){
-    flex-direction: column;
-    justify-content: flex-start;
-    /* align-items: flex-start; */
-    /* transition: height .5s ease; */
-    /* overflow: hidden; */
-}
-
 `
 
-const Wrapper = styled.div`
-/* position: relative; */
-  width: calc(100% - 2rem);
+const HamWrapper = styled.div`
   margin: 0 1rem;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  /* outline: 1px green solid; */
   pointer-events: none;
-  /* height: 3rem; */
+  display: none;
+
+  @media screen and (max-width: ${({theme}) => theme.breakpoint.md}){
+    display: block;
+  }
+`
+const ItemsWrapper = styled.div`
+  position: absolute;
+
+  width: calc(100% - 2rem);
+  margin: 0 1rem;
+  height: 100%;
+  display: flex;
+  margin-top: 0rem;
+
+  align-items: center;
+  justify-content: flex-end;
+  pointer-events: none;
+  transition: none;
+
 
 @media screen and (max-width: ${({theme}) => theme.breakpoint.md}){
-    transform-origin: top center;
+    bottom: 3.5rem;
+    transform-origin: bottom center;
     gap: .5rem;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-end;
-    transition: height .5s ease;
-    /* overflow: hidden; */
-}
+    margin-bottom: .5rem;
 
+    height: ${({isOpen})=> isOpen ? '450%' : '0%'};
+
+
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+
+    transition: height .5s ease;
+
+    overflow: hidden;
+
+     -webkit-mask-image: linear-gradient(transparent, black 10px, black 100% );
+    mask-image: linear-gradient(transparent, black 10px, black 100%);
+}
 
 `
 
