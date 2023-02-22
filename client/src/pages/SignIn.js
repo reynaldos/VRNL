@@ -16,6 +16,8 @@ import Modal from '../components/Modal';
 import Button from '../components/Button';
 import ConditionsInfo from '../data/ConditionsInfo';
 
+import { FaEye, FaEyeSlash} from 'react-icons/fa';
+
 const SignIn = () => {
   const location = useLocation().pathname.split('/').pop();
   const modalRef = useRef();
@@ -155,6 +157,11 @@ const SignInView = () => {
                 placeholder='password'
                 id='password' 
                 {...formik.getFieldProps('password')}/>
+
+        <ViewIconWrap onClick={()=>{setHidePassword(oldVal=>!oldVal)}}>
+            {!hidePassword ? <FaEye size={24}/> : <FaEyeSlash size={24}/>}
+          </ViewIconWrap>
+
       </InputHolder>
 
       <Button active={true} type='submit'>Sign In</Button>
@@ -176,6 +183,7 @@ const SignInView = () => {
 const SignUpView = ({modalRef}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [hidePassword, setHidePassword] = useState(true);
 
   const ValdationSchema = Yup.object({
         username: Yup.string()
@@ -287,10 +295,15 @@ const SignUpView = ({modalRef}) => {
 
       <InputHolder>
         {formik.touched.password && formik.errors.password ? <ErrMsg>{formik.errors.password}</ErrMsg> : null}
-        <Input  type="password" 
+        <Input  type={hidePassword ? "password" : "text"} 
                 placeholder='password' 
                 id='password'
                 {...formik.getFieldProps('password')}/>
+
+
+        <ViewIconWrap onClick={()=>{setHidePassword(oldVal=>!oldVal)}}>
+            {!hidePassword ? <FaEye size={24}/> : <FaEyeSlash size={24}/>}
+          </ViewIconWrap>
       </InputHolder>
 
       <InputHolder>
@@ -454,7 +467,21 @@ const InputHolder = styled.span`
   flex-direction: column;
   align-items: center;
   gap: .25rem;
+  position: relative;
 
+`
+
+const ViewIconWrap = styled.div`
+  position: absolute;
+  right: 0;
+  height: 100%;
+  display: grid;
+  place-content: center;
+
+  svg{
+    cursor: pointer;
+    filter: brightness(80%);
+  }
 `
 
 const Input = styled.input`
@@ -561,3 +588,5 @@ const Recovery = styled.div`
 
 
 `
+
+

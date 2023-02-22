@@ -5,12 +5,11 @@ TODO:
     - Get Better BG images
     - Screen height queries
     - loading not spinning on Safari 
-    - help, privacy, terms text
     - Delete Assets from storage upon profile pic change/video deletion
+    - Modal for when deleting collections/video->'Are you sure'
 
 - Sign In
     - forgot password funcitonality
-    - toggle hide password
 
 - Dashbaord
     - Collection Options(rename | combine)
@@ -64,3 +63,5 @@ Delete Video✅
 save dark mode into cookies✅
 Delete Collections Backend✅
 side bar view for mobile✅
+help, privacy, terms text✅
+toggle hide password✅
