@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;500;700&display=swap');
+
+
+@font-face {
+    font-family: "Stardew_Valley";
+    src: url(".././public/fonts/Stardew_Valley.ttf") format("truetype");
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: content-box;
+    font-family: 'Kaisei Decol', serif;
+    /* font-family: 'Stardew_Valley', serif; */
+    letter-spacing: 1px;
+    text-transform: lowercase;
+    /* outline: 1px solid red; */
+
+}
+
+
+.show {
+    display: flex;
+}
+
+.hide{
+    display: none;
+}
+
+
+.slidein {
+    animation: slidein .5s 1 ease-in-out;
+}
+
+.fadeout {
+    bottom: -2.5rem !important;
+}
+
+@keyframes slidein {
+    from {
+        bottom: -2.5rem;
+    }
+    to {
+        bottom: .5rem;
+    }
+};
+

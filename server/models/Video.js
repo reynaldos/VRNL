@@ -5,6 +5,10 @@ const VideoSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
+     collectionId:{
+        type: String,
+        require: true,
+    },
      title:{
         type: String,
         require: true,

@@ -1,0 +1,65 @@
+TODO:
+
+- Overall
+    - Improve Color Scheme
+    - Get Better BG images
+    - Screen height queries
+    - loading not spinning on Safari 
+    - Delete Assets from storage upon profile pic change/video deletion
+    - Modal for when deleting collections/video->'Are you sure'
+
+- Sign In
+    - forgot password funcitonality
+
+- Dashbaord
+    - Collection Options(rename | combine)
+    - Title text slide for overflow
+
+- Video Page
+    - Backdrop Blur
+    - Options Btn for comments - edit
+    - Sort Comments By
+    - Edit Video Title
+
+- Rcord Page
+   - fix recording funcitonality
+   - Thumnbnail list scroll for mobile
+   - Backdrop Blur
+
+- Side Menu
+    - Scroll Bar track showing
+    - have collections scroll but not collection creation
+
+- Botton Nav
+    - Btn Height vs Link Btn
+
+- Settings Page
+    - Show prev profile pics
+
+
+COMPLETE:
+Build UI✅
+sign up funcitonality✅
+Use redux for data loading states✅
+Search Filtering (useMemo)✅
+Add Collection to favorites✅
+Collection Creation UI✅
+Post Comments✅
+Options Btn for comments - delete✅
+Favorites sort bug✅
+sign up form validation✅
+sign in form validation✅
+help, privacy, terms modal✅
+give prompt funcitonality✅
+Title overflow text slide✅
+Build UI✅
+video file upload funcitonality✅
+thumbnail funcitonality✅
+Update User functionality✅
+Delete Video✅
+save dark mode into cookies✅
+Delete Collections Backend✅
+side bar view for mobile✅
+help, privacy, terms text✅
+toggle hide password✅
+Build 404 page✅
