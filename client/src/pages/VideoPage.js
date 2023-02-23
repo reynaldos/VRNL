@@ -41,7 +41,9 @@ const VideoPage = () => {
     {
       title: 'rename',
       icon: <></>,
-      action: ()=>{}
+      action: ()=>{
+        // setEditTitle(oldVal => !oldVal)
+      }
     },
     {
       title: 'delete',
@@ -112,10 +114,15 @@ const VideoPage = () => {
     <>
       <Container>
         <Row>
-          <Title 
+          {!editTitle ? 
+              <Title>{currentVideo.title}</Title> :
+               <TitleInput 
               ref={titleRef}type={'text'} 
               value={currentVideo.title} 
               disabled={!editTitle}/>
+              
+              
+              }
               
             <OptionsButton btnList={optionBtnActions}/>
           </Row>
@@ -241,13 +248,22 @@ const Wrapper = styled.div`
 
 
 
-const Title = styled.input`
-  all: unset;
+const TitleInput = styled.input`
+  /* all: unset; */
   font-weight: 700;
   font-size: 1.5rem;
   /* background-color: blue; */
-  width: 80%;
- 
+  /* width: min-content; */
+
+`
+
+const Title = styled.h1`
+  /* all: unset; */
+  font-weight: 700;
+  font-size: 1.5rem;
+  /* background-color: blue; */
+  /* width: min-content; */
+
 
 `
 
@@ -324,7 +340,7 @@ const Row = styled.span`
  align-self: flex-start;
 
   display: flex;
-  /* gap: 10px; */
+  gap: 10px;
   align-items: center;
   align-content: center;
 `

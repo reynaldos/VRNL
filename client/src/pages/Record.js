@@ -138,7 +138,7 @@ const Record = () => {
 
   const recordingFinished = ()=>{
 
-    showImageAt(videoRecordingRef.current.src, setThumbNails, 0);
+    showImageAt(videoRecordingRef.current.src, thumbNails, setThumbNails, 0);
     setVideoComplete(true);
     setRecordBtnText('Record');
     videoRecordingWappereRef.current.classList.replace("hide","show");

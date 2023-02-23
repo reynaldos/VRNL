@@ -1,3 +1,4 @@
+import { compareSync } from "bcryptjs";
 import {
   getStorage,
   ref,
@@ -80,39 +81,43 @@ export const toggleRecordCycle = (recordBtnText, setRecordBtnText, recordProcces
   }
 
 
-export const showImageAt = (vidSource, setThumbNails, secs) => {
+export const showImageAt = (vidSource, thumbNails, setThumbNails, secs) => {
+      // console.table({vidSource, setThumbNails, secs})
       var duration;
       const thumbnailCount = 5;
 
       var video = document.createElement('video');
 
       video.onloadedmetadata = function() {
-        if (video.duration === Infinity) {
+        // if (video.duration === Infinity) {
             video.currentTime = 1e101;
             video.ontimeupdate = function () {
                 this.ontimeupdate = () => {
                   duration = video.duration;
-                    getVideoImage(
-                        vidSource,
-                        duration,
-                        secs,
-                        function(img, newSecs, event) {
-                            if (event.type === 'seeked') {
-                                setThumbNails(old=>[...old, img.src]);
-                                const count = Math.ceil(duration/thumbnailCount)
-                                newSecs += count;
-                                if (duration >= newSecs) {
-                                    showImageAt(vidSource, setThumbNails, newSecs);
-                                };
-                            }
-                        }
-                    );
+
+                    if(thumbNails.length < thumbnailCount){
+                      getVideoImage(
+                          vidSource,
+                          duration,
+                          secs,
+                          function(img, newSecs, event) {
+                              if (event.type === 'seeked') {
+                                  setThumbNails(old=>[...old, img.src]);
+                                  const count = Math.ceil(duration/thumbnailCount)
+                                  newSecs += count;
+                                  if (duration >= newSecs) {
+                                      showImageAt(vidSource, thumbNails,setThumbNails, newSecs);
+                                  };
+                              }
+                          }
+                      );
+                    }
                     return;
                 }
                 video.currentTime = 0;
                 return;
             }
-        }
+        // }
       };
       video.src = vidSource;
 
