@@ -4,7 +4,7 @@ import { NewComment, CommentSection } from '../components/Comment.js';
 // import Thumbnail from '../imgs/thumbnail.png';
 
 import axios from 'axios';
-import {format} from 'timeago.js';
+import format from '../util/timeRelative';
 
 import { LoadingIcon} from '../components/LoadingIcon';
 

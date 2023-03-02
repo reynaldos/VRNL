@@ -4,7 +4,8 @@ import styled from "styled-components";
 // import Thumbnail from '../imgs/thumbnail.png';
 import { Link } from "react-router-dom";
 
-import {format} from 'timeago.js';
+import format from '../util/timeRelative';
+
 
 import axios from 'axios';
 

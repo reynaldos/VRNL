@@ -3,10 +3,10 @@ import styled from "styled-components";
 
 import { OptionsButton } from "./OptionsButton";
 import { useSelector } from 'react-redux';
-import {format} from 'timeago.js';
 
 import axios from 'axios';
 
+import format from '../util/timeRelative';
 
 export const CommentSection = ({comments,updateComments}) =>{
   return(
