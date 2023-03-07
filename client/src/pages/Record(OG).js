@@ -8,14 +8,16 @@ import { useSelector, useDispatch } from 'react-redux';
 import { toggleUpload } from "../redux/userSlice";
 
 import {Loading as LoadingModal} from '../components/Loading';
-import { LoadingIcon } from '../components/LoadingIcon';
 
 import {
  useLocation,
  useNavigate
 } from "react-router-dom";
 
-import {
+import {log, 
+        // stop, 
+        startRecording, 
+        toggleRecordCycle, 
         showImageAt, 
         closePrompt, 
         selectThumbnail,
@@ -24,8 +26,11 @@ import {
 
 import Prompts from '../data/Prompts';
 
-import { useRecordWebcam } from 'react-record-webcam';
-import { async } from '@firebase/util';
+
+
+// const maxCaptureTime = 5; //in minutes
+// const recordingTimeMS = 1000 * 60 * maxCaptureTime; //specifies max length of the videos recorded in ms
+const recordingTimeMS = 10000; //specifies max length of the videos recorded in ms
 
 
 const Record = () => {
@@ -34,10 +39,14 @@ const Record = () => {
   const navigate = useNavigate();
 
   // container refs
+  const videoCaptureRef = useRef();
   const videoCapturWrapppereRef = useRef();
+
+  const videoRecordingRef = useRef();
   const videoRecordingWappereRef = useRef();
   const recordingTitleRef = useRef();
 
+  const downloadBtnRef = useRef();
   const videoUploadRef = useRef();
 
   const promptRef = useRef();
@@ -46,8 +55,10 @@ const Record = () => {
   // thumbnail logic
   const [thumbNails, setThumbNails] = useState([]);
   const [chosenThumbnail, setThumbnail] = useState(-1);
+
   
   const [recordBtnText, setRecordBtnText] = useState('Record');
+  const [videoComplete, setVideoComplete] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const collectionId = useLocation().pathname.split('/').pop();
@@ -55,48 +66,81 @@ const Record = () => {
 
   const dispatch = useDispatch();
 
-  const recordWebcam = useRecordWebcam({ 
-    fileName: 'RecordedVRNL',
-    frameRate: 60
-   });
 
-  useEffect(()=>{
-    recordWebcam.open();
+  useEffect(() => {
+    console.log('set up')
     videoCapturWrapppereRef.current.classList.add("show");
     videoRecordingWappereRef.current.classList.add("hide");
-  },[])
 
+    const video = videoCaptureRef.current;
 
-  const toggleRecordCycle = (recordBtnText, setRecordBtnText, recordWebcam) =>{
-    if(recordBtnText === 'Record'){
-      console.log('start record')
-
-      // recordProccess();
-      recordWebcam.start()
-      setRecordBtnText('Stop');
-
-    }else if(recordBtnText === 'Stop'){
-      // console.log('stop record')
-      recordWebcam.stop();
-      recordingFinished();
+    if (navigator.mediaDevices.getUserMedia && !videoComplete) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function (stream) {
+           video.srcObject = stream;
+        })
+        .catch(function (err) {
+          console.log("Something went wrong!");
+        });
     }
+
+    return () => {
+      console.log('clean up');
+      if( video?.srcObject !== null && !videoComplete){
+        console.log('close recording');
+        var stream =  video.srcObject;
+        var tracks = stream.getTracks();
+
+        for (var i = 0; i < tracks.length; i++) {
+          console.log('stop')
+          var track = tracks[i];
+          track.stop();
+        }
+
+        video.srcObject = null;
+      }
+    };
+  },[]);
+  
+  const recordProccess =  () =>{
+    const preview = videoCaptureRef.current;
+    const downloadButton = downloadBtnRef.current;
+    const recording = videoRecordingRef.current;
+
+    navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true
+    }).then((stream) => {
+
+      preview.srcObject = stream;
+      downloadButton.href = stream;
+      preview.captureStream = preview.captureStream || preview.mozCaptureStream;
+
+      return new Promise((resolve) => preview.onplaying = resolve);
+    }).then(() => startRecording(preview.captureStream(), recordingTimeMS))
+    .then ((recordedChunks) => {
+      let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
+      recording.src = URL.createObjectURL(recordedBlob);
+      downloadButton.href = recording.src;
+      downloadButton.download = "RecordedVideo.webm";
+
+      log(`Successfully recorded ${recordedBlob.size} bytes of ${recordedBlob.type} media.`);
+    })
+    .catch((error) => {
+      if (error.name === "NotFoundError") {
+        log("Camera or microphone not found. Can't record.");
+      } else {
+        log(error);
+      }
+    });
+
   }
 
-  const recordingFinished = async ()=>{
-    recordWebcam.close();
+  const recordingFinished = ()=>{
 
-    const awaitThumbNails = async()  =>{
-      const vid = await recordWebcam.getRecording();
-      if(!vid){
-         setTimeout(awaitThumbNails, 50);
-        return
-      }
-      showImageAt(recordWebcam.previewRef.current.src, thumbNails, setThumbNails, 0);
-    }
-
-    awaitThumbNails();
+    showImageAt(videoRecordingRef.current.src, thumbNails, setThumbNails, 0);
+    setVideoComplete(true);
     setRecordBtnText('Record');
-
     videoRecordingWappereRef.current.classList.replace("hide","show");
     videoCapturWrapppereRef.current.classList.replace("show", "hide");
 
@@ -107,43 +151,34 @@ const Record = () => {
       return null;
     })
      promptList.current = [];
+
+    
+
   }
 
   // restarts video record cycle
   const reset = () =>{
-    setThumbNails([]);
-    setThumbnail(-1);
     videoCapturWrapppereRef.current.classList.replace("hide","show");
     videoRecordingWappereRef.current.classList.replace("show", "hide");
     setRecordBtnText('Record');
+    setVideoComplete(false);
     videoUploadRef.current.value = null;
     recordingTitleRef.current.value = null;
-    recordWebcam.open();
-    recordWebcam.retake();
-
+    setThumbNails([]);
   }
 
-  const handleFileUpload = async(e)=>{
-    // const downloadButton = downloadBtnRef.current;
-    const recording = recordWebcam.webcamRef.current;
+  const handleFileUpload = (e)=>{
+    const downloadButton = downloadBtnRef.current;
+    const recording = videoRecordingRef.current;
     const videoUpload = videoUploadRef.current;
 
     const media = URL.createObjectURL(videoUpload.files[0]);
 
-    const videobase64Response = await fetch(media);
-    const videoBlob =  await videobase64Response.blob();
+    console.log(videoUpload.files[0]);
 
     recording.src = media;
-
-    // console.log(videoUpload.files[0]);
-    console.log(recording.src);
-
-    const v = await recordWebcam.getRecording()
-    console.log(v)
-
-    
-    // downloadButton.href = media;
-    // downloadButton.download = "RecordedVRNL.webm";
+    downloadButton.href = media;
+    downloadButton.download = "RecordedVRNL.webm";
     videoUploadRef.current.blur();
 
     recordingFinished();
@@ -163,9 +198,8 @@ const Record = () => {
     const imgBlob = await base64Response.blob();
 
     // get video blob
-    // const videobase64Response = await fetch(videoRecordingRef.current.src);
-    // const videoBlob =  await videobase64Response.blob();
-    const videoBlob = await recordWebcam.getRecording();
+    const videobase64Response = await fetch(videoRecordingRef.current.src);
+    const videoBlob =  await videobase64Response.blob();
 
     // upload files to storage
     const videoUrl =  await uploadFile(currentUser._id, videoBlob ,'videoUrl');
@@ -244,10 +278,10 @@ const Record = () => {
 
         {/*  video capture */}
         <VideoController ref={videoCapturWrapppereRef}>
-          <VidCaptureWrap>
+          <VidCaptureWrap >
             <TitleInput style={{backdropFilter: 'blur(10px)'}} type={'text'} placeholder={'Preview Window'} disabled/>
 
-               <VideoCapture ref={recordWebcam.webcamRef} autoPlay muted invert={true}/>
+               <VideoCapture ref={videoCaptureRef} autoPlay muted invert={true}/>
 
             <PromptWrap>
               <PromptHolder ref={promptRef}>
@@ -255,25 +289,20 @@ const Record = () => {
                 <CloseBtn><IoClose size={18}/></CloseBtn>
               </PromptHolder>
             </PromptWrap>
-
-            {recordWebcam.status === 'INIT' && <LoadIconWrap>
-                <LoadingIcon/>
-            </LoadIconWrap>}
-
           </VidCaptureWrap>
 
         {/* recording btns */}
           <VideoBtnWrap>
             <Btn  onClick={generatePrompt}>Need a prompt?</Btn>
-            {/* {recordBtnText === 'Record' && <VidInput 
+            {recordBtnText === 'Record' && <VidInput 
                                                 ref={videoUploadRef}
                                                 onChange={handleFileUpload}
                                                 type="file" 
                                                 accept="video/mp4,video/x-m4v,video/*" 
-                                                capture="camera"/>} */}
+                                                capture="camera"/>}
                                                 
             <Btn type='button'
-                 onClick={()=>toggleRecordCycle(recordBtnText, setRecordBtnText, recordWebcam)} 
+                 onClick={()=>toggleRecordCycle(recordBtnText, setRecordBtnText, recordProccess, recordingFinished)} 
                  >{recordBtnText}</Btn>
 
           </VideoBtnWrap>
@@ -286,8 +315,7 @@ const Record = () => {
             <VidCaptureWrap>
             
             <TitleInput ref={recordingTitleRef} type={'text'} placeholder={'Name your vrnl entry'}/>
-              <VideoCapture ref={recordWebcam.previewRef} controls autoPlay>
-              </VideoCapture>
+              <VideoCapture ref={videoRecordingRef} controls/>
             </VidCaptureWrap>
 
             {/* thumbnails */}
@@ -315,10 +343,11 @@ const Record = () => {
               isdisabled={loading}
               disabled={loading}
               type='reset' onClick={reset}>restart</Btn>
-            <Btn
-                onClick={recordWebcam.download}>
+            <BtnLink
+                href=''
+                ref={downloadBtnRef}>
               Save to device
-            </Btn>
+            </BtnLink>
             <Btn isdisabled={loading}  disabled={loading} onClick={handleVideoPost}>post</Btn>
           </VideoBtnWrap>
         </VideoController>
@@ -394,7 +423,6 @@ const VidCaptureWrap = styled.div`
   flex: 2;
   gap: 10px;
   position: relative;
-
 `
 
 const TitleInput = styled.input`
@@ -571,13 +599,11 @@ const PromptWrap = styled.span`
 
   -webkit-mask-image: linear-gradient(transparent, black 1.5rem, black 3.5rem ,transparent);
   mask-image: linear-gradient(transparent, black 1.5rem black 3.5rem ,transparent);
-  background-color: transparent;
-
-  /* &::after, */
+  /* background-color: red; */
+  &::before,
   label::before {
-        background-color: transparent;
+    background-color: transparent;
         backdrop-filter: blur(100px);
-        -webkit-backdrop-filter: blur(100px);
         border-radius: ${({theme})=>theme.borderRadius};
         content: "";
         display: block;
@@ -598,9 +624,6 @@ const PromptHolder = styled.label`
 
   background-color: ${({theme})=>theme.promptBG};
   border-radius: ${({theme})=>theme.borderRadius};
-
-
-
 
   display: flex;
   align-items: center;
@@ -786,11 +809,3 @@ const Thumbnail = styled.img`
   }
 `
 
-
-
-const LoadIconWrap = styled.div`
-  position: absolute;
-  top: calc(50% + 2rem + 10px);
-  transform: translateY(-50%);
-
-`
