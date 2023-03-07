@@ -125,7 +125,7 @@ const VideoPage = () => {
             </Row>
 
           <SubTitle>{currentVideo.username}</SubTitle>
-          {currentVideo && <SubTitle style={{color:'rgba(217, 217, 217,1)'}}>{format(currentVideo.createdAt)}</SubTitle>}
+          {currentVideo.createdAt && <SubTitle style={{color:'rgba(217, 217, 217,1)'}}>{format(currentVideo.createdAt)}</SubTitle>}
         <Wrapper>
 
           {/* VIDEO CONTAINER */}

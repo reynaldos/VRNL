@@ -64,6 +64,12 @@ const Record = () => {
     recordWebcam.open();
     videoCapturWrapppereRef.current.classList.add("show");
     videoRecordingWappereRef.current.classList.add("hide");
+
+    return ()=>{
+      recordWebcam.stopStream();
+      recordWebcam.close();
+    }
+
   },[])
 
 
