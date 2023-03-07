@@ -260,10 +260,11 @@ const SignUpView = ({modalRef}) => {
     dispatch(loginStart());
 
     try {
-      await axios.post("/auth/signup", {name: formik.values.username, email: formik.values.email, password: formik.values.password});
-
-      const logInres = await axios.post("/auth/signin", {name: formik.values.username, password: formik.values.password});
-      dispatch(loginSuccess(logInres.data));
+      const res = await axios.post("/auth/signup", {name: formik.values.username, email: formik.values.email, password: formik.values.password});
+      if (  res.status == 200 ){
+        const logInres = await axios.post("/auth/signin", {name: formik.values.username, password: formik.values.password});
+        dispatch(loginSuccess(logInres.data));
+      }
       navigate('/');
         
     } catch (error) {
