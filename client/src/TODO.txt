@@ -22,7 +22,7 @@ TODO:
     - Edit Video Title
 
 - Rcord Page
-   - fix recording funcitonality
+   - Fix Video uplaod bug
    - Thumnbnail list scroll for mobile
    - Backdrop Blur
 
@@ -63,3 +63,4 @@ side bar view for mobile✅
 help, privacy, terms text✅
 toggle hide password✅
 Build 404 page✅
+fix recording funcitonality✅

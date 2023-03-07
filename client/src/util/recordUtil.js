@@ -1,4 +1,3 @@
-import { compareSync } from "bcryptjs";
 import {
   getStorage,
   ref,
@@ -183,8 +182,8 @@ export const uploadFile = (userId, file, urlType, isProfile) => {
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        // const progress =
+        //   (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           // console.log(urlType + ' -- ' + progress)
         // urlType === "imgUrl" ? setImgPerc(Math.round(progress)) : setVideoPerc(Math.round(progress));
         switch (snapshot.state) {

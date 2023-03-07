@@ -4,7 +4,7 @@ import { NewComment, CommentSection } from '../components/Comment.js';
 // import Thumbnail from '../imgs/thumbnail.png';
 
 import axios from 'axios';
-import {format} from 'timeago.js';
+import format from '../util/timeRelative';
 
 import { LoadingIcon} from '../components/LoadingIcon';
 
@@ -82,8 +82,8 @@ const VideoPage = () => {
             const videoResult = await axios.get(`/videos/find/${videoId}`);  
             const userNameResult = await axios.get(`/users/find/${videoResult.data.userId}`);
             const foundComments = await axios.get(`/comments/${videoId}`);
+            
           setComments(foundComments.data.reverse()); 
-
           dispatch(fetchSuccess({...videoResult.data, username: userNameResult.data.name}));
         // }
       } catch (error) {
@@ -113,23 +113,19 @@ const VideoPage = () => {
   return (
     <>
       <Container>
-        <Row>
-          {!editTitle ? 
-              <Title>{currentVideo.title}</Title> :
-               <TitleInput 
-              ref={titleRef}type={'text'} 
-              value={currentVideo.title} 
-              disabled={!editTitle}/>
-              
-              
-              }
-              
-            <OptionsButton btnList={optionBtnActions}/>
-          </Row>
+          <Row>
+            {!editTitle ? 
+                <Title>{currentVideo.title}</Title> :
+                <TitleInput 
+                ref={titleRef}type={'text'} 
+                value={currentVideo.title} 
+                disabled={!editTitle}/>
+                }
+              <OptionsButton btnList={optionBtnActions}/>
+            </Row>
 
-        <SubTitle>{currentVideo.username}</SubTitle>
-        <SubTitle style={{color:'rgba(217, 217, 217,1)'}}>{format(currentVideo.createdAt)}</SubTitle>
-
+          <SubTitle>{currentVideo.username}</SubTitle>
+          {currentVideo.createdAt && <SubTitle style={{color:'rgba(217, 217, 217,1)'}}>{format(currentVideo.createdAt)}</SubTitle>}
         <Wrapper>
 
           {/* VIDEO CONTAINER */}
