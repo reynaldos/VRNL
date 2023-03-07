@@ -10,20 +10,13 @@ import videoRoutes from "./routes/videos.js";
 import commentRoutes from "./routes/comments.js";
 
 
+
 const app = express(); // create backend application
 dotenv.config(); // configs env variables
 
-// connects to Mango DB
-const connect = () =>{
-    mongoose.connect(process.env.MONGO).then(()=>{
-        console.log('Connected to DB');
-    }).catch((err)=>{
-        throw err;
-    })
-}
-
 app.use(cookieParser()); // allows access to cookies
 app.use(express.json()); // allows to recieve data in JSON format
+app.use(express.urlencoded({ extended: false }));
 
 // routes
 app.use("/api/auth", authRoutes);
@@ -43,9 +36,19 @@ app.use((err,req,res,next)=>{
     });
 });
 
+const port = process.env.PORT || 8800;
 
-// Server listener
-app.listen(8800,()=>{
-    connect();
-    console.log('Connected to Server');
+// connects to Mango DB
+mongoose.connect(process.env.MONGO).then(()=>{
+    console.log('Connected to DB');
+    
+    // Server listener
+    app.listen(port,()=>{
+        console.log('Connected to Server');
+    })
+    
+}).catch((err)=>{
+    throw err;
 })
+
+
