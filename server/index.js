@@ -2,6 +2,8 @@ import express  from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import cors from 'cors';
+import http from 'http';
 
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
@@ -14,9 +16,10 @@ import commentRoutes from "./routes/comments.js";
 const app = express(); // create backend application
 dotenv.config(); // configs env variables
 
+// app.use(cors())
 app.use(cookieParser()); // allows access to cookies
 app.use(express.json()); // allows to recieve data in JSON format
-app.use(express.urlencoded({ extended: false }));
+// app.use(express.urlencoded({ extended: false }));
 
 // routes
 app.use("/api/auth", authRoutes);
@@ -37,6 +40,8 @@ app.use((err,req,res,next)=>{
 });
 
 const port = process.env.PORT || 8800;
+
+const server = http.createServer(app)
 
 // connects to Mango DB
 mongoose.connect(process.env.MONGO).then(()=>{
