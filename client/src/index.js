@@ -8,6 +8,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import axios from 'axios';
 
 axios.defaults.baseURL = process.env.REACT_APP_SERVER;
+axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
