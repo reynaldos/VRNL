@@ -19,7 +19,13 @@ dotenv.config(); // configs env variables
 // app.use(cors())
 app.use(cookieParser()); // allows access to cookies
 app.use(express.json()); // allows to recieve data in JSON format
-// app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
+
+// To handle cors error
+app.use(cors())
+
+// run api test
+app.get('/status', (_, res) => res.send('API is running'))
 
 // routes
 app.use("/api/auth", authRoutes);
