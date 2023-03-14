@@ -48,7 +48,7 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://vrnl-api.vercel.app/api/",
+  "proxy": "https://vrnl-api.onrender.com/api/",
   "ignoreWarnings": [
     "./node_modules/source-map-loader"
   ]
