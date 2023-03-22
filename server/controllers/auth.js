@@ -8,7 +8,7 @@ const defaultAvatarUrl = 'https://firebasestorage.googleapis.com/v0/b/vrnl-5055e
 
 // CREATE A USER
 export const signup = async(req,res, next) =>{
-    console.log(req.body);
+    // console.log(req.body);
     try{
 
         const nameTaken = await User.findOne({name: req.body.name});
@@ -32,7 +32,7 @@ export const signup = async(req,res, next) =>{
 
 // SIGN IN
 export const signin = async(req,res, next) =>{
-    console.log(req.body);
+    // console.log(req.body);
     try{
         
        const userByName = await User.findOne({name: req.body.usernameEmail});
@@ -95,7 +95,7 @@ export const googleAuth = async (req, res, next) =>{
 
 
 export const available = async (req, res, next) =>{
-    console.log(req.body);
+    // console.log(req.body);
 
     try{
 
