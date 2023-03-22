@@ -1,13 +1,6 @@
 import { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
-import {BottomNavbar} from "./components/BottomNavbar";
-import { darkTheme, lightTheme } from "./util/theme";
-import darkBG from './imgs/darkmode.png';
-import lightBG from './imgs/lightmode.png';
-// import {IconContext} from 'react-icons';
-
-import Cookies from 'js-cookie'
-
+// import Cookies from 'js-cookie'
 import {
   Route,
   // Link,
@@ -18,6 +11,10 @@ import {
 
 import { useSelector } from 'react-redux';
 
+import {BottomNavbar} from "./components/BottomNavbar";
+import { darkTheme, lightTheme } from "./util/theme";
+import darkBG from './imgs/darkmode.png';
+import lightBG from './imgs/lightmode.png';
 
 import SignIn from "./pages/SignIn";
 import Home from "./pages/Home";
@@ -28,18 +25,21 @@ import Error from "./pages/Error";
 
 function App() {
 
+  
   const { currentUser } = useSelector(state=>state.user);
-  const [darkMode, setDarkMode] = useState(Cookies.get('darkMode') === 'true' ? true : false);
+  // const [darkMode, setDarkMode] = useState(Cookies.get('darkMode') === 'true' ? true : false);
+  const [darkMode, setDarkMode] = useState( true );
+
 
 
   const toggleDarkMode = () => {
 
     if (darkMode){
       setDarkMode(false);
-      Cookies.set('darkMode', 'false')
+      // Cookies.set('darkMode', 'false')
     } else {
       setDarkMode(true);
-      Cookies.set('darkMode', 'true')
+      // Cookies.set('darkMode', 'true')
 
     }
 

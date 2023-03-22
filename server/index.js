@@ -55,6 +55,7 @@ const port = process.env.PORT || 8800;
 // const server = http.createServer(app)
 
 // connects to Mango DB
+mongoose.set('strictQuery', false);
 mongoose.connect(process.env.MONGO).then(()=>{
     console.log('Connected to DB');
     // Server listener
