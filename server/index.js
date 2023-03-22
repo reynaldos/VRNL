@@ -16,13 +16,18 @@ import commentRoutes from "./routes/comments.js";
 const app = express(); // create backend application
 dotenv.config(); // configs env variables
 
-// app.use(cors())
-app.use(cookieParser()); // allows access to cookies
-app.use(express.json()); // allows to recieve data in JSON format
-app.use(express.urlencoded({ extended: true }));
-
 // To handle cors error
-app.use(cors())
+app.use(cors({
+    origin: [process.env.ORIGIN_ACCESS],
+    credentials: true
+}))
+
+// middlewares
+app.use(cookieParser()); // allows access to cookies
+app.use(express.json()); // allo// parse requests of content-type - application/x-www-form-urlencodedws to recieve data in JSON format
+// parse requests of content-type - application/x-www-form-urlencoded
+// app.use(express.urlencoded({ extended: true }));
+
 
 // run api test
 app.get('/status', (_, res) => res.send('API is running'))
@@ -47,12 +52,11 @@ app.use((err,req,res,next)=>{
 
 const port = process.env.PORT || 8800;
 
-const server = http.createServer(app)
+// const server = http.createServer(app)
 
 // connects to Mango DB
 mongoose.connect(process.env.MONGO).then(()=>{
     console.log('Connected to DB');
-    
     // Server listener
     app.listen(port,()=>{
         console.log('Connected to Server');

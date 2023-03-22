@@ -5,7 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "dev": "sh -ac '. .env.dev; nodemon index.js'"
+
   },
   "keywords": [],
   "author": "",
