@@ -26,6 +26,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "dev": "sh -ac '. .env.dev; react-scripts start'",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -48,7 +49,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://vrnl-api.onrender.com/api/",
   "ignoreWarnings": [
     "./node_modules/source-map-loader"
   ]

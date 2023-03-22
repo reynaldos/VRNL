@@ -2,8 +2,11 @@
 /client/node_modules
 /client/.env
 /client/.env.dev
+/client/.env.prod
+
 
 # SERVER
 /server/node_modules
 /server/.env
 /server/.env.dev
+/server/.env.prod

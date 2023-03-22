@@ -462,6 +462,7 @@ const More = styled.div`
   z-index: 2;
 
 
+
   @media screen and (max-width: ${({theme}) => theme.breakpoint.xs}){
     width: 280px;
   }
