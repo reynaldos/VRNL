@@ -18,7 +18,7 @@ dotenv.config(); // configs env variables
 
 // To handle cors error
 app.use(cors({
-    origin: [process.env.ORIGIN_ACCESS],
+    origin: [process.env.ORIGIN_ACCESS, 'http://localhost:3000'],
     credentials: true
 }))
 
