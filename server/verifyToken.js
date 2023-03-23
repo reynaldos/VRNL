@@ -4,8 +4,8 @@ import {createError} from "./error.js";
 // verify user using web token middleware
 export const verifyToken = (req, res, next) =>{
     const token =  req.cookies.access_token;
-    console.log(req.cookies);
-    console.log(req.headers.cookie.split("; "));
+    console.log(`cookies: ${req.cookies}`);
+    console.log(`cookie header: ${req.headers.cookie ? req.headers.cookie.split("; ") : '[]'}`);
 
     // console.log(token)
     // throw error if no token found
