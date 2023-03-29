@@ -2,7 +2,7 @@ import React, {useRef, useState} from 'react';
 import styled from "styled-components";
 import axios from "axios";
 
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
 
 import { Link,useLocation, useNavigate } from "react-router-dom";
@@ -14,15 +14,17 @@ import { signInWithPopup,
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
+import { FaEye, FaEyeSlash} from 'react-icons/fa';
+
 import Modal from '../components/Modal';
 import Button from '../components/Button';
 import ConditionsInfo from '../data/ConditionsInfo';
-
-import { FaEye, FaEyeSlash} from 'react-icons/fa';
+import {Loading as LoadingModal} from '../components/Loading';
 
 const SignIn = () => {
   const location = useLocation().pathname.split('/').pop();
   const modalRef = useRef();
+  const { loading } = useSelector(state=>state.user);
 
   return (
     <>
@@ -47,7 +49,7 @@ const SignIn = () => {
           })}
         </More>
       </Container>
-
+     {loading && <LoadingModal/>}
       <Modal ref={modalRef}/>
     </>
   )
@@ -178,6 +180,7 @@ const SignInView = () => {
         <TextBtn to={"/forgot"}>Forgot Password</TextBtn>      
       </BtnHolder>
     </Wrapper>
+   
   )
 }
 
