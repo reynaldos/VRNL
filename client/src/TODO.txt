@@ -4,9 +4,9 @@ TODO:
     - Improve Color Scheme
     - Get Better BG images
     - Screen height queries
-    - loading not spinning on Safari 
     - Delete Assets from storage upon profile pic change/video deletion
     - Modal for when deleting collections/video->'Are you sure'
+    - Video Encryption
 
 - Sign In
     - forgot password funcitonality
@@ -64,3 +64,4 @@ help, privacy, terms text✅
 toggle hide password✅
 Build 404 page✅
 fix recording funcitonality✅
+loading not spinning on Safari✅

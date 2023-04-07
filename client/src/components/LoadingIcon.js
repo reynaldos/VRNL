@@ -31,7 +31,7 @@ const Icon = styled.div`
     border-right-color: ${({theme})=>theme.icon};
     border-style: dotted;
     animation: spin 1s ease-in-out infinite;
-    -webkit-animation: spin 1s ease-in-out infinite;
+    /* -webkit-animation: spin 1s ease-in-out infinite; */
     rotate: 0deg;
 
 
@@ -40,9 +40,9 @@ const Icon = styled.div`
           transform: rotate(360deg);
         }
       }
-      @-webkit-keyframes spin {
-        to {
-          -webkit-transform: rotate(360deg);
-        }
+    /* @-webkit-keyframes spin {
+      to {
+        -webkit-transform: rotate(360deg);
       }
+    } */
 `
