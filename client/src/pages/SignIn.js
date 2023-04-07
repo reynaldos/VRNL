@@ -49,6 +49,7 @@ const SignIn = () => {
           })}
         </More>
       </Container>
+
      {loading && <LoadingModal/>}
 
       <Modal ref={modalRef}/>
@@ -114,8 +115,8 @@ const SignInView = () => {
 
       try {
         const res = await axios.post("/auth/signin", {usernameEmail: values.usernameEmail, password: values.password});
-        dispatch(loginSuccess(res.data));
         navigate('/');
+        dispatch(loginSuccess(res.data));
           
       } catch (error) {
         dispatch(loginFailure());
